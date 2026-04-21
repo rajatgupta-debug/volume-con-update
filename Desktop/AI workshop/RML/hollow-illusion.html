@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hollow Illusion — Volume Con · RML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FBF5E8; --bg-2:#F5EDD8; --card:#FFFFFF;
+  --border:#E8DFC8; --border-strong:#C9BE9F;
+  --shadow:0 6px 24px rgba(60,45,30,0.08);
+  --text:#2B2320; --text-2:#5E544D; --text-3:#99908A;
+  --mint:#2EB39E; --mint-2:#5FC9B5; --mint-bg:#DFF5EF; --mint-ink:#1A6A5C;
+  --coral:#E85D75; --coral-bg:#FDE7EB; --coral-ink:#B72F47;
+  --orange:#F99B4E; --orange-bg:#FDECDB;
+  --yellow:#F4C430; --yellow-bg:#FDF3CA;
+  --purple:#8E6FD8; --purple-bg:#EFE8FC;
+  --navy:#2B3861;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Nunito",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-weight:600;line-height:1.4;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;}
+.logo{background:var(--orange);color:white;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.topbar-meta{font-size:13px;color:var(--text-3);font-weight:700;}
+.layout{display:grid;grid-template-columns:260px 1fr;max-width:1200px;margin:0 auto;min-height:calc(100vh - 62px);}
+.sidebar{padding:24px 14px 40px;border-right:1px solid var(--border);background:var(--bg);}
+.sidebar-series-label{font-size:10px;letter-spacing:2px;color:var(--text-3);font-weight:900;text-transform:uppercase;padding:0 12px;margin-bottom:4px;}
+.sidebar-challenge-name{font-size:13px;font-weight:900;color:var(--text);padding:0 12px 16px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-2);transition:all .15s;margin-bottom:3px;border:2px solid transparent;}
+.nav-item:hover:not(.locked):not(.current){background:var(--bg-2);}
+.nav-item.current{background:var(--orange-bg);color:var(--text);border-color:var(--orange);}
+.nav-item.locked{opacity:0.45;cursor:default;pointer-events:none;}
+.nav-num{width:26px;height:26px;border-radius:8px;background:var(--border);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.nav-item.current .nav-num{background:var(--orange);color:white;}
+.main{padding:32px 40px 80px;min-width:0;}
+.frame{background:var(--card);border-radius:20px;padding:28px 32px;box-shadow:var(--shadow);border:1px solid var(--border);max-width:760px;margin:0 auto;}
+.progress-wrap{display:flex;gap:5px;margin-bottom:24px;}
+.pdot{flex:1;height:6px;background:var(--border);border-radius:3px;transition:background .4s;}
+.pdot.done{background:var(--mint);}
+.pdot.current{background:var(--orange);}
+.step-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+.step-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:20px;line-height:1.25;letter-spacing:-0.3px;}
+.mascot-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;}
+.mascot{flex-shrink:0;width:62px;height:62px;}
+.bubble{flex:1;background:var(--purple-bg);border:2px solid var(--purple);border-radius:16px;padding:13px 17px;font-size:14px;font-weight:700;line-height:1.55;position:relative;}
+.bubble::before{content:"";position:absolute;left:-10px;top:16px;border:10px solid transparent;border-right-color:var(--purple);border-left:0;}
+.bubble::after{content:"";position:absolute;left:-7px;top:18px;border:8px solid transparent;border-right-color:var(--purple-bg);border-left:0;}
+.bubble .name{font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--purple);margin-bottom:4px;}
+.question{background:var(--yellow-bg);border:2px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.q-label{font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--orange);text-transform:uppercase;margin-bottom:8px;}
+.q-text{font-size:16px;font-weight:800;color:var(--text);line-height:1.4;margin-bottom:14px;}
+.options{display:flex;flex-direction:column;gap:9px;}
+.option{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:700;color:var(--text);text-align:left;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s;display:flex;align-items:center;gap:12px;width:100%;}
+.option-num{width:28px;height:28px;border-radius:8px;background:var(--bg-2);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
+.option:hover:not(:disabled){border-color:var(--mint-2);transform:translateY(-1px);box-shadow:var(--shadow);}
+.option.correct{border-color:var(--mint);background:var(--mint-bg);color:var(--mint-ink);}
+.option.correct .option-num{background:var(--mint);color:white;}
+.option.wrong{border-color:var(--coral);background:var(--coral-bg);color:var(--coral-ink);animation:shake .4s;}
+.option.wrong .option-num{background:var(--coral);color:white;}
+.option:disabled{cursor:default;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.option.explore.seen{border-color:var(--purple);background:var(--purple-bg);}
+.option.explore.seen .option-num{background:var(--purple);color:white;}
+.option.explore.hit{border-color:var(--mint);background:var(--mint-bg);color:var(--mint-ink);}
+.option.explore.hit .option-num{background:var(--mint);color:white;}
+.explore-reveal{background:var(--card);border-left:3px solid var(--mint);border-radius:0 10px 10px 0;padding:10px 14px;font-size:13px;color:var(--text);margin-top:8px;font-weight:700;display:none;line-height:1.5;}
+.explore-reveal.show{display:block;}
+.explore-reveal.purple-reveal{border-left-color:var(--purple);}
+.predict-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;}
+.predict-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px 10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s;text-align:center;color:var(--text);}
+.predict-btn:hover{border-color:var(--mint-2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.predict-btn.selected{border-color:var(--orange);background:var(--orange-bg);}
+.predict-btn .big{font-size:26px;display:block;margin-bottom:6px;}
+.slider-block{background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+.slider-block-label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:10px;}
+.slider-row{display:flex;align-items:center;gap:12px;}
+.slider-label{font-size:14px;font-weight:800;white-space:nowrap;min-width:70px;}
+input[type="range"]{flex:1;accent-color:var(--orange);cursor:pointer;}
+.slider-value{font-size:15px;color:var(--mint-ink);background:var(--mint-bg);padding:6px 12px;border-radius:8px;min-width:56px;text-align:center;font-weight:900;border:1px solid var(--mint);}
+.vis-area{background:var(--bg-2);border-radius:16px;border:1px solid var(--border);padding:20px;margin-bottom:14px;text-align:center;overflow:hidden;}
+.vol-display-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.vol-pill{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;}
+.vol-pill .vp-label{font-size:10px;color:var(--text-3);font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.vol-pill .vp-val{font-size:22px;font-weight:900;color:var(--text);}
+.vol-pill .vp-sub{font-size:11px;color:var(--text-2);margin-top:2px;font-weight:700;}
+.vol-pill.highlight{border-color:var(--navy);background:#EEF2FF;}
+.vol-pill.highlight .vp-val{color:var(--navy);}
+.vol-pill.loss{border-color:var(--coral);}
+.vol-pill.loss .vp-val{color:var(--coral-ink);}
+.callout{background:var(--navy);color:white;border-radius:14px;padding:18px 20px;margin:14px 0;font-size:15px;font-weight:700;line-height:1.6;}
+.callout strong{color:var(--yellow);}
+.callout.hidden{display:none;}
+.feedback{padding:14px 18px;border-radius:12px;background:var(--mint-bg);border-left:4px solid var(--mint);font-size:14px;line-height:1.6;font-weight:700;margin-top:14px;display:none;}
+.feedback.wrong-fb{background:var(--coral-bg);border-left-color:var(--coral);}
+.feedback.show{display:block;}
+.practice-box{background:var(--bg-2);border:2px solid var(--border-strong);border-radius:16px;padding:20px;margin-top:18px;}
+.practice-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--mint-ink);margin-bottom:8px;}
+.tool-unlock{background:linear-gradient(135deg,#2B3861 0%,#3d4f7c 100%);border-radius:20px;padding:30px;text-align:center;color:white;margin-bottom:16px;}
+.tool-badge{display:inline-block;background:var(--yellow);color:#2B2320;font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:14px;}
+.tool-icon{font-size:52px;display:block;margin-bottom:12px;}
+.tool-name{font-size:26px;font-weight:900;margin-bottom:10px;}
+.tool-desc{font-size:14px;opacity:.85;line-height:1.7;font-weight:600;max-width:480px;margin:0 auto;}
+.series-complete{background:linear-gradient(135deg,#1A6A5C 0%,#2EB39E 100%);border-radius:20px;padding:28px;color:white;margin-top:0;}
+.sc-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;opacity:.7;margin-bottom:12px;}
+.sc-title{font-size:22px;font-weight:900;margin-bottom:20px;}
+.sc-tools{display:flex;flex-direction:column;gap:12px;}
+.sc-tool{background:rgba(255,255,255,0.12);border-radius:14px;padding:14px 18px;display:flex;align-items:flex-start;gap:14px;text-align:left;}
+.sc-tool-icon{font-size:28px;flex-shrink:0;}
+.sc-tool-name{font-size:15px;font-weight:900;margin-bottom:3px;}
+.sc-tool-desc{font-size:13px;opacity:.8;line-height:1.5;font-weight:600;}
+.sc-pattern{background:rgba(255,255,255,0.08);border-radius:12px;padding:16px;margin-top:16px;font-size:14px;font-weight:700;line-height:1.6;opacity:.9;font-style:italic;}
+.nav-row{display:flex;justify-content:flex-end;margin-top:24px;}
+.btn{background:var(--orange);color:white;border:none;border-radius:12px;padding:13px 26px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn:hover:not(:disabled){background:#e8893a;transform:translateY(-1px);}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+/* Height picker */
+.hpicker-row{display:flex;gap:10px;justify-content:center;margin:14px 0;}
+.hpicker-btn{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:12px 20px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;color:var(--text);transition:all .15s;}
+.hpicker-btn:hover{border-color:var(--orange);}
+.hpicker-btn.active{border-color:var(--orange);background:var(--orange-bg);color:var(--text);}
+/* Area table */
+.area-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;font-weight:700;}
+.area-table th{background:var(--bg-2);padding:10px 12px;text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);}
+.area-table td{padding:10px 12px;border-top:1px solid var(--border);}
+.area-table tr.highlight-row td{background:var(--coral-bg);color:var(--coral-ink);}
+/* Pred resolution */
+.pred-resolution{background:var(--yellow-bg);border:2px solid var(--yellow);border-radius:12px;padding:14px 16px;margin-top:14px;font-size:14px;font-weight:700;line-height:1.6;display:none;}
+.pred-resolution.show{display:block;}
+/* Calc block */
+.calc-block{background:var(--bg-2);border-radius:14px;padding:18px 20px;margin:14px 0;font-family:monospace;font-size:15px;line-height:2;border:1px solid var(--border);}
+.calc-block .line{display:block;color:var(--text-2);}
+.calc-block .result{color:var(--coral-ink);font-weight:900;font-size:18px;}
+/* Restaurant card */
+.restaurant-card{background:var(--bg-2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px;text-align:center;}
+.rc-eyebrow{font-size:10px;letter-spacing:2px;color:var(--text-3);font-weight:900;text-transform:uppercase;margin-bottom:6px;}
+.rc-name{font-size:20px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.rc-sub{font-size:13px;color:var(--text-2);font-weight:600;margin-bottom:16px;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="pip">
+      <ellipse cx="50" cy="28" rx="26" ry="9" fill="#F99B4E"/>
+      <rect x="24" y="28" width="52" height="38" fill="#F99B4E"/>
+      <ellipse cx="50" cy="66" rx="26" ry="9" fill="#e8893a"/>
+      <circle cx="41" cy="46" r="6" fill="white"/>
+      <circle cx="59" cy="46" r="6" fill="white"/>
+      <circle cx="42" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="60" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="43" cy="46" r="1.2" fill="white"/>
+      <circle cx="61" cy="46" r="1.2" fill="white"/>
+      <path d="M 43 57 Q 50 63 57 57" stroke="#2B2320" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="28" y="10" width="44" height="20" rx="5" fill="#2B3861"/>
+      <rect x="18" y="26" width="64" height="6" rx="3" fill="#2B3861"/>
+      <circle cx="76" cy="70" r="10" fill="none" stroke="#2EB39E" stroke-width="3"/>
+      <line x1="83" y1="77" x2="90" y2="84" stroke="#2EB39E" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">🔺</div>
+    <span>Volume Con</span>
+    <span style="color:var(--border-strong);margin:0 6px">·</span>
+    <span style="color:var(--text-3);font-size:14px;font-weight:700">RML Challenge</span>
+  </div>
+  <div class="topbar-meta" id="step-indicator">Section 1 of 8</div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-series-label">The Volume Con</div>
+    <div class="sidebar-challenge-name">Challenge Series · 3 parts</div>
+    <nav id="sidebar-nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="frame" id="frame-content"></div>
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+const SECTIONS = [
+  {title:'The Setup'},
+  {title:'Take a Guess'},
+  {title:'The Shape'},
+  {title:'The Radius Grows'},
+  {title:'Area Grows Faster'},
+  {title:'Fill It Up'},
+  {title:'Your Glass'},
+  {title:'The Hollow Illusion'},
+];
+let current = 0;
+let completed = new Set();
+let s1Prediction = null; // 'A'=80%, 'B'=60-65%, 'C'=less than 50%
+
+// ═══════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════
+function pip(text) {
+  return `<div class="mascot-row">
+    <div class="mascot"><svg viewBox="0 0 100 100"><use href="#pip"/></svg></div>
+    <div class="bubble"><div class="name">Pip · Volume Detective</div>${text}</div>
+  </div>`;
+}
+function progressDots() {
+  return `<div class="progress-wrap">${SECTIONS.map((_,i) => {
+    const c = completed.has(i)?'done':i===current?'current':'';
+    return `<div class="pdot ${c}"></div>`;
+  }).join('')}</div>`;
+}
+function mcqOpt(id, letter, text, correct) {
+  return `<button class="option" id="opt-${id}-${letter}"
+    onclick="handleMCQ('${id}','${letter}',${correct})">
+    <div class="option-num">${letter}</div><div>${text}</div>
+  </button>`;
+}
+function handleMCQ(id, letter, correct) {
+  document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => o.disabled = true);
+  const el = document.getElementById(`opt-${id}-${letter}`);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById(`fb-${id}`)?.classList.add('show');
+    const btn = document.getElementById(`btn-${id}`);
+    if (btn) btn.disabled = false;
+  } else {
+    el.classList.add('wrong');
+    document.getElementById(`fb-${id}-wrong`)?.classList.add('show');
+    document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => o.disabled = false);
+    el.disabled = true;
+  }
+}
+
+// ═══════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════
+function renderSidebar() {
+  const SERIES = [
+    {num:1, title:'The Base Squeeze', file:'base-squeeze.html'},
+    {num:2, title:'The Shrinkflation Scam', file:'shrinkflation-scam.html'},
+    {num:3, title:'The Hollow Illusion', current:true},
+  ];
+  document.getElementById('sidebar-nav').innerHTML = SERIES.map(c => {
+    const cls = c.current ? 'current' : '';
+    const click = c.current ? '' : `onclick="window.location.href='${c.file}'"`;
+    return `<div class="nav-item ${cls}" ${click}>
+      <div class="nav-num">${c.num}</div><div>${c.title}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('step-indicator').textContent = `Section ${current+1} of ${SECTIONS.length}`;
+}
+function next() {
+  completed.add(current);
+  current = Math.min(current+1, SECTIONS.length-1);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════
+// CONE SVG UTILITIES
+// ═══════════════════════════════════
+// cx=center x, topY=wide opening, botY=tip, R=top radius, fillH=0-1 fill fraction
+function cone(cx, topY, botY, R, fillH, opts) {
+  opts = opts || {};
+  const H = botY - topY;
+  const ryTop = Math.round(R * 0.2);
+  const fillY = botY - fillH * H;
+  const rFill = fillH * R;
+  const ryFill = Math.max(2, Math.round(rFill * 0.2));
+  let g = '';
+
+  // Glass interior (empty area) - light background
+  g += `<polygon points="${cx},${botY} ${cx-R},${topY} ${cx+R},${topY}" fill="#F5EDD8" opacity="0.5"/>`;
+
+  // Liquid fill
+  if (fillH > 0.01) {
+    g += `<polygon points="${cx},${botY} ${cx-rFill},${fillY} ${cx+rFill},${fillY}" fill="#DFF5EF"/>`;
+    g += `<ellipse cx="${cx}" cy="${fillY}" rx="${rFill}" ry="${ryFill}" fill="#2EB39E" opacity="0.5"/>`;
+  }
+
+  // Cone outline walls
+  g += `<line x1="${cx}" y1="${botY}" x2="${cx-R}" y2="${topY}" stroke="#5E544D" stroke-width="2.5"/>`;
+  g += `<line x1="${cx}" y1="${botY}" x2="${cx+R}" y2="${topY}" stroke="#5E544D" stroke-width="2.5"/>`;
+  // Top rim ellipse
+  g += `<ellipse cx="${cx}" cy="${topY}" rx="${R}" ry="${ryTop}" fill="none" stroke="#5E544D" stroke-width="2"/>`;
+
+  // Fill level line
+  if (fillH > 0.02 && fillH < 0.99 && opts.showFillLine) {
+    g += `<line x1="${cx-rFill-6}" y1="${fillY}" x2="${cx+rFill+6}" y2="${fillY}" stroke="#2EB39E" stroke-width="1.5" stroke-dasharray="4,3"/>`;
+  }
+
+  // Cross-section circles at specified heights
+  if (opts.crossSections) {
+    opts.crossSections.forEach(cs => {
+      const csY = botY - cs.h * H;
+      const csR = cs.h * R;
+      const csRy = Math.max(2, csR * 0.2);
+      g += `<ellipse cx="${cx}" cy="${csY}" rx="${csR}" ry="${csRy}" fill="${cs.fill||'none'}" stroke="${cs.stroke||'#E85D75'}" stroke-width="${cs.sw||2}" ${cs.dash?'stroke-dasharray="5,3"':''}/>`;
+      if (cs.label) {
+        g += `<text x="${cx+csR+8}" y="${csY+5}" font-family="Nunito" font-size="12" font-weight="800" fill="${cs.stroke||'#E85D75'}">${cs.label}</text>`;
+      }
+    });
+  }
+
+  return g;
+}
+
+// ═══════════════════════════════════
+// SECTION 0 — THE SETUP
+// ═══════════════════════════════════
+function s0() {
+  return `${progressDots()}
+  <div class="step-label">Challenge 3 · The Setup</div>
+  <div class="step-title">One question about a glass of a drink.</div>
+
+  ${pip(`You've cracked the cuboid trick. You've cracked the cylinder trick.<br>This one is about a cone — and it's the most surprising of all.`)}
+
+  <div class="restaurant-card">
+    <div class="rc-eyebrow">Café Cono · Signature Drink</div>
+    <div class="rc-name">The Special 🍹</div>
+    <div class="rc-sub">Served in our signature conical glass. Filled close to the rim.</div>
+    <svg viewBox="0 0 200 220" style="width:160px;height:auto;display:block;margin:0 auto">
+      ${cone(100, 20, 210, 90, 0.92)}
+    </svg>
+  </div>
+
+  ${pip(`The glass is filled close to the rim. Looks generous.<br>One question: <strong>how full is it actually?</strong>`)}
+
+  <div class="nav-row"><button class="btn" onclick="next()">Find out →</button></div>`;
+}
+
+// ═══════════════════════════════════
+// SECTION 1 — TAKE A GUESS
+// ═══════════════════════════════════
+function s1() {
+  return `${progressDots()}
+  <div class="step-label">Predict · Take a Guess</div>
+  <div class="step-title">The drink fills 80% of the glass height. How much is that?</div>
+
+  ${pip(`Look at the glass. The liquid reaches 80% of the way up. That gap at the top looks small.<br>Before any calculation — what fraction of the glass do you think is filled?`)}
+
+  <div class="vis-area">
+    <svg viewBox="0 0 340 240" style="width:100%;max-width:340px;height:auto;display:block;margin:0 auto">
+      ${cone(140, 20, 225, 110, 0.8, {showFillLine:true})}
+      <!-- Full height bracket (gray) -->
+      <line x1="262" y1="20" x2="262" y2="225" stroke="#C9BE9F" stroke-width="1" stroke-dasharray="4,3"/>
+      <line x1="258" y1="20" x2="266" y2="20" stroke="#C9BE9F" stroke-width="1.5"/>
+      <line x1="258" y1="225" x2="266" y2="225" stroke="#C9BE9F" stroke-width="1.5"/>
+      <text x="274" y="28" font-family="Nunito" font-size="11" font-weight="800" fill="#99908A">gap</text>
+      <!-- Fill height bracket (teal) -->
+      <line x1="258" y1="45" x2="266" y2="45" stroke="#2EB39E" stroke-width="1.5"/>
+      <line x1="262" y1="45" x2="262" y2="225" stroke="#2EB39E" stroke-width="2"/>
+      <line x1="258" y1="225" x2="266" y2="225" stroke="#2EB39E" stroke-width="1.5"/>
+      <text x="274" y="138" font-family="Nunito" font-size="14" font-weight="900" fill="#2EB39E">80%</text>
+      <text x="274" y="154" font-family="Nunito" font-size="11" font-weight="700" fill="#2EB39E">height</text>
+    </svg>
+  </div>
+
+  <div class="question">
+    <div class="q-label">🤔 Your prediction</div>
+    <div class="q-text">What fraction of the glass is actually filled with liquid?</div>
+    <div class="predict-row">
+      <button class="predict-btn" onclick="handlePredict1('A')">
+        <span class="big">🥤</span>About 80%<br><small style="font-weight:600;color:var(--text-3)">height = volume</small>
+      </button>
+      <button class="predict-btn" onclick="handlePredict1('B')">
+        <span class="big">🥤</span>About 60–65%<br><small style="font-weight:600;color:var(--text-3)">a bit less</small>
+      </button>
+      <button class="predict-btn" onclick="handlePredict1('C')">
+        <span class="big">🫙</span>Less than 50%<br><small style="font-weight:600;color:var(--text-3)">much less</small>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-s1" onclick="next()" disabled>Lock in and investigate →</button></div>`;
+}
+function handlePredict1(choice) {
+  s1Prediction = choice;
+  document.querySelectorAll('.predict-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('btn-s1').disabled = false;
+}
+
+// ═══════════════════════════════════
+// SECTION 2 — WHY SHAPE MATTERS
+// ═══════════════════════════════════
+function s2() {
+  return `${progressDots()}
+  <div class="step-label">Observe · The Shape</div>
+  <div class="step-title">Every level of this glass is a different size.</div>
+
+  ${pip(`Before any maths — just look at the glass. Tap the bottom and top to see what's different.`)}
+
+  <div class="vis-area">
+    <div style="position:relative;display:inline-block">
+      <svg viewBox="0 0 280 240" style="width:100%;max-width:260px;height:auto;display:block;margin:0 auto" id="s2-svg">
+        ${cone(140, 20, 225, 110, 0, {crossSections:[]})}
+        <!-- Tap zones (invisible clickable rects) -->
+        <rect x="110" y="180" width="60" height="36" fill="rgba(255,165,0,0.15)" rx="6" id="tap-bottom-rect" style="cursor:pointer" onclick="tapZone('bottom')"/>
+        <text x="140" y="202" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#F99B4E" id="tap-bottom-hint">tap ↓</text>
+        <rect x="60" y="30" width="160" height="44" fill="rgba(255,165,0,0.15)" rx="6" id="tap-top-rect" style="cursor:pointer" onclick="tapZone('top')"/>
+        <text x="140" y="57" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#F99B4E" id="tap-top-hint">tap ↑</text>
+        <!-- Cross-sections appear here -->
+        <g id="cross-bottom" style="display:none">
+          <ellipse cx="140" cy="204" rx="10" ry="3" fill="#FDE7EB" stroke="#E85D75" stroke-width="2"/>
+          <text x="110" y="222" text-anchor="middle" font-family="Nunito" font-size="10" font-weight="800" fill="#E85D75">small circle</text>
+        </g>
+        <g id="cross-top" style="display:none">
+          <ellipse cx="140" cy="42" rx="110" ry="22" fill="rgba(46,179,158,0.15)" stroke="#2EB39E" stroke-width="2" stroke-dasharray="5,3"/>
+          <text x="140" y="72" text-anchor="middle" font-family="Nunito" font-size="10" font-weight="800" fill="#2EB39E">large circle</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="options" style="margin-bottom:14px">
+    <button class="option explore" id="obs-bottom" onclick="s2Tap('bottom')">
+      <div class="option-num">A</div><div>Near the bottom — tap to see the cross-section</div>
+    </button>
+    <div class="explore-reveal purple-reveal" id="rev-bottom">At the bottom, the glass is very narrow. The circular cross-section here is tiny — just a small slice of liquid fits.</div>
+    <button class="option explore" id="obs-top" onclick="s2Tap('top')">
+      <div class="option-num">B</div><div>Near the top — tap to see the cross-section</div>
+    </button>
+    <div class="explore-reveal" id="rev-top">🎯 At the top, the glass is wide open. The circular cross-section here is much larger — a single slice at the top holds far more than a slice at the bottom.</div>
+  </div>
+
+  <div class="feedback" id="s2-insight" style="display:none">
+    Every level of this glass is a different-sized circle. The width keeps growing as you go up. This is what makes a cone's volume behave so differently — and so surprisingly.
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-s2" onclick="next()" disabled>Next →</button></div>`;
+}
+let s2Tapped = {bottom:false, top:false};
+function s2Tap(side) {
+  s2Tapped[side] = true;
+  // Show SVG cross-section on the cone
+  const crossEl = document.getElementById(`cross-${side}`);
+  if (crossEl) crossEl.style.display = 'block';
+  // Hide the tap hint text once tapped
+  const hintEl = document.getElementById(`tap-${side}-hint`);
+  if (hintEl) hintEl.style.display = 'none';
+  // Update button + reveal text below
+  const btn = document.getElementById(`obs-${side}`);
+  const rev = document.getElementById(`rev-${side}`);
+  if (btn) { btn.disabled = true; btn.classList.add(side === 'top' ? 'hit' : 'seen'); }
+  if (rev) rev.classList.add('show');
+  if (s2Tapped.bottom && s2Tapped.top) {
+    document.getElementById('s2-insight').style.display = 'block';
+    document.getElementById('btn-s2').disabled = false;
+  }
+}
+function tapZone(side) { s2Tap(side); }
+
+// ═══════════════════════════════════
+// SECTION 3 — THE RADIUS GROWS WITH HEIGHT
+// ═══════════════════════════════════
+let s3SelectedH = null;
+function s3() {
+  return `${progressDots()}
+  <div class="step-label">Discover · Similar Triangles</div>
+  <div class="step-title">The radius grows predictably with height.</div>
+
+  ${pip(`Look at the cone from the side — the walls are straight lines. That straight wall is the key. Pick a height to see the radius at that level.`)}
+
+  <div class="vis-area">
+    <svg viewBox="0 0 320 260" style="width:100%;max-width:320px;height:auto;display:block;margin:0 auto" id="s3-svg">
+      ${renderS3Cone(null)}
+    </svg>
+  </div>
+
+  <div class="hpicker-row">
+    <button class="hpicker-btn" id="hp25" onclick="pickHeight(0.25)">25% height</button>
+    <button class="hpicker-btn" id="hp50" onclick="pickHeight(0.50)">50% height</button>
+    <button class="hpicker-btn" id="hp75" onclick="pickHeight(0.75)">75% height</button>
+  </div>
+
+  <div class="callout hidden" id="s3-callout"></div>
+
+  <div class="nav-row"><button class="btn" id="btn-s3" onclick="next()" disabled>Next →</button></div>`;
+}
+function renderS3Cone(h) {
+  const cx=160, topY=20, botY=220, R=100;
+  const H = botY-topY;
+  const ryTop = 18;
+  let g = '';
+  // Full triangle outline (dashed = "full glass")
+  g += `<polygon points="${cx},${botY} ${cx-R},${topY} ${cx+R},${topY}" fill="#F5EDD8" opacity="0.4"/>`;
+  g += `<line x1="${cx}" y1="${botY}" x2="${cx-R}" y2="${topY}" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4"/>`;
+  g += `<line x1="${cx}" y1="${botY}" x2="${cx+R}" y2="${topY}" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4"/>`;
+  // R label
+  g += `<line x1="${cx}" y1="${topY+ryTop}" x2="${cx+R}" y2="${topY+ryTop}" stroke="#C9BE9F" stroke-width="1.5"/>`;
+  g += `<text x="${cx+R/2}" y="${topY+ryTop-5}" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#99908A">R</text>`;
+  // H label
+  g += `<line x1="${cx+R+16}" y1="${topY}" x2="${cx+R+16}" y2="${botY}" stroke="#C9BE9F" stroke-width="1" stroke-dasharray="3,3"/>`;
+  g += `<text x="${cx+R+28}" y="${(topY+botY)/2+5}" font-family="Nunito" font-size="12" font-weight="800" fill="#99908A">H</text>`;
+
+  if (h !== null) {
+    const fillY = botY - h * H;
+    const rFill = h * R;
+    const ryFill = Math.max(2, rFill*0.18);
+    // Inner triangle (filled portion) — solid orange
+    g += `<polygon points="${cx},${botY} ${cx-rFill},${fillY} ${cx+rFill},${fillY}" fill="#FDECDB" opacity="0.8"/>`;
+    g += `<line x1="${cx}" y1="${botY}" x2="${cx-rFill}" y2="${fillY}" stroke="#F99B4E" stroke-width="2"/>`;
+    g += `<line x1="${cx}" y1="${botY}" x2="${cx+rFill}" y2="${fillY}" stroke="#F99B4E" stroke-width="2"/>`;
+    // Ellipse at fill level
+    g += `<ellipse cx="${cx}" cy="${fillY}" rx="${rFill}" ry="${ryFill}" fill="#F99B4E" opacity="0.4" stroke="#F99B4E" stroke-width="1.5"/>`;
+    // r label at fill level
+    g += `<line x1="${cx}" y1="${fillY}" x2="${cx+rFill}" y2="${fillY}" stroke="#F99B4E" stroke-width="1.5"/>`;
+    g += `<text x="${cx+rFill/2}" y="${fillY-6}" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#F99B4E">r = ${h}R</text>`;
+    // h label on side
+    g += `<line x1="${cx+R+16}" y1="${fillY}" x2="${cx+R+16}" y2="${botY}" stroke="#F99B4E" stroke-width="1.5"/>`;
+    g += `<text x="${cx+R+28}" y="${fillY+(botY-fillY)/2+5}" font-family="Nunito" font-size="12" font-weight="900" fill="#F99B4E">h</text>`;
+    // Similar triangles annotation
+    g += `<text x="${cx-80}" y="${botY+18}" font-family="Nunito" font-size="11" font-weight="700" fill="#5E544D">Similar triangles → r/R = h/H → r = (h/H)×R</text>`;
+  }
+  return g;
+}
+let s3AllPicked = false;
+const s3Picked = new Set();
+function pickHeight(h) {
+  s3SelectedH = h;
+  ['hp25','hp50','hp75'].forEach(id => document.getElementById(id)?.classList.remove('active'));
+  document.getElementById('hp'+Math.round(h*100))?.classList.add('active');
+  document.getElementById('s3-svg').innerHTML = renderS3Cone(h);
+  const rStr = h === 0.25 ? 'R/4' : h === 0.5 ? 'R/2' : '3R/4';
+  const callout = document.getElementById('s3-callout');
+  callout.classList.remove('hidden');
+  callout.innerHTML = `At <strong>${Math.round(h*100)}% height</strong>: r = ${h} × R = <strong>${rStr}</strong><br>The radius scales exactly with height — a perfectly proportional, linear relationship.`;
+  s3Picked.add(h);
+  if (s3Picked.size >= 2) {
+    document.getElementById('btn-s3').disabled = false;
+  }
+}
+
+// ═══════════════════════════════════
+// SECTION 4 — AREA GROWS FASTER
+// ═══════════════════════════════════
+function s4() {
+  return `${progressDots()}
+  <div class="step-label">Discover · Area vs Radius</div>
+  <div class="step-title">The radius grows evenly. The circle doesn't.</div>
+
+  ${pip(`The radius at 50% height is 50% of the full radius. So the circle at 50% must be 50% of the full circle — right?`)}
+
+  <div class="vis-area">
+    <svg viewBox="0 0 340 240" style="width:100%;max-width:320px;height:auto;display:block;margin:0 auto">
+      <!-- Full cone outline (dashed gray) -->
+      <polygon points="170,220 70,20 270,20" fill="#F5EDD8" opacity="0.4"/>
+      <line x1="170" y1="220" x2="70" y2="20" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <line x1="170" y1="220" x2="270" y2="20" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <ellipse cx="170" cy="20" rx="100" ry="20" fill="none" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4"/>
+      <!-- R label: horizontal from centre to right rim at top -->
+      <line x1="170" y1="42" x2="270" y2="42" stroke="#99908A" stroke-width="1.5"/>
+      <line x1="170" y1="38" x2="170" y2="46" stroke="#99908A" stroke-width="1.5"/>
+      <line x1="270" y1="38" x2="270" y2="46" stroke="#99908A" stroke-width="1.5"/>
+      <text x="220" y="37" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#99908A">R</text>
+      <!-- Filled cone to 50% height (orange) -->
+      <polygon points="170,220 120,120 220,120" fill="#FDECDB" opacity="0.9"/>
+      <line x1="170" y1="220" x2="120" y2="120" stroke="#F99B4E" stroke-width="2"/>
+      <line x1="170" y1="220" x2="220" y2="120" stroke="#F99B4E" stroke-width="2"/>
+      <ellipse cx="170" cy="120" rx="50" ry="10" fill="#F99B4E" opacity="0.45" stroke="#F99B4E" stroke-width="2"/>
+      <!-- r label: horizontal from centre to fill edge -->
+      <line x1="170" y1="120" x2="220" y2="120" stroke="#F99B4E" stroke-width="1.5"/>
+      <line x1="170" y1="116" x2="170" y2="124" stroke="#F99B4E" stroke-width="1.5"/>
+      <line x1="220" y1="116" x2="220" y2="124" stroke="#F99B4E" stroke-width="1.5"/>
+      <text x="195" y="112" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#F99B4E">r = R/2</text>
+      <!-- H bracket: LEFT side, full height, gray -->
+      <line x1="50" y1="20" x2="50" y2="220" stroke="#C9BE9F" stroke-width="1.5"/>
+      <line x1="46" y1="20" x2="54" y2="20" stroke="#C9BE9F" stroke-width="1.5"/>
+      <line x1="46" y1="220" x2="54" y2="220" stroke="#C9BE9F" stroke-width="1.5"/>
+      <text x="34" y="125" text-anchor="middle" font-family="Nunito" font-size="14" font-weight="900" fill="#99908A">H</text>
+      <!-- h bracket: RIGHT side, fill height only, orange -->
+      <line x1="288" y1="120" x2="288" y2="220" stroke="#F99B4E" stroke-width="2"/>
+      <line x1="284" y1="120" x2="292" y2="120" stroke="#F99B4E" stroke-width="1.5"/>
+      <line x1="284" y1="220" x2="292" y2="220" stroke="#F99B4E" stroke-width="1.5"/>
+      <text x="308" y="175" text-anchor="middle" font-family="Nunito" font-size="14" font-weight="900" fill="#F99B4E">h</text>
+    </svg>
+  </div>
+
+  <div class="question" style="margin-bottom:14px">
+    <div class="q-label">Quick guess</div>
+    <div class="q-text">The circle at 50% height is what fraction of the top circle's area?</div>
+    <div class="options">
+      ${mcqOpt('s4','A','50% — same as the height fraction', false)}
+      ${mcqOpt('s4','B','25% — radius squared', true)}
+      ${mcqOpt('s4','C','About 35% — somewhere between', false)}
+    </div>
+  </div>
+
+  <div class="feedback" id="fb-s4">
+    The radius halved → but area = πr². When r = R/2 → area = π(R/2)² = πR²/4.<br>
+    <strong>Just 25% of the full circle.</strong> Not 50%. The radius-squared effect from Challenge 2 is back — here it means the circular slices near the bottom are tiny, and the slices near the top are huge.
+  </div>
+  <div class="feedback wrong-fb" id="fb-s4-wrong">
+    Remember from Challenge 2: area = πr². If the radius halves, area = π(R/2)² = πR²/4. Squaring the radius means the area drops much faster than the radius.
+  </div>
+
+  <div class="vis-area" id="s4-circles" style="display:none">
+    <svg viewBox="0 0 380 160" style="width:100%;max-width:380px;height:auto;display:block;margin:0 auto">
+      <!-- Full circle (100% height) -->
+      <circle cx="100" cy="80" r="70" fill="#DFF5EF" stroke="#2EB39E" stroke-width="2"/>
+      <text x="100" y="84" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#1A6A5C">r = R</text>
+      <text x="100" y="162" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#5E544D">100% height</text>
+      <text x="100" y="148" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="700" fill="#99908A">area = πR²</text>
+      <!-- 50% height circle (r = R/2) -->
+      <circle cx="270" cy="80" r="35" fill="#FDE7EB" stroke="#E85D75" stroke-width="2"/>
+      <text x="270" y="84" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#B72F47">r = R/2</text>
+      <text x="270" y="162" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#5E544D">50% height</text>
+      <text x="270" y="148" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="700" fill="#99908A">area = πR²/4</text>
+      <!-- not 50% label -->
+      <text x="185" y="75" text-anchor="middle" font-family="Nunito" font-size="18" font-weight="900" fill="#C9BE9F">≠</text>
+      <text x="185" y="93" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="700" fill="#99908A">50%</text>
+    </svg>
+    <table class="area-table">
+      <tr><th>Height</th><th>Radius</th><th>Circle area</th></tr>
+      <tr><td>100%</td><td>R</td><td>100% of full circle</td></tr>
+      <tr><td>75%</td><td>3R/4</td><td>56.25%</td></tr>
+      <tr class="highlight-row"><td>50%</td><td>R/2</td><td><strong>25%</strong> — not 50%</td></tr>
+      <tr class="highlight-row"><td>25%</td><td>R/4</td><td><strong>6.25%</strong></td></tr>
+    </table>
+  </div>
+
+  <div class="callout hidden" id="s4-callout">
+    Radius grows linearly with height. But area grows as radius <strong>squared</strong> — much faster near the top than near the bottom. The slices at the top are disproportionately large. This is why volume accumulates slowly at first and surges near the rim.
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-s4" onclick="next()" disabled>See it live →</button></div>`;
+}
+function wireS4() {
+  ['A','B','C'].forEach(l => {
+    const o = document.getElementById(`opt-s4-${l}`);
+    if (o) o.onclick = () => {
+      const correct = l === 'B';
+      handleMCQ('s4', l, correct);
+      if (correct) {
+        setTimeout(() => {
+          document.getElementById('s4-circles').style.display = 'block';
+          document.getElementById('s4-callout').classList.remove('hidden');
+        }, 500);
+      }
+    };
+  });
+}
+
+// ═══════════════════════════════════
+// SECTION 5 — FILL SIMULATION
+// ═══════════════════════════════════
+function s5() {
+  return `${progressDots()}
+  <div class="step-label">Simulate · Fill It Up</div>
+  <div class="step-title">Drag the slider. Watch volume accumulate.</div>
+
+  ${pip(`Radius grows linearly. Area grows as radius squared. So volume grows as height <em>cubed</em>. Drag the slider and see it happen.`)}
+
+  <div class="slider-block">
+    <div class="slider-block-label">Fill height</div>
+    <div class="slider-row">
+      <span class="slider-label" id="fill-pct-label">0%</span>
+      <input type="range" min="0" max="100" value="0" id="fill-slider" oninput="updateFill()">
+      <div class="slider-value" id="fill-val">0%</div>
+    </div>
+  </div>
+
+  <div class="vis-area">
+    <svg viewBox="0 0 280 240" style="width:100%;max-width:260px;height:auto;display:block;margin:0 auto" id="s5-svg">
+      ${cone(140, 20, 225, 110, 0, {})}
+    </svg>
+    <div class="vol-display-2" style="margin-top:14px">
+      <div class="vol-pill highlight">
+        <div class="vp-label">Volume filled</div>
+        <div class="vp-val" id="s5-vol">0%</div>
+        <div class="vp-sub">(h/H)³ × 100</div>
+      </div>
+      <div class="vol-pill loss">
+        <div class="vp-label">Still empty</div>
+        <div class="vp-val" id="s5-empty">100%</div>
+        <div class="vp-sub">of total</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout hidden" id="s5-callout"></div>
+
+  <div class="nav-row"><button class="btn" id="btn-s5" onclick="next()" disabled>Apply this to the glass →</button></div>`;
+}
+let s5KeysSeen = new Set();
+function updateFill() {
+  const pct = parseInt(document.getElementById('fill-slider').value);
+  const h = pct/100;
+  const vol = Math.pow(h, 3);
+  const volPct = (vol*100).toFixed(1);
+  const emptyPct = (100 - vol*100).toFixed(1);
+
+  document.getElementById('fill-pct-label').textContent = pct + '%';
+  document.getElementById('fill-val').textContent = pct + '%';
+  document.getElementById('s5-vol').textContent = volPct + '%';
+  document.getElementById('s5-empty').textContent = emptyPct + '%';
+  document.getElementById('s5-svg').innerHTML = cone(140, 20, 225, 110, h, {showFillLine:true});
+
+  const callout = document.getElementById('s5-callout');
+  let msg = null;
+  if (pct >= 48 && pct <= 52) {
+    msg = `<strong>Halfway up</strong> — but only <strong>${volPct}%</strong> of the volume. The bottom half of the glass contains almost nothing.`;
+    s5KeysSeen.add('50');
+  } else if (pct >= 78 && pct <= 82) {
+    msg = `<strong>80% height</strong> — but only <strong>${volPct}%</strong> of the volume. You need that top 20% for the other half.`;
+    s5KeysSeen.add('80');
+  } else if (pct >= 88 && pct <= 92) {
+    msg = `<strong>90% height</strong> — finally <strong>${volPct}%</strong> of the volume. Nearly all the volume lives at the top.`;
+    s5KeysSeen.add('90');
+  } else if (pct === 100) {
+    msg = `Full glass — <strong>100%</strong>. The last 10% of height held 27.1% of the volume.`;
+    s5KeysSeen.add('100');
+  }
+  if (msg) {
+    callout.classList.remove('hidden');
+    callout.innerHTML = msg;
+  }
+  if (s5KeysSeen.size >= 2) {
+    document.getElementById('btn-s5').disabled = false;
+  }
+}
+
+// ═══════════════════════════════════
+// SECTION 6 — YOUR GLASS + PRACTICE
+// ═══════════════════════════════════
+function s6() {
+  let predMsg = '';
+  if (s1Prediction === 'A') predMsg = `You guessed <strong>about 80%</strong> — thinking height equals volume. It doesn't for a cone. Volume = (h/H)³, so 80% height = only 51.2% volume.`;
+  else if (s1Prediction === 'B') predMsg = `You guessed <strong>60–65%</strong> — closer than most! But the cube effect pulls it down further. 0.8³ = 0.512, so it's 51.2%.`;
+  else predMsg = `You guessed <strong>less than 50%</strong> — you sensed something was off. You were right: it's 51.2%, just barely over half.`;
+
+  return `${progressDots()}
+  <div class="step-label">Apply · Your Glass</div>
+  <div class="step-title">Back to the restaurant glass.</div>
+
+  ${pip(`The glass is filled to 80% of its height. Now you have the tools. Calculate the real answer.`)}
+
+  <div class="vis-area">
+    <svg viewBox="0 0 280 240" style="width:100%;max-width:260px;height:auto;display:block;margin:0 auto">
+      ${cone(140, 20, 225, 110, 0.8, {showFillLine:true})}
+      <!-- Gap highlight -->
+      <polygon points="140,20 30,20 140,45" fill="rgba(232,93,117,0.12)"/>
+      <polygon points="140,20 250,20 140,45" fill="rgba(232,93,117,0.12)"/>
+      <text x="140" y="16" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#E85D75">↑ the gap</text>
+    </svg>
+  </div>
+
+  <div class="calc-block">
+    <span class="line">Fill height    = 80%  →  h/H = 0.8</span>
+    <span class="line">Volume filled  = (h/H)³ × total</span>
+    <span class="line">               = (0.8)³ × total</span>
+    <span class="line">               = 0.512 × total</span>
+    <span class="result">               = 51.2% of the glass</span>
+  </div>
+
+  <div class="callout">
+    That gap at the top — the top 20% of height — holds <strong>48.8%</strong> of the total volume.<br>
+    Half the drink lives in a gap that looks like a sliver.
+  </div>
+
+  <div class="pred-resolution show">
+    📌 <strong>Your earlier guess:</strong> ${predMsg}
+  </div>
+
+  <div class="practice-box" style="margin-top:18px">
+    <div class="practice-label">🏋️ Practice Question</div>
+    <div class="q-text" style="margin-bottom:12px">An ice cream cone is filled to 75% of its height. What fraction of its capacity is actually filled?</div>
+    <div class="options">
+      ${mcqOpt('prac6','A','About 75% — same as the height', false)}
+      ${mcqOpt('prac6','B','About 56% — radius is squared, so a bit less', false)}
+      ${mcqOpt('prac6','C','About 42% — (0.75)³ = 0.422', true)}
+    </div>
+    <div class="feedback" id="fb-prac6">
+      0.75³ = 0.421875 — just over 42%.<br>
+      A cone that looks three-quarters full is barely two-fifths full. The radius-squared effect from Challenge 2 is still here — but now it works twice, which is why volume grows as height <em>cubed</em>.
+    </div>
+    <div class="feedback wrong-fb" id="fb-prac6-wrong">
+      Use the formula: volume = (h/H)³ × total. At 75% height, that's (0.75)³. Try calculating it — it's smaller than you expect.
+    </div>
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-prac6" onclick="next()" disabled>Collect your tool →</button></div>`;
+}
+function wireS6() {
+  ['A','B','C'].forEach(l => {
+    const o = document.getElementById(`opt-prac6-${l}`);
+    if (o) o.onclick = () => {
+      const correct = l === 'C';
+      handleMCQ('prac6', l, correct);
+      if (correct) {
+        setTimeout(() => {
+          document.getElementById('btn-prac6').disabled = false;
+        }, 600);
+      }
+    };
+  });
+}
+
+// ═══════════════════════════════════
+// SECTION 7 — TOOL UNLOCK + SERIES CLOSE
+// ═══════════════════════════════════
+function s7() {
+  return `${progressDots()}
+  <div class="step-label">Series Complete</div>
+  <div class="step-title">You've cracked all three tricks.</div>
+
+  ${pip(`The glass looked 80% full. It was 51.2% full. The gap that looked like a sliver held nearly half the drink. That's not a flaw in your perception — it's geometry.`)}
+
+  <div class="tool-unlock">
+    <span class="tool-badge">New Tool Unlocked</span>
+    <span class="tool-icon">🔺</span>
+    <div class="tool-name">The Hollow Illusion</div>
+    <div class="tool-desc">In a cone, volume grows as the cube of the height fraction. Fill to 80% of the height → only 51.2% of the volume. The top of the cone holds a disproportionate share — which means what looks almost full can be mathematically half empty.</div>
+  </div>
+
+  <div class="series-complete">
+    <div class="sc-label">The Volume Con · Complete</div>
+    <div class="sc-title">Three shapes. Three tricks. One pattern.</div>
+    <div class="sc-tools">
+      <div class="sc-tool">
+        <div class="sc-tool-icon">📐</div>
+        <div>
+          <div class="sc-tool-name">The Base Squeeze</div>
+          <div class="sc-tool-desc">Two base dimensions cut together → cuts multiply, not add. The base is where the loss hides — because nobody measures the length of their chocolate bar.</div>
+        </div>
+      </div>
+      <div class="sc-tool">
+        <div class="sc-tool-icon">🔵</div>
+        <div>
+          <div class="sc-tool-name">The Hidden Lever</div>
+          <div class="sc-tool-desc">Radius is squared in the volume formula. A small radius cut hits harder than it looks — because it shrinks the circle in every direction at once.</div>
+        </div>
+      </div>
+      <div class="sc-tool">
+        <div class="sc-tool-icon">🔺</div>
+        <div>
+          <div class="sc-tool-name">The Hollow Illusion</div>
+          <div class="sc-tool-desc">Volume grows as height cubed in a cone. A nearly full glass can be mathematically half empty — because the top holds everything.</div>
+        </div>
+      </div>
+    </div>
+    <div class="sc-pattern">
+      The volume is always hiding in a dimension you weren't watching.
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════
+const RENDERERS = [s0,s1,s2,s3,s4,s5,s6,s7];
+function render() {
+  s2Tapped = {bottom:false, top:false};
+  s3SelectedH = null;
+  s5KeysSeen = new Set();
+  renderSidebar();
+  document.getElementById('frame-content').innerHTML = RENDERERS[current]();
+  if (current === 5) updateFill();
+  if (current === 3) { s3Picked.clear(); }
+  if (current === 4) wireS4();
+  if (current === 6) wireS6();
+}
+render();
+</script>
+</body>
+</html>

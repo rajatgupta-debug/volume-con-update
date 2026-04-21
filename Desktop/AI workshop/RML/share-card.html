@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challenge Complete — Real Math League by Cuemath</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0F172A;
+    color: #0F172A;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4 { font-family: 'DM Sans', sans-serif; }
+
+  /* NAV */
+  nav {
+    background: #0F172A;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .nav-brand-cuemath {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #F97316;
+  }
+  .nav-brand-sep {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.2);
+  }
+  .nav-brand-rml {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #fff;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-signin {
+    background: #2563EB;
+    color: #fff !important;
+    padding: 0.45rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .nav-signin:hover { background: #1d4ed8; }
+
+  /* CELEBRATION HERO */
+  .celebration {
+    background: linear-gradient(135deg, #0F172A 0%, #1e293b 60%, #064e3b 100%);
+    text-align: center;
+    padding: 3.5rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .celebration::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: glow 3s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+  }
+  .celebration-emoji {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+    position: relative;
+    animation: celebrate 1.5s ease-in-out infinite;
+  }
+  @keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .celebration h1 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .celebration p {
+    color: #10B981;
+    font-size: 1.15rem;
+    font-weight: 500;
+    position: relative;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  /* SCORE CARD */
+  .score-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    margin-top: -1.5rem;
+    position: relative;
+    z-index: 10;
+  }
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .score-item {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    border-radius: 12px;
+    background: #F8FAFC;
+  }
+  .score-item .emoji { font-size: 1.25rem; display: block; margin-bottom: 0.35rem; }
+  .score-item .value {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #0F172A;
+    display: block;
+  }
+  .score-item .label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+  }
+  .score-item.xp .value { color: #2563EB; }
+  .score-item.streak .value { color: #F97316; }
+
+  /* LEVEL PROGRESS */
+  .level-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .level-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    white-space: nowrap;
+  }
+  .level-label span { color: #0F172A; }
+  .progress-track {
+    flex: 1;
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 85%;
+    background: linear-gradient(90deg, #2563EB, #10B981);
+    border-radius: 5px;
+    transition: width 1s ease;
+  }
+
+  /* INSIGHT CARD */
+  .insight-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  .insight-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #10B981, #2563EB, #10B981);
+    z-index: -1;
+  }
+  .insight-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    color: #10B981;
+  }
+  .insight-card p {
+    font-size: 0.95rem;
+    color: #334155;
+    line-height: 1.7;
+  }
+
+  /* SHARE CARD */
+  .share-section {
+    margin-bottom: 2rem;
+  }
+  .share-section > h3 {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.8rem;
+  }
+  .share-card-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  .share-card {
+    width: 600px;
+    aspect-ratio: 600 / 315;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0F172A 0%, #1e293b 50%, #064e3b 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.75rem 2rem;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .share-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+  }
+  .share-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .share-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+  }
+  .share-card-brand {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.5);
+  }
+  .share-card-logo {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    color: #F97316;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .share-card-center {
+    text-align: center;
+    position: relative;
+  }
+  .share-card-emoji {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .share-card-title {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #fff;
+    margin-bottom: 0.25rem;
+  }
+  .share-card-subtitle {
+    font-size: 0.85rem;
+    color: #10B981;
+    font-weight: 500;
+  }
+  .share-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+  }
+  .share-card-url {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.35);
+    font-weight: 500;
+  }
+  .share-card-user {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+    font-weight: 500;
+  }
+
+  /* ACTION BUTTONS */
+  .actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.35rem;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+  }
+  .action-btn:hover { transform: translateY(-2px); }
+
+  .btn-whatsapp {
+    background: #25D366;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37,211,102,0.3);
+  }
+  .btn-whatsapp:hover { background: #20bd5a; box-shadow: 0 4px 12px rgba(37,211,102,0.4); }
+
+  .btn-copy {
+    background: transparent;
+    color: #fff;
+    border: 1.5px solid rgba(255,255,255,0.25);
+  }
+  .btn-copy:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+
+  .btn-challenge {
+    background: #F97316;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(249,115,22,0.3);
+  }
+  .btn-challenge:hover { background: #ea580c; box-shadow: 0 4px 12px rgba(249,115,22,0.4); }
+
+  .btn-another {
+    background: #2563EB;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.3);
+  }
+  .btn-another:hover { background: #1d4ed8; box-shadow: 0 4px 12px rgba(37,99,235,0.4); }
+
+  /* NUDGE */
+  .nudge-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+  .nudge-emoji {
+    font-size: 2rem;
+    flex-shrink: 0;
+  }
+  .nudge-text h4 {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+  .nudge-text p {
+    color: rgba(255,255,255,0.45);
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+  .nudge-text a {
+    color: #60a5fa;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nudge-text a:hover { color: #93bbfc; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    text-align: center;
+  }
+  footer p {
+    color: rgba(255,255,255,0.3);
+    font-size: 0.85rem;
+  }
+  footer a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a:hover { color: #fff; }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 0.75rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <span class="nav-brand-cuemath">Cuemath</span>
+    <span class="nav-brand-sep"></span>
+    <span class="nav-brand-rml">Real Math League</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Explore Challenges</a></li>
+    <li><a href="leaderboard.html">Leaderboard</a></li>
+    <li><a href="#" class="nav-signin">Sign In</a></li>
+  </ul>
+</nav>
+
+<!-- CELEBRATION HERO -->
+<section class="celebration">
+  <span class="celebration-emoji">🎉</span>
+  <h1>You figured it out!</h1>
+  <p>You discovered why honeycombs are hexagons</p>
+</section>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <!-- SCORE BREAKDOWN -->
+  <div class="score-card">
+    <div class="score-grid">
+      <div class="score-item xp">
+        <span class="emoji">⭐</span>
+        <span class="value">+180 XP</span>
+        <span class="label">XP Earned</span>
+      </div>
+      <div class="score-item">
+        <span class="emoji">✅</span>
+        <span class="value">6/6</span>
+        <span class="label">Steps Completed</span>
+      </div>
+      <div class="score-item">
+        <span class="emoji">🎯</span>
+        <span class="value">5/6</span>
+        <span class="label">Accuracy</span>
+      </div>
+      <div class="score-item">
+        <span class="emoji">⏱️</span>
+        <span class="value">14:32</span>
+        <span class="label">Time</span>
+      </div>
+      <div class="score-item streak">
+        <span class="emoji">🔥</span>
+        <span class="value">8</span>
+        <span class="label">Streak</span>
+      </div>
+    </div>
+    <div class="level-progress">
+      <span class="level-label"><span>Level 3</span> → <span>Level 4</span></span>
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="level-label"><span>85%</span></span>
+    </div>
+  </div>
+
+  <!-- KEY INSIGHT -->
+  <div class="insight-card">
+    <h3>💡 What you discovered:</h3>
+    <p>Hexagons are the most efficient shape for tiling a surface — they provide the maximum area for the minimum perimeter. This is the <strong>Honeycomb Conjecture</strong>, first proposed in 36 BC by Marcus Terentius Varro and finally proved by mathematician Thomas Hales in 1999. Bees figured it out millions of years before us.</p>
+  </div>
+
+  <!-- SHARE CARD -->
+  <div class="share-section">
+    <h3>Share your discovery</h3>
+    <div class="share-card-wrapper">
+      <div class="share-card">
+        <div class="share-card-top">
+          <span class="share-card-brand">Real Math League</span>
+          <span style="color: rgba(255,255,255,0.2);">·</span>
+          <span class="share-card-logo">Cuemath</span>
+        </div>
+        <div class="share-card-center">
+          <span class="share-card-emoji">🐝</span>
+          <div class="share-card-title">I discovered why honeycombs are hexagons</div>
+          <div class="share-card-subtitle">Can you? Take the challenge →</div>
+        </div>
+        <div class="share-card-bottom">
+          <span class="share-card-url">realmathleague.cuemath.com</span>
+          <span class="share-card-user">Arjun M. · Level 4</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="action-btn btn-whatsapp">💬 Share on WhatsApp</button>
+    <button class="action-btn btn-copy">📋 Copy Link</button>
+    <button class="action-btn btn-challenge">🤝 Challenge a Friend</button>
+    <button class="action-btn btn-another">🔄 Try Another Challenge</button>
+  </div>
+
+  <!-- NUDGE -->
+  <div class="nudge-card">
+    <span class="nudge-emoji">🔬</span>
+    <div class="nudge-text">
+      <h4>Loved exploring geometry? Go deeper.</h4>
+      <p>Cuemath's 1:1 tutors use powerful visual simulations to build deep geometric thinking. Your first session is free.</p>
+      <a href="#">Book a Free MathFit Session →</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="#">Real Math League by Cuemath</a>
+    <a href="challenge.html">Explore More Challenges</a>
+    <a href="leaderboard.html">View Leaderboard</a>
+  </div>
+  <p>&copy; 2026 Cuemath. All rights reserved.</p>
+</footer>
+
+  <!-- ── Mockup Nav Strip ─────────────────────────────── -->
+  <div style="position:fixed;bottom:0;left:0;right:0;background:#1E293B;border-top:2px solid #F97316;padding:10px 0;z-index:9999;font-family:'Inter',sans-serif;">
+    <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+      <span style="color:#94A3B8;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-right:8px;">Mockup Pages:</span>
+      <a href="index.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Homepage</a>
+      <a href="challenge.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Challenges</a>
+      <a href="solve.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Solve Experience</a>
+      <a href="leaderboard.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Leaderboard</a>
+      <a href="share-card.html" style="color:#F97316;font-size:13px;font-weight:600;text-decoration:none;padding:4px 12px;border-radius:6px;background:rgba(249,115,22,0.15);">Share Card</a>
+    </div>
+  </div>
+
+</body>
+</html>

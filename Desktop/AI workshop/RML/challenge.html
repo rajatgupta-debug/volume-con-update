@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Challenge Details — Real Math League</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #2563EB;
+    --coral: #F97316;
+    --emerald: #10B981;
+    --slate: #0F172A;
+    --light-bg: #F8FAFC;
+    --white: #FFFFFF;
+    --indigo: #6366F1;
+    --cyan: #06B6D4;
+    --amber: #F59E0B;
+    --rose: #F43F5E;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--light-bg);
+    color: var(--slate);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 800;
+    line-height: 1.2;
+  }
+
+  /* ── Nav ── */
+  nav {
+    background: var(--slate);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    height: 64px;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .nav-brand .cuemath {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    color: var(--white);
+  }
+  .nav-brand .rml {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--coral);
+    border: 1px solid rgba(249,115,22,.4);
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,.7);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color .2s;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--white);
+  }
+  .nav-signin {
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .nav-signin:hover { background: #1d4ed8; }
+
+  /* ── Challenge Section ── */
+  .challenge-section {
+    padding: 0;
+  }
+
+  .challenge-hero {
+    padding: 80px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .challenge-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: .08;
+    background: radial-gradient(circle at 80% 20%, white 0%, transparent 60%);
+  }
+  .challenge-hero .inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 48px;
+    align-items: start;
+  }
+  .hero-emoji {
+    font-size: 64px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .hero-hook {
+    font-size: 36px;
+    color: var(--white);
+    margin-bottom: 24px;
+    max-width: 640px;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  .meta-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meta-badge.level {
+    background: rgba(255,255,255,.15);
+    color: var(--white);
+    backdrop-filter: blur(4px);
+  }
+  .meta-badge.time {
+    background: rgba(255,255,255,.1);
+    color: rgba(255,255,255,.8);
+  }
+  .meta-badge.theme {
+    color: var(--white);
+    font-weight: 700;
+  }
+  .meta-explorers {
+    color: rgba(255,255,255,.6);
+    font-size: 13px;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  }
+
+  /* discover section */
+  .discover-panel {
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid rgba(255,255,255,.1);
+  }
+  .discover-panel h3 {
+    color: var(--white);
+    font-size: 18px;
+    margin-bottom: 16px;
+    font-weight: 700;
+  }
+  .discover-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .discover-list li {
+    color: rgba(255,255,255,.85);
+    font-size: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+  .discover-list li::before {
+    content: '→';
+    flex-shrink: 0;
+    opacity: .5;
+  }
+
+  /* related section */
+  .related-section {
+    background: var(--white);
+    padding: 48px 24px;
+  }
+  .related-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .related-inner h3 {
+    font-size: 20px;
+    margin-bottom: 24px;
+    color: var(--slate);
+  }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .related-card {
+    border-radius: 16px;
+    padding: 24px;
+    background: var(--light-bg);
+    border: 1px solid #e2e8f0;
+    transition: transform .2s, box-shadow .2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .related-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  }
+  .related-card .rc-emoji { font-size: 28px; margin-bottom: 8px; display: block; }
+  .related-card .rc-title { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .related-card .rc-meta { font-size: 12px; color: #64748b; }
+
+  /* divider */
+  .section-divider {
+    max-width: 1200px;
+    margin: 0 auto;
+    border: none;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  /* theme-specific colors */
+  .theme-cyan .challenge-hero { background: linear-gradient(135deg, #083344 0%, var(--slate) 100%); }
+  .theme-cyan .meta-badge.theme { background: rgba(6,182,212,.25); }
+  .theme-cyan .cta-btn { background: var(--cyan); }
+
+  .theme-coral .challenge-hero { background: linear-gradient(135deg, #431407 0%, var(--slate) 100%); }
+  .theme-coral .meta-badge.theme { background: rgba(249,115,22,.25); }
+  .theme-coral .cta-btn { background: var(--coral); }
+
+  .theme-emerald .challenge-hero { background: linear-gradient(135deg, #052e16 0%, var(--slate) 100%); }
+  .theme-emerald .meta-badge.theme { background: rgba(16,185,129,.25); }
+  .theme-emerald .cta-btn { background: var(--emerald); }
+
+  .theme-green-deep .challenge-hero { background: linear-gradient(135deg, #14332a 0%, var(--slate) 100%); }
+  .theme-green-deep .meta-badge.theme { background: rgba(16,185,129,.25); }
+  .theme-green-deep .cta-btn { background: var(--emerald); }
+</style>
+</head>
+<body>
+
+<!-- ═══════ NAV ═══════ -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="cuemath">Cuemath</span>
+      <span class="rml">Real Math League</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Explore Challenges</a></li>
+      <li><a href="leaderboard.html">Leaderboard</a></li>
+    </ul>
+    <button class="nav-signin">Sign In</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     CHALLENGE 1 — How GPS Knows Where You Are
+     ═══════════════════════════════════════ -->
+<section class="challenge-section theme-cyan">
+  <div class="challenge-hero">
+    <div class="inner">
+      <div>
+        <span class="hero-emoji">📡</span>
+        <h1 class="hero-hook">Your phone knows exactly where you are. The secret? Three circles and some clever geometry.</h1>
+        <div class="hero-meta">
+          <span class="meta-badge level">⚡ Level 5</span>
+          <span class="meta-badge time">⏱ ~25 min</span>
+          <span class="meta-badge theme">Tech</span>
+          <span class="meta-explorers">4,231 explorers completed this</span>
+        </div>
+        <button class="cta-btn">Accept Challenge →</button>
+      </div>
+      <div class="discover-panel">
+        <h3>What you'll discover</h3>
+        <ul class="discover-list">
+          <li>How trilateration pinpoints your exact location using overlapping circles</li>
+          <li>Why satellites draw circles on Earth's surface — and how three of them lock in a point</li>
+          <li>Why you need exactly 3 signals (and what goes wrong with 2)</li>
+          <li>The role of the speed of light in calculating distance from orbit</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="related-section">
+    <div class="related-inner">
+      <h3>Related Challenges</h3>
+      <div class="related-grid">
+        <a class="related-card" href="#">
+          <span class="rc-emoji">📶</span>
+          <div class="rc-title">How WiFi Finds the Fastest Path</div>
+          <div class="rc-meta">Tech · Level 4 · ~20 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🗺️</span>
+          <div class="rc-title">Map Projections Are All Lies</div>
+          <div class="rc-meta">Tech · Level 5 · ~25 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🛰️</span>
+          <div class="rc-title">Orbits: Why Satellites Don't Fall</div>
+          <div class="rc-meta">Space · Level 5 · ~30 min</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════
+     CHALLENGE 2 — The Math of Tiki-Taka
+     ═══════════════════════════════════════ -->
+<section class="challenge-section theme-coral">
+  <div class="challenge-hero">
+    <div class="inner">
+      <div>
+        <span class="hero-emoji">⚽</span>
+        <h1 class="hero-hook">Barcelona's passing game isn't just skill — it's geometry. Triangles everywhere.</h1>
+        <div class="hero-meta">
+          <span class="meta-badge level">⚡ Level 4</span>
+          <span class="meta-badge time">⏱ ~20 min</span>
+          <span class="meta-badge theme">Sports</span>
+          <span class="meta-explorers">3,847 explorers completed this</span>
+        </div>
+        <button class="cta-btn">Accept Challenge →</button>
+      </div>
+      <div class="discover-panel">
+        <h3>What you'll discover</h3>
+        <ul class="discover-list">
+          <li>Why passing triangles create unbeatable geometric advantages on the field</li>
+          <li>How optimal player positioning maximises passing angles</li>
+          <li>Voronoi diagrams in football — the hidden math of space control</li>
+          <li>Why 1-touch passing is inherently mathematical</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="related-section">
+    <div class="related-inner">
+      <h3>Related Challenges</h3>
+      <div class="related-grid">
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🏀</span>
+          <div class="rc-title">The Arc of a Perfect Free Throw</div>
+          <div class="rc-meta">Sports · Level 3 · ~15 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🏏</span>
+          <div class="rc-title">Spin Bowling and Angular Momentum</div>
+          <div class="rc-meta">Sports · Level 5 · ~25 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🎯</span>
+          <div class="rc-title">Expected Goals: Football's Secret Stat</div>
+          <div class="rc-meta">Sports · Level 4 · ~20 min</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════
+     CHALLENGE 3 — Why Honeycombs are Hexagons
+     ═══════════════════════════════════════ -->
+<section class="challenge-section theme-emerald">
+  <div class="challenge-hero">
+    <div class="inner">
+      <div>
+        <span class="hero-emoji">🐝</span>
+        <h1 class="hero-hook">Bees figured out the most efficient shape millions of years ago. Can you figure out why?</h1>
+        <div class="hero-meta">
+          <span class="meta-badge level">⚡ Level 3</span>
+          <span class="meta-badge time">⏱ ~15 min</span>
+          <span class="meta-badge theme">Nature</span>
+          <span class="meta-explorers">6,102 explorers completed this</span>
+        </div>
+        <button class="cta-btn">Accept Challenge →</button>
+      </div>
+      <div class="discover-panel">
+        <h3>What you'll discover</h3>
+        <ul class="discover-list">
+          <li>Tessellation — which shapes tile a plane with zero waste</li>
+          <li>The area-to-perimeter ratio and why it matters for efficiency</li>
+          <li>Why squares and triangles lose to hexagons</li>
+          <li>The Honeycomb Conjecture — a 2,000-year-old problem proved in 1999</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="related-section">
+    <div class="related-inner">
+      <h3>Related Challenges</h3>
+      <div class="related-grid">
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🌻</span>
+          <div class="rc-title">Fibonacci Spirals in Sunflowers</div>
+          <div class="rc-meta">Nature · Level 3 · ~15 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">❄️</span>
+          <div class="rc-title">Why Snowflakes Have 6 Sides</div>
+          <div class="rc-meta">Nature · Level 4 · ~20 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🦗</span>
+          <div class="rc-title">The Prime Number Cicadas</div>
+          <div class="rc-meta">Nature · Level 5 · ~20 min</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════
+     CHALLENGE 4 — The Prime Number Cicadas
+     ═══════════════════════════════════════ -->
+<section class="challenge-section theme-green-deep">
+  <div class="challenge-hero">
+    <div class="inner">
+      <div>
+        <span class="hero-emoji">🦗</span>
+        <h1 class="hero-hook">Cicadas emerge every 13 or 17 years — never 12 or 15. Prime numbers saved their species.</h1>
+        <div class="hero-meta">
+          <span class="meta-badge level">⚡ Level 5</span>
+          <span class="meta-badge time">⏱ ~20 min</span>
+          <span class="meta-badge theme">Nature</span>
+          <span class="meta-explorers">2,891 explorers completed this</span>
+        </div>
+        <button class="cta-btn">Accept Challenge →</button>
+      </div>
+      <div class="discover-panel">
+        <h3>What you'll discover</h3>
+        <ul class="discover-list">
+          <li>Prime numbers and LCM — why primes minimise dangerous overlaps</li>
+          <li>Predator-prey cycles and how timing decides survival</li>
+          <li>Evolutionary math: how nature "chose" primes through natural selection</li>
+          <li>Why composite-number cycles are a death sentence</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="related-section">
+    <div class="related-inner">
+      <h3>Related Challenges</h3>
+      <div class="related-grid">
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🐝</span>
+          <div class="rc-title">Why Honeycombs are Hexagons</div>
+          <div class="rc-meta">Nature · Level 3 · ~15 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🧬</span>
+          <div class="rc-title">DNA and the Code of 4</div>
+          <div class="rc-meta">Nature · Level 5 · ~25 min</div>
+        </a>
+        <a class="related-card" href="#">
+          <span class="rc-emoji">🌊</span>
+          <div class="rc-title">Wave Interference at the Beach</div>
+          <div class="rc-meta">Nature · Level 4 · ~20 min</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- ── Mockup Nav Strip ─────────────────────────────── -->
+  <div style="position:fixed;bottom:0;left:0;right:0;background:#1E293B;border-top:2px solid #F97316;padding:10px 0;z-index:9999;font-family:'Inter',sans-serif;">
+    <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+      <span style="color:#94A3B8;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-right:8px;">Mockup Pages:</span>
+      <a href="index.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Homepage</a>
+      <a href="challenge.html" style="color:#F97316;font-size:13px;font-weight:600;text-decoration:none;padding:4px 12px;border-radius:6px;background:rgba(249,115,22,0.15);">Challenges</a>
+      <a href="solve.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Solve Experience</a>
+      <a href="leaderboard.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Leaderboard</a>
+      <a href="share-card.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Share Card</a>
+    </div>
+  </div>
+
+</body>
+</html>

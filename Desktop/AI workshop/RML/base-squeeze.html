@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Base Squeeze — Volume Con · RML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FBF5E8; --bg-2:#F5EDD8; --card:#FFFFFF;
+  --border:#E8DFC8; --border-strong:#C9BE9F;
+  --shadow:0 6px 24px rgba(60,45,30,0.08);
+  --text:#2B2320; --text-2:#5E544D; --text-3:#99908A;
+  --mint:#2EB39E; --mint-2:#5FC9B5; --mint-bg:#DFF5EF; --mint-ink:#1A6A5C;
+  --coral:#E85D75; --coral-bg:#FDE7EB; --coral-ink:#B72F47;
+  --orange:#F99B4E; --orange-bg:#FDECDB;
+  --yellow:#F4C430; --yellow-bg:#FDF3CA;
+  --purple:#8E6FD8; --purple-bg:#EFE8FC;
+  --navy:#2B3861;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Nunito",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-weight:600;line-height:1.4;}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;}
+.logo{background:var(--orange);color:white;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.topbar-meta{font-size:13px;color:var(--text-3);font-weight:700;}
+.layout{display:grid;grid-template-columns:260px 1fr;max-width:1200px;margin:0 auto;min-height:calc(100vh - 62px);}
+.sidebar{padding:24px 14px 40px;border-right:1px solid var(--border);background:var(--bg);}
+.sidebar-series-label{font-size:10px;letter-spacing:2px;color:var(--text-3);font-weight:900;text-transform:uppercase;padding:0 12px;margin-bottom:4px;}
+.sidebar-challenge-name{font-size:13px;font-weight:900;color:var(--text);padding:0 12px 16px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-2);transition:all .15s;margin-bottom:3px;border:2px solid transparent;}
+.nav-item:hover:not(.locked):not(.current){background:var(--bg-2);}
+.nav-item.current{background:var(--orange-bg);color:var(--text);border-color:var(--orange);}
+.nav-item.locked{opacity:0.45;cursor:default;pointer-events:none;}
+.nav-num{width:26px;height:26px;border-radius:8px;background:var(--border);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.nav-item.current .nav-num{background:var(--orange);color:white;}
+.main{padding:32px 40px 80px;min-width:0;}
+.frame{background:var(--card);border-radius:20px;padding:28px 32px;box-shadow:var(--shadow);border:1px solid var(--border);max-width:760px;margin:0 auto;}
+.progress-wrap{display:flex;gap:5px;margin-bottom:24px;}
+.pdot{flex:1;height:6px;background:var(--border);border-radius:3px;transition:background .4s;}
+.pdot.done{background:var(--mint);}
+.pdot.current{background:var(--orange);}
+.step-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+.step-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:20px;line-height:1.25;letter-spacing:-0.3px;}
+.mascot-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;}
+.mascot{flex-shrink:0;width:62px;height:62px;}
+.bubble{flex:1;background:var(--purple-bg);border:2px solid var(--purple);border-radius:16px;padding:13px 17px;font-size:14px;font-weight:700;line-height:1.55;position:relative;}
+.bubble::before{content:"";position:absolute;left:-10px;top:16px;border:10px solid transparent;border-right-color:var(--purple);border-left:0;}
+.bubble::after{content:"";position:absolute;left:-7px;top:18px;border:8px solid transparent;border-right-color:var(--purple-bg);border-left:0;}
+.bubble .name{font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--purple);margin-bottom:4px;}
+.question{background:var(--yellow-bg);border:2px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.q-label{font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--orange);text-transform:uppercase;margin-bottom:8px;}
+.q-text{font-size:16px;font-weight:800;color:var(--text);line-height:1.4;margin-bottom:14px;}
+.options{display:flex;flex-direction:column;gap:9px;}
+.option{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:700;color:var(--text);text-align:left;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s;display:flex;align-items:center;gap:12px;width:100%;}
+.option-num{width:28px;height:28px;border-radius:8px;background:var(--bg-2);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
+.option:hover:not(:disabled){border-color:var(--mint-2);transform:translateY(-1px);box-shadow:var(--shadow);}
+.option.correct{border-color:var(--mint);background:var(--mint-bg);color:var(--mint-ink);}
+.option.correct .option-num{background:var(--mint);color:white;}
+.option.wrong{border-color:var(--coral);background:var(--coral-bg);color:var(--coral-ink);animation:shake .4s;}
+.option.wrong .option-num{background:var(--coral);color:white;}
+.option.missed{border-color:var(--yellow);background:var(--yellow-bg);}
+.option:disabled{cursor:default;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.option.explore.seen{border-color:var(--purple);background:var(--purple-bg);}
+.option.explore.seen .option-num{background:var(--purple);color:white;}
+.option.explore.hit{border-color:var(--mint);background:var(--mint-bg);color:var(--mint-ink);}
+.option.explore.hit .option-num{background:var(--mint);color:white;}
+.explore-reveal{background:var(--card);border-left:3px solid var(--mint);border-radius:0 10px 10px 0;padding:10px 14px;font-size:13px;color:var(--text);margin-top:8px;font-weight:700;display:none;line-height:1.5;}
+.explore-reveal.show{display:block;}
+.explore-reveal.purple-reveal{border-left-color:var(--purple);}
+.predict-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;}
+.predict-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px 10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s;text-align:center;color:var(--text);}
+.predict-btn:hover{border-color:var(--mint-2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.predict-btn.selected{border-color:var(--orange);background:var(--orange-bg);}
+.predict-btn .big{font-size:28px;display:block;margin-bottom:6px;}
+.slider-block{background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+.slider-block-label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:10px;}
+.slider-row{display:flex;align-items:center;gap:12px;}
+.slider-label{font-size:14px;font-weight:800;white-space:nowrap;min-width:80px;}
+input[type="range"]{flex:1;accent-color:var(--orange);cursor:pointer;}
+.slider-value{font-size:15px;color:var(--mint-ink);background:var(--mint-bg);padding:6px 12px;border-radius:8px;min-width:56px;text-align:center;font-weight:900;border:1px solid var(--mint);}
+.vis-area{background:var(--bg-2);border-radius:16px;border:1px solid var(--border);padding:20px;margin-bottom:14px;text-align:center;overflow:hidden;}
+.vol-display{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:14px;}
+.vol-display-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.vol-pill{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:12px;text-align:center;}
+.vol-pill .vp-label{font-size:10px;color:var(--text-3);font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.vol-pill .vp-val{font-size:20px;font-weight:900;color:var(--text);}
+.vol-pill .vp-sub{font-size:10px;color:var(--text-2);margin-top:2px;font-weight:700;}
+.vol-pill.highlight{border-color:var(--navy);background:#EEF2FF;}
+.vol-pill.highlight .vp-val{color:var(--navy);}
+.vol-pill.loss{border-color:var(--coral);}
+.vol-pill.loss .vp-val{color:var(--coral-ink);}
+.callout{background:var(--navy);color:white;border-radius:14px;padding:18px 20px;margin:14px 0;font-size:15px;font-weight:700;line-height:1.6;}
+.callout strong{color:var(--yellow);}
+.callout.hidden{display:none;}
+.feedback{padding:14px 18px;border-radius:12px;background:var(--mint-bg);border-left:4px solid var(--mint);font-size:14px;line-height:1.6;font-weight:700;margin-top:14px;display:none;}
+.feedback.wrong-fb{background:var(--coral-bg);border-left-color:var(--coral);}
+.feedback.show{display:block;}
+.practice-box{background:var(--bg-2);border:2px solid var(--border-strong);border-radius:16px;padding:20px;margin-top:18px;}
+.practice-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--mint-ink);margin-bottom:8px;}
+.tool-unlock{background:linear-gradient(135deg,#2B3861 0%,#3d4f7c 100%);border-radius:20px;padding:30px;text-align:center;color:white;margin-bottom:20px;}
+.tool-badge{display:inline-block;background:var(--yellow);color:#2B2320;font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:14px;}
+.tool-icon{font-size:52px;display:block;margin-bottom:12px;}
+.tool-name{font-size:26px;font-weight:900;margin-bottom:10px;}
+.tool-desc{font-size:14px;opacity:.85;line-height:1.7;font-weight:600;max-width:480px;margin:0 auto 20px;}
+.bridge{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:18px 20px;margin-top:4px;font-size:14px;font-weight:600;color:rgba(255,255,255,0.85);line-height:1.7;}
+.bridge strong{color:var(--yellow);}
+.nav-row{display:flex;justify-content:flex-end;margin-top:24px;}
+.btn{background:var(--orange);color:white;border:none;border-radius:12px;padding:13px 26px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn:hover:not(:disabled){background:#e8893a;transform:translateY(-1px);}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+.btn-ghost{background:transparent;border:2px solid var(--orange);color:var(--orange);border-radius:12px;padding:13px 26px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn-ghost:hover{background:var(--orange-bg);}
+/* WhatsApp card */
+.wa-card{background:#E8F5E9;border:1.5px solid #A5D6A7;border-radius:16px;padding:16px 18px;margin-bottom:16px;}
+.wa-forward{font-size:11px;color:#388E3C;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.wa-caption{font-size:15px;font-weight:700;color:#2B2320;margin-top:10px;line-height:1.5;}
+.wa-meta{font-size:11px;color:#777;margin-top:5px;}
+/* Compare button */
+.compare-btn{background:var(--card);border:2px solid var(--border-strong);border-radius:10px;padding:10px 20px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;color:var(--text);transition:all .15s;margin-top:12px;}
+.compare-btn:hover{border-color:var(--coral);background:var(--coral-bg);color:var(--coral-ink);}
+.compare-btn.active{border-color:var(--coral);background:var(--coral-bg);color:var(--coral-ink);}
+/* Predict resolution */
+.pred-resolution{background:var(--yellow-bg);border:2px solid var(--yellow);border-radius:12px;padding:14px 16px;margin-top:12px;font-size:14px;font-weight:700;line-height:1.6;display:none;}
+.pred-resolution.show{display:block;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="pip">
+      <ellipse cx="50" cy="28" rx="26" ry="9" fill="#F99B4E"/>
+      <rect x="24" y="28" width="52" height="38" fill="#F99B4E"/>
+      <ellipse cx="50" cy="66" rx="26" ry="9" fill="#e8893a"/>
+      <circle cx="41" cy="46" r="6" fill="white"/>
+      <circle cx="59" cy="46" r="6" fill="white"/>
+      <circle cx="42" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="60" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="43" cy="46" r="1.2" fill="white"/>
+      <circle cx="61" cy="46" r="1.2" fill="white"/>
+      <path d="M 43 57 Q 50 63 57 57" stroke="#2B2320" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="28" y="10" width="44" height="20" rx="5" fill="#2B3861"/>
+      <rect x="18" y="26" width="64" height="6" rx="3" fill="#2B3861"/>
+      <circle cx="76" cy="70" r="10" fill="none" stroke="#2EB39E" stroke-width="3"/>
+      <line x1="83" y1="77" x2="90" y2="84" stroke="#2EB39E" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+</svg>
+
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">📦</div>
+    <span>Volume Con</span>
+    <span style="color:var(--border-strong);margin:0 6px">·</span>
+    <span style="color:var(--text-3);font-size:14px;font-weight:700">RML Challenge</span>
+  </div>
+  <div class="topbar-meta" id="step-indicator">Section 1 of 7</div>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-series-label">The Volume Con</div>
+    <div class="sidebar-challenge-name">Challenge Series · 3 parts</div>
+    <nav id="sidebar-nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="frame" id="frame-content"></div>
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+const SECTIONS = [
+  {title:'The Assignment'},
+  {title:'First Look'},
+  {title:'The Measurements'},
+  {title:'One Cut at a Time'},
+  {title:'The Trap'},
+  {title:'Why the Base?'},
+  {title:'The Base Squeeze'},
+];
+let current = 0;
+let completed = new Set();
+let s2Prediction = null; // 'A'=8%, 'B'=16%, 'C'=something else
+
+// ═══════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════
+function pip(text) {
+  return `<div class="mascot-row">
+    <div class="mascot"><svg viewBox="0 0 100 100"><use href="#pip"/></svg></div>
+    <div class="bubble"><div class="name">Pip · Volume Detective</div>${text}</div>
+  </div>`;
+}
+
+function progressDots() {
+  return `<div class="progress-wrap">${SECTIONS.map((_,i) => {
+    const c = completed.has(i) ? 'done' : i===current ? 'current' : '';
+    return `<div class="pdot ${c}"></div>`;
+  }).join('')}</div>`;
+}
+
+function mcqOpt(id, letter, text, correct) {
+  return `<button class="option" id="opt-${id}-${letter}"
+    onclick="handleMCQ('${id}','${letter}',${correct})">
+    <div class="option-num">${letter}</div><div>${text}</div>
+  </button>`;
+}
+
+function handleMCQ(id, letter, correct) {
+  document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => o.disabled = true);
+  const el = document.getElementById(`opt-${id}-${letter}`);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById(`fb-${id}`)?.classList.add('show');
+    const btn = document.getElementById(`btn-${id}`);
+    if (btn) btn.disabled = false;
+  } else {
+    el.classList.add('wrong');
+    document.getElementById(`fb-${id}-wrong`)?.classList.add('show');
+    // re-enable so they can try again
+    document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => o.disabled = false);
+    el.disabled = true;
+  }
+}
+
+// ═══════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════
+function renderSidebar() {
+  const SERIES = [
+    {num:1, title:'The Base Squeeze', current:true},
+    {num:2, title:'The Shrinkflation Scam', file:'shrinkflation-scam.html'},
+    {num:3, title:'The Hollow Illusion', file:'hollow-illusion.html'},
+  ];
+  document.getElementById('sidebar-nav').innerHTML = SERIES.map(c => {
+    const cls = c.current ? 'current' : c.locked ? 'locked' : '';
+    const click = c.current || c.locked ? '' : `onclick="window.location.href='${c.file}'"`;
+    return `<div class="nav-item ${cls}" ${click}>
+      <div class="nav-num">${c.num}</div><div>${c.title}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('step-indicator').textContent = `Section ${current+1} of ${SECTIONS.length}`;
+}
+
+function goto(idx) {
+  if (idx <= current || completed.has(idx)) { current = idx; render(); }
+}
+
+function next() {
+  completed.add(current);
+  current = Math.min(current+1, SECTIONS.length-1);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════
+// SVG UTILITIES
+// ═══════════════════════════════════
+function dimArrowH(x1, x2, y, label, color) {
+  color = color || '#5E544D';
+  const mid = (x1+x2)/2;
+  return `<g>
+    <line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="1.5"/>
+    <polygon points="${x1},${y} ${x1+8},${y-4} ${x1+8},${y+4}" fill="${color}"/>
+    <polygon points="${x2},${y} ${x2-8},${y-4} ${x2-8},${y+4}" fill="${color}"/>
+    <text x="${mid}" y="${y-7}" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="${color}">${label}</text>
+  </g>`;
+}
+
+function dimArrowV(x, y1, y2, label, color) {
+  color = color || '#5E544D';
+  const mid = (y1+y2)/2;
+  return `<g>
+    <line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${color}" stroke-width="1.5"/>
+    <polygon points="${x},${y1} ${x-4},${y1+8} ${x+4},${y1+8}" fill="${color}"/>
+    <polygon points="${x},${y2} ${x-4},${y2-8} ${x+4},${y2-8}" fill="${color}"/>
+    <text x="${x+8}" y="${mid+5}" font-family="Nunito" font-size="12" font-weight="800" fill="${color}">${label}</text>
+  </g>`;
+}
+
+// Draw chocolate bar grid lines (top-down view)
+function barGrid(x, y, w, h, stroke) {
+  let g = '';
+  const cols = 4, rows = 2;
+  for (let c = 1; c < cols; c++) {
+    const lx = x + (w/cols)*c;
+    g += `<line x1="${lx}" y1="${y+4}" x2="${lx}" y2="${y+h-4}" stroke="${stroke}" stroke-width="0.8" opacity="0.4"/>`;
+  }
+  for (let r = 1; r < rows; r++) {
+    const ly = y + (h/rows)*r;
+    g += `<line x1="${x+4}" y1="${ly}" x2="${x+w-4}" y2="${ly}" stroke="${stroke}" stroke-width="0.8" opacity="0.4"/>`;
+  }
+  return g;
+}
+
+// Draw grid simulation for S4
+function drawGrid(lFactor, wFactor) {
+  const cols = 20, rows = 10;
+  const cw = 17, ch = 15, gap = 2;
+  const ox = 10, oy = 10;
+  const newCols = lFactor * cols;
+  const newRows = wFactor * rows;
+  let out = '';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = ox + c*(cw+gap);
+      const y = oy + r*(ch+gap);
+      const kept = (c < newCols - 0.01) && (r < newRows - 0.01);
+      out += `<rect x="${x}" y="${y}" width="${cw}" height="${ch}"
+        fill="${kept?'#DFF5EF':'#FDE7EB'}" stroke="${kept?'#2EB39E':'#E85D75'}"
+        stroke-width="1" rx="2"/>`;
+    }
+  }
+  return out;
+}
+
+// ═══════════════════════════════════
+// SECTION 0 — THE ASSIGNMENT
+// ═══════════════════════════════════
+function s0() {
+  return `${progressDots()}
+  <div class="step-label">The Assignment</div>
+  <div class="step-title">A photo just landed in the group chat.</div>
+
+  <div class="wa-card">
+    <div class="wa-forward">↩ Forwarded 200 times</div>
+    <svg viewBox="0 0 340 110" style="width:100%;max-width:340px;height:auto;display:block;margin:0 auto 4px">
+      <!-- Old bar -->
+      <rect x="10" y="15" width="140" height="70" fill="#F5EDD8" stroke="#C9BE9F" stroke-width="1.5" rx="4"/>
+      ${barGrid(10,15,140,70,'#C9BE9F')}
+      <text x="80" y="98" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#5E544D">Old</text>
+      <!-- New bar (8% narrower and shorter from top-down) -->
+      <rect x="185" y="21" width="129" height="64" fill="#DFF5EF" stroke="#2EB39E" stroke-width="1.5" rx="4"/>
+      ${barGrid(185,21,129,64,'#2EB39E')}
+      <text x="250" y="98" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#1A6A5C">New ✨</text>
+    </svg>
+    <div class="wa-caption">"guys did ChocoBar change their bar or am I going crazy 😭"</div>
+    <div class="wa-meta">Forwarded from: Parents Group 👪</div>
+  </div>
+
+  ${pip(`ChocoBar hasn't said anything. No announcement. No press release. Just a new design quietly on the shelves since last month — and 200 forwards of that photo.<br><br>Your job: find out if the feeling is real.`)}
+
+  <div class="nav-row"><button class="btn" onclick="next()">Start investigating →</button></div>`;
+}
+
+// ═══════════════════════════════════
+// SECTION 1 — FIRST LOOK
+// ═══════════════════════════════════
+function s1() {
+  return `${progressDots()}
+  <div class="step-label">Observe · First Look</div>
+  <div class="step-title">Two bars. Same price. Take a look.</div>
+
+  ${pip(`Both bars are unwrapped. Same colour. Same ₹10 sticker. Tap Compare to lay them side by side.`)}
+
+  <div class="vis-area">
+    <svg viewBox="0 0 460 160" style="width:100%;max-width:460px;height:auto;display:block;margin:0 auto" id="s1-svg">
+      <!-- Original bar: 200×100 = 20cm×10cm scale -->
+      <rect x="20" y="30" width="200" height="100" fill="#F5EDD8" stroke="#C9BE9F" stroke-width="2" rx="5"/>
+      ${barGrid(20,30,200,100,'#C9BE9F')}
+      <text x="120" y="148" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#5E544D">Original</text>
+
+      <!-- New bar: 184×92 = 18.4cm×9.2cm (8% smaller each) -->
+      <rect x="250" y="34" width="184" height="92" fill="#DFF5EF" stroke="#2EB39E" stroke-width="2" rx="5" id="new-bar"/>
+      ${barGrid(250,34,184,92,'#2EB39E')}
+      <text x="342" y="148" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#1A6A5C">New Look ✨</text>
+
+      <!-- Ghost outline — hidden until compare is clicked -->
+      <rect x="250" y="30" width="200" height="100" fill="rgba(232,93,117,0.08)" stroke="#E85D75" stroke-width="2" stroke-dasharray="6,4" rx="5" id="ghost-rect" style="display:none"/>
+      <text id="ghost-label" x="342" y="22" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#E85D75" style="display:none">← original size</text>
+    </svg>
+    <button class="compare-btn" id="compare-btn" onclick="toggleCompare()">🔍 Compare sizes</button>
+  </div>
+
+  <div class="feedback" id="compare-insight">
+    See the gap? The ghost outline is the original bar's size. The new bar sits smaller inside it — the base shrank. Height is the same on both — you can't see it from above. But length and width? Right there.
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-s1" onclick="next()" disabled>Next →</button></div>`;
+}
+
+let compareShown = false;
+function toggleCompare() {
+  compareShown = !compareShown;
+  const ghost = document.getElementById('ghost-rect');
+  const glabel = document.getElementById('ghost-label');
+  const btn = document.getElementById('compare-btn');
+  const insight = document.getElementById('compare-insight');
+  const nextBtn = document.getElementById('btn-s1');
+  if (compareShown) {
+    ghost.style.display = 'block';
+    glabel.style.display = 'block';
+    btn.textContent = '✕ Hide comparison';
+    btn.classList.add('active');
+    insight.classList.add('show');
+    nextBtn.disabled = false;
+  } else {
+    ghost.style.display = 'none';
+    glabel.style.display = 'none';
+    btn.textContent = '🔍 Compare sizes';
+    btn.classList.remove('active');
+  }
+}
+
+// ═══════════════════════════════════
+// SECTION 2 — THE MEASUREMENTS + PREDICT
+// ═══════════════════════════════════
+function s2() {
+  return `${progressDots()}
+  <div class="step-label">Measure · The Numbers</div>
+  <div class="step-title">Someone measured both bars.</div>
+
+  ${pip(`Here's what the ruler found. Look carefully at what changed and what didn't.`)}
+
+  <div class="vis-area">
+    <svg viewBox="0 0 480 200" style="width:100%;max-width:480px;height:auto;display:block;margin:0 auto">
+      <!-- Original bar: L=200, W=90 in SVG -->
+      <rect x="20" y="50" width="200" height="90" fill="#F5EDD8" stroke="#C9BE9F" stroke-width="1.5" rx="4"/>
+      ${barGrid(20,50,200,90,'#C9BE9F')}
+      <text x="120" y="158" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#5E544D">Original</text>
+      <!-- L arrow top -->
+      ${dimArrowH(20, 220, 42, 'L = 20 cm', '#5E544D')}
+      <!-- W arrow left -->
+      ${dimArrowV(10, 50, 140, 'W = 10 cm', '#5E544D')}
+
+      <!-- New bar: L=184, W=83 -->
+      <rect x="268" y="54" width="184" height="83" fill="#DFF5EF" stroke="#2EB39E" stroke-width="1.5" rx="4"/>
+      ${barGrid(268,54,184,83,'#2EB39E')}
+      <text x="360" y="158" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#1A6A5C">New</text>
+      <!-- L arrow (coral — changed) -->
+      ${dimArrowH(268, 452, 42, 'L = 18.4 cm', '#E85D75')}
+      <!-- W arrow (coral — changed) -->
+      ${dimArrowV(458, 54, 137, 'W = 9.2 cm', '#E85D75')}
+
+      <!-- H note (unchanged, both sides) -->
+      <text x="240" y="185" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="700" fill="#99908A">H (thickness) = 2 cm on both — unchanged</text>
+    </svg>
+  </div>
+
+  ${pip(`Height: identical on both. That's deliberate — height is what your hands feel when you pick it up.<br>What changed: both base dimensions. Length from 20 cm → 18.4 cm. Width from 10 cm → 9.2 cm. Both cut by 8%. No announcement. No asterisk on the wrapper.`)}
+
+  <div class="question">
+    <div class="q-label">🤔 Your prediction</div>
+    <div class="q-text">Before you calculate anything — how much volume do you think ChocoBar removed?</div>
+    <div class="predict-row" id="pred-row">
+      <button class="predict-btn" onclick="handlePredict('A')">
+        <span class="big">📉</span>About 8%<br><small style="font-weight:600;color:var(--text-3)">one cut, one loss</small>
+      </button>
+      <button class="predict-btn" onclick="handlePredict('B')">
+        <span class="big">📉📉</span>About 16%<br><small style="font-weight:600;color:var(--text-3)">two cuts, add them</small>
+      </button>
+      <button class="predict-btn" onclick="handlePredict('C')">
+        <span class="big">❓</span>Something else<br><small style="font-weight:600;color:var(--text-3)">neither of these</small>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-s2" onclick="next()" disabled>Next →</button></div>`;
+}
+
+function handlePredict(choice) {
+  s2Prediction = choice;
+  document.querySelectorAll('.predict-btn').forEach(b => b.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('btn-s2').disabled = false;
+}
+
+// ═══════════════════════════════════
+// SECTION 3 — ONE CUT AT A TIME
+// ═══════════════════════════════════
+function s3() {
+  return `${progressDots()}
+  <div class="step-label">Explore · One Dimension</div>
+  <div class="step-title">Before the trap — understand the baseline.</div>
+
+  ${pip(`What if ChocoBar had only changed <em>one</em> dimension? What would happen to the volume? Move the slider and find out.`)}
+
+  <div class="slider-block">
+    <div class="slider-block-label">Decrease one dimension by</div>
+    <div class="slider-row">
+      <span class="slider-label" id="cut-pct-label">0%</span>
+      <input type="range" min="0" max="30" value="0" id="cut-slider" oninput="updateOneCut()">
+      <div class="slider-value" id="cut-dim-val">20 cm</div>
+    </div>
+  </div>
+
+  <div class="vis-area">
+    <svg viewBox="0 0 400 130" style="width:100%;max-width:400px;height:auto;display:block;margin:0 auto" id="s3-svg">
+      <!-- ghost -->
+      <rect x="30" y="20" width="200" height="90" fill="none" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4" rx="4" opacity="0.5"/>
+      <!-- live bar -->
+      <rect id="s3-bar" x="30" y="20" width="200" height="90" fill="#DFF5EF" stroke="#2EB39E" stroke-width="2" rx="4"/>
+      <text id="s3-bar-label" x="130" y="125" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#1A6A5C">L = 20 cm</text>
+    </svg>
+    <div class="vol-display-2">
+      <div class="vol-pill highlight">
+        <div class="vp-label">Volume remaining</div>
+        <div class="vp-val" id="s3-vol-rem">100%</div>
+      </div>
+      <div class="vol-pill loss">
+        <div class="vp-label">Volume lost</div>
+        <div class="vp-val" id="s3-vol-lost">0%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout hidden" id="s3-callout">
+    Cut one dimension by <strong id="s3-pct">10%</strong> → volume drops by exactly <strong id="s3-loss">10%</strong>.<br>
+    One dimension, one honest loss. Change one, lose that exact percentage.
+  </div>
+
+  <div class="nav-row"><button class="btn" onclick="next()">Next →</button></div>`;
+}
+
+function updateOneCut() {
+  const pct = parseInt(document.getElementById('cut-slider').value);
+  const factor = 1 - pct/100;
+  const newW = Math.round(200 * factor);
+
+  document.getElementById('cut-pct-label').textContent = pct + '%';
+  document.getElementById('cut-dim-val').textContent = (20 * factor).toFixed(1) + ' cm';
+  document.getElementById('s3-bar').setAttribute('width', newW);
+  document.getElementById('s3-bar-label').textContent = `L = ${(20*factor).toFixed(1)} cm`;
+  document.getElementById('s3-bar-label').setAttribute('x', 30 + newW/2);
+  document.getElementById('s3-vol-rem').textContent = (factor*100).toFixed(1) + '%';
+  document.getElementById('s3-vol-lost').textContent = ((1-factor)*100).toFixed(1) + '%';
+
+  if (pct > 0) {
+    const callout = document.getElementById('s3-callout');
+    callout.classList.remove('hidden');
+    document.getElementById('s3-pct').textContent = pct + '%';
+    document.getElementById('s3-loss').textContent = ((1-factor)*100).toFixed(1) + '%';
+  }
+}
+
+// ═══════════════════════════════════
+// SECTION 4 — THE TRAP
+// ═══════════════════════════════════
+function s4() {
+  return `${progressDots()}
+  <div class="step-label">Discover · The Trap</div>
+  <div class="step-title">Now ChocoBar cuts two dimensions.</div>
+
+  ${pip(`Set both sliders to 8% — that's what ChocoBar actually did. Watch the grid. How much of the bar goes coral?`)}
+
+  <div class="slider-block">
+    <div class="slider-block-label">Decrease Length by</div>
+    <div class="slider-row">
+      <span class="slider-label" id="l-pct-label">0%</span>
+      <input type="range" min="0" max="30" value="0" id="l-slider" oninput="updateTrap()">
+      <div class="slider-value" id="l-val">20.0 cm</div>
+    </div>
+  </div>
+
+  <div class="slider-block">
+    <div class="slider-block-label">Decrease Width by</div>
+    <div class="slider-row">
+      <span class="slider-label" id="w-pct-label">0%</span>
+      <input type="range" min="0" max="30" value="0" id="w-slider" oninput="updateTrap()">
+      <div class="slider-value" id="w-val">10.0 cm</div>
+    </div>
+  </div>
+
+  <div class="vis-area">
+    <svg viewBox="0 0 400 190" style="width:100%;max-width:400px;height:auto;display:block;margin:0 auto" id="s4-svg">
+      ${drawGrid(1, 1)}
+    </svg>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:10px;font-size:12px;font-weight:800;">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:#DFF5EF;border:1px solid #2EB39E;border-radius:2px;display:inline-block"></span> Kept</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:12px;height:12px;background:#FDE7EB;border:1px solid #E85D75;border-radius:2px;display:inline-block"></span> Lost</span>
+    </div>
+    <div class="vol-display" style="margin-top:14px">
+      <div class="vol-pill">
+        <div class="vp-label">L</div>
+        <div class="vp-val" id="vp-l">20.0</div>
+        <div class="vp-sub" id="vp-l-sub">unchanged</div>
+      </div>
+      <div class="vol-pill">
+        <div class="vp-label">W</div>
+        <div class="vp-val" id="vp-w">10.0</div>
+        <div class="vp-sub" id="vp-w-sub">unchanged</div>
+      </div>
+      <div class="vol-pill highlight">
+        <div class="vp-label">Volume</div>
+        <div class="vp-val" id="vp-vol">100%</div>
+        <div class="vp-sub">remaining</div>
+      </div>
+      <div class="vol-pill loss">
+        <div class="vp-label">Lost</div>
+        <div class="vp-val" id="vp-lost">0%</div>
+        <div class="vp-sub" id="vp-lost-sub"> </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout hidden" id="s4-callout"></div>
+
+  <div class="pred-resolution" id="pred-res"></div>
+
+  <div class="nav-row"><button class="btn" id="btn-s4" onclick="next()" disabled>Next →</button></div>`;
+}
+
+let trapRevealed = false;
+function updateTrap() {
+  const lPct = parseInt(document.getElementById('l-slider').value);
+  const wPct = parseInt(document.getElementById('w-slider').value);
+  const lF = 1 - lPct/100;
+  const wF = 1 - wPct/100;
+  const volF = lF * wF;
+  const lostPct = ((1 - volF)*100).toFixed(1);
+  const volPct = (volF*100).toFixed(1);
+
+  document.getElementById('l-pct-label').textContent = lPct + '%';
+  document.getElementById('w-pct-label').textContent = wPct + '%';
+  document.getElementById('l-val').textContent = (20*lF).toFixed(1) + ' cm';
+  document.getElementById('w-val').textContent = (10*wF).toFixed(1) + ' cm';
+  document.getElementById('vp-l').textContent = (20*lF).toFixed(1);
+  document.getElementById('vp-l-sub').textContent = lPct > 0 ? `−${lPct}% from 20` : 'unchanged';
+  document.getElementById('vp-w').textContent = (10*wF).toFixed(1);
+  document.getElementById('vp-w-sub').textContent = wPct > 0 ? `−${wPct}% from 10` : 'unchanged';
+  document.getElementById('vp-vol').textContent = volPct + '%';
+  document.getElementById('vp-lost').textContent = lostPct + '%';
+
+  // Redraw grid
+  document.getElementById('s4-svg').innerHTML = drawGrid(lF, wF);
+
+  // Callout
+  const callout = document.getElementById('s4-callout');
+  if (lPct > 0 || wPct > 0) {
+    callout.classList.remove('hidden');
+    if (lPct > 0 && wPct === 0) {
+      callout.innerHTML = `Length cut <strong>${lPct}%</strong> → volume dropped <strong>${lostPct}%</strong>. Linear — exactly as expected.`;
+    } else if (wPct > 0 && lPct === 0) {
+      callout.innerHTML = `Width cut <strong>${wPct}%</strong> → volume dropped <strong>${lostPct}%</strong>. Still linear — one dimension, one honest loss.`;
+    } else {
+      const expected = lPct + wPct;
+      callout.innerHTML = `Both cut: L −${lPct}%, W −${wPct}%. You might expect <strong>${expected}%</strong> lost — but the real loss is <strong>${lostPct}%</strong>. The cuts multiply, not add.`;
+    }
+  }
+
+  // Reveal prediction resolution once when both sliders hit 8%
+  if (lPct >= 8 && wPct >= 8 && !trapRevealed) {
+    trapRevealed = true;
+    const resDiv = document.getElementById('pred-res');
+    let msg = '';
+    if (s2Prediction === 'A') {
+      msg = `You guessed <strong>about 8%</strong>. The actual loss is <strong>15.4%</strong> — because both dimensions shrank, not just one. Two cuts multiply.`;
+    } else if (s2Prediction === 'B') {
+      msg = `You guessed <strong>about 16%</strong>. Close instinct — but the real answer is <strong>15.4%</strong>. The second cut is 8% of a bar that's already 8% smaller. They multiply, not add: 0.92 × 0.92 = 0.846.`;
+    } else {
+      msg = `You guessed <strong>something else</strong>. Right instinct — the answer is <strong>15.4%</strong>, sitting between 8% and 16% because the cuts multiply rather than add.`;
+    }
+    resDiv.innerHTML = `<strong>📌 Your earlier guess:</strong> ${msg}`;
+    resDiv.classList.add('show');
+    document.getElementById('btn-s4').disabled = false;
+  }
+}
+
+// ═══════════════════════════════════
+// SECTION 5 — WHY THE BASE?
+// ═══════════════════════════════════
+function s5() {
+  return `${progressDots()}
+  <div class="step-label">Reason · Why the Base?</div>
+  <div class="step-title">They could have made it 15% thinner. Why didn't they?</div>
+
+  ${pip(`ChocoBar could have achieved the same 15.4% volume loss by making the bar 15% thinner — one dimension, same result. So why change two dimensions instead?`)}
+
+  <div class="question">
+    <div class="q-label">💡 Pick the best explanation</div>
+    <div class="q-text">Why did ChocoBar shrink both base dimensions instead of just making the bar thinner?</div>
+    <div class="options">
+      ${mcqOpt('s5','A','Thinner chocolate breaks more easily during shipping', false)}
+      ${mcqOpt('s5','B','Height is what your hand feels immediately — thinner is noticed in seconds', true)}
+      ${mcqOpt('s5','C','The mold for the base is cheaper to change', false)}
+      ${mcqOpt('s5','D','Regulations require height to stay constant', false)}
+    </div>
+  </div>
+
+  <div class="feedback" id="fb-s5">
+    Pick up any object. Your hand registers thickness before you even look at it — within a second of picking it up.<br><br>
+    But does anyone measure the length of their chocolate bar before eating it? That needs a ruler, a memory of the old size, and the effort to compare. ChocoBar is counting on no one doing that. Shrink the base — both dimensions, a little each — and the loss is real but invisible.
+  </div>
+  <div class="feedback wrong-fb" id="fb-s5-wrong">
+    Think about the moment you pick something up. What do your fingers notice first — how thick it is, or how long it is?
+  </div>
+
+  <div class="practice-box" id="practice-s5" style="display:none">
+    <div class="practice-label">🏋️ Practice Question</div>
+    <div class="q-text" style="margin-bottom:12px">CrunchCo quietly redesigned their cracker box. Height: unchanged. Length: cut by 6%. Width: cut by 6%. Your friend says "they only cut 6% of the volume." Are they right?</div>
+    <div class="options">
+      ${mcqOpt('prac','A','Yes — a 6% cut means 6% less overall', false)}
+      ${mcqOpt('prac','B','No — it\'s about 12% less (6 + 6)', false)}
+      ${mcqOpt('prac','C','No — it\'s about 11.6% less (0.94 × 0.94 = 0.8836)', true)}
+    </div>
+    <div class="feedback" id="fb-prac">
+      Your friend added the cuts. But they multiply.<br>
+      0.94 × 0.94 = 0.8836 — so 11.6% of the volume is gone. Not 12%. And definitely not 6%.<br>
+      Different box, different numbers. Same trick.
+    </div>
+    <div class="feedback wrong-fb" id="fb-prac-wrong">
+      Remember what happened with ChocoBar. When two base dimensions both shrink, the cuts multiply — not add. What is 0.94 × 0.94?
+    </div>
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-s5" onclick="next()" disabled>Next →</button></div>`;
+}
+
+// ═══════════════════════════════════
+// SECTION 6 — TOOL UNLOCK + BRIDGE
+// ═══════════════════════════════════
+function s6() {
+  return `${progressDots()}
+  <div class="step-label">Tool Unlocked</div>
+  <div class="step-title">You've cracked the first trick.</div>
+
+  ${pip(`Two directions. Both in the base. Both invisible without a ruler. Combined: a 15.4% loss from two cuts that each looked like just 8%.`)}
+
+  <div class="tool-unlock">
+    <span class="tool-badge">New Tool Unlocked</span>
+    <span class="tool-icon">📐</span>
+    <div class="tool-name">The Base Squeeze</div>
+    <div class="tool-desc">When a company shrinks two base dimensions instead of one, the cuts multiply — not add. Two small cuts, one surprisingly large loss. And the base is always the hiding spot — because nobody measures the length of their chocolate bar before eating it.</div>
+    <div class="bridge">
+      <strong>Now here's what makes Challenge 2 different.</strong><br><br>
+      ChocoBar has a rectangular base. You can shrink length and width separately — two distinct moves.<br><br>
+      What if the base is a circle? There's no length or width to shrink separately. Just a radius. Shrink the radius and you shrink the circle in every direction at once — both base dimensions in one move.<br><br>
+      Same trick. Rounder shape. And the volume loss from an 8% radius cut? <strong>Exactly 15.4%.</strong> For exactly the same reason.
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn" onclick="window.location.href='shrinkflation-scam.html'">Challenge 2: The Shrinkflation Scam →</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════
+// POST-RENDER WIRING
+// ═══════════════════════════════════
+function wireS5() {
+  // After correct MCQ in s5, show practice
+  const origHandle = handleMCQ;
+  ['A','B','C','D'].forEach(l => {
+    const o = document.getElementById(`opt-s5-${l}`);
+    if (o) o.onclick = () => {
+      const correct = l === 'B';
+      handleMCQ('s5', l, correct);
+      if (correct) {
+        setTimeout(() => {
+          document.getElementById('practice-s5').style.display = 'block';
+        }, 500);
+      }
+    };
+  });
+  // Practice MCQ — on correct, enable next
+  ['A','B','C'].forEach(l => {
+    const o = document.getElementById(`opt-prac-${l}`);
+    if (o) o.onclick = () => {
+      const correct = l === 'C';
+      handleMCQ('prac', l, correct);
+      if (correct) {
+        setTimeout(() => {
+          document.getElementById('btn-s5').disabled = false;
+          document.getElementById('practice-s5').scrollIntoView({behavior:'smooth',block:'nearest'});
+        }, 600);
+      }
+    };
+  });
+}
+
+// ═══════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════
+const RENDERERS = [s0,s1,s2,s3,s4,s5,s6];
+
+function render() {
+  compareShown = false;
+  trapRevealed = false;
+  renderSidebar();
+  document.getElementById('frame-content').innerHTML = RENDERERS[current]();
+  if (current === 3) updateOneCut();
+  if (current === 4) updateTrap();
+  if (current === 5) wireS5();
+}
+
+render();
+</script>
+</body>
+</html>

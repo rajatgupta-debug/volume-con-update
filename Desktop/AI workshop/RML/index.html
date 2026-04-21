@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Math League — The math hidden in everything you love</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2563EB;
+      --coral: #F97316;
+      --emerald: #10B981;
+      --dark: #0F172A;
+      --light-bg: #F8FAFC;
+      --white: #FFFFFF;
+      --slate-300: #CBD5E1;
+      --slate-400: #94A3B8;
+      --slate-500: #64748B;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1E293B;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark);
+      background: var(--white);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Nav ────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--dark);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-brand .logo {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+
+    .nav-brand .divider {
+      width: 1px;
+      height: 20px;
+      background: var(--slate-600);
+    }
+
+    .nav-brand .rml {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--coral);
+      letter-spacing: 0.2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--slate-300);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--white);
+    }
+
+    .nav-links .btn-outline {
+      padding: 8px 20px;
+      border: 1.5px solid var(--slate-500);
+      border-radius: 8px;
+      color: var(--white);
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .nav-links .btn-outline:hover {
+      border-color: var(--coral);
+      background: rgba(249, 115, 22, 0.08);
+      color: var(--coral);
+    }
+
+    /* ── Hero ───────────────────────────────────────────── */
+    .hero {
+      background: var(--dark);
+      padding: 80px 0 64px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      left: -50px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+
+    .hero .sub {
+      font-size: 20px;
+      color: var(--slate-300);
+      margin-bottom: 36px;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--emerald);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      letter-spacing: 0.2px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    .btn-hero {
+      font-size: 18px !important;
+      padding: 18px 40px !important;
+      border-radius: 14px !important;
+      box-shadow: 0 8px 32px rgba(249, 115, 22, 0.35);
+      animation: hero-pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes hero-pulse {
+      0%, 100% { box-shadow: 0 8px 32px rgba(249, 115, 22, 0.35); }
+      50% { box-shadow: 0 8px 48px rgba(249, 115, 22, 0.5); }
+    }
+
+    .hero-note {
+      font-size: 13px;
+      color: var(--slate-500);
+      font-weight: 400;
+    }
+
+    .hero-social-proof {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 48px;
+      padding: 20px 32px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .avatar-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      border: 2px solid var(--dark);
+      margin-right: -10px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .avatar-more {
+      width: 44px;
+      height: 36px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--slate-300);
+      background: var(--slate-700);
+      border: 2px solid var(--dark);
+      letter-spacing: -0.3px;
+    }
+
+    .proof-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .proof-headline {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .proof-sub {
+      font-size: 13px;
+      color: var(--slate-400);
+      margin-top: 2px;
+    }
+
+    /* Featured card */
+    .featured-card {
+      max-width: 560px;
+      margin: 0 auto 48px;
+      background: linear-gradient(135deg, #1E3A5F 0%, #0F172A 50%, #1a1a2e 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 40px 36px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .featured-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .featured-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--coral), var(--primary), var(--emerald));
+    }
+
+    .featured-card .emoji-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .featured-card .badge {
+      display: inline-block;
+      background: rgba(249, 115, 22, 0.15);
+      color: var(--coral);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .featured-card h3 {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .featured-card p {
+      font-size: 16px;
+      color: var(--slate-300);
+      margin-bottom: 24px;
+    }
+
+    .btn-coral {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--coral);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
+    }
+
+    .btn-coral:hover {
+      background: #EA580C;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
+    }
+
+    .stats-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      color: var(--slate-400);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .stats-bar span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stats-bar .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--slate-600);
+    }
+
+    /* ── Sections ───────────────────────────────────────── */
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-light {
+      background: var(--light-bg);
+    }
+
+    .section-white {
+      background: var(--white);
+    }
+
+    .section-dark {
+      background: var(--dark);
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 40px;
+      color: var(--dark);
+    }
+
+    .section-dark .section-title {
+      color: var(--white);
+    }
+
+    /* ── Theme Carousel ─────────────────────────────────── */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .theme-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid #E2E8F0;
+      border-left: 4px solid var(--primary);
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+      border-left-color: var(--primary);
+    }
+
+    .theme-card .t-emoji {
+      font-size: 36px;
+      flex-shrink: 0;
+    }
+
+    .theme-card .t-info h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .theme-card .t-info span {
+      font-size: 13px;
+      color: var(--slate-400);
+      font-weight: 500;
+    }
+
+    .theme-card:nth-child(2) { border-left-color: var(--emerald); }
+    .theme-card:nth-child(3) { border-left-color: #8B5CF6; }
+    .theme-card:nth-child(4) { border-left-color: #06B6D4; }
+    .theme-card:nth-child(5) { border-left-color: #EAB308; }
+    .theme-card:nth-child(6) { border-left-color: #EC4899; }
+    .theme-card:nth-child(7) { border-left-color: var(--coral); }
+    .theme-card:nth-child(8) { border-left-color: #EF4444; }
+
+    /* ── Trending Challenges ────────────────────────────── */
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .challenge-card {
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .challenge-card:hover {
+      transform: scale(1.03);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .challenge-card .c-emoji {
+      font-size: 40px;
+      margin-bottom: 16px;
+    }
+
+    .challenge-card h4 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .challenge-card .c-hook {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    .challenge-card .c-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .challenge-card .c-meta span {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .cc-1 { background: linear-gradient(135deg, #D97706 0%, #92400E 100%); }
+    .cc-2 { background: linear-gradient(135deg, #059669 0%, #065F46 100%); }
+    .cc-3 { background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%); }
+    .cc-4 { background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%); }
+    .cc-5 { background: linear-gradient(135deg, #DB2777 0%, #831843 100%); }
+    .cc-6 { background: linear-gradient(135deg, #0891B2 0%, #164E63 100%); }
+
+    /* ── How It Works ───────────────────────────────────── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .step {
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .step .s-emoji {
+      font-size: 56px;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .step h4 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .step p {
+      font-size: 15px;
+      color: var(--slate-500);
+      line-height: 1.6;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--primary);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Leaderboard ────────────────────────────────────── */
+    .leaderboard-table {
+      width: 100%;
+      max-width: 800px;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+
+    .leaderboard-table th {
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--slate-400);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0 20px 8px;
+    }
+
+    .leaderboard-table td {
+      background: var(--white);
+      padding: 16px 20px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .leaderboard-table tr td:first-child {
+      border-radius: 12px 0 0 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 800;
+      color: var(--primary);
+      font-size: 18px;
+      width: 60px;
+    }
+
+    .leaderboard-table tr td:last-child {
+      border-radius: 0 12px 12px 0;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      color: var(--emerald);
+    }
+
+    .leaderboard-table tr td:nth-child(3) {
+      color: var(--slate-400);
+      font-size: 14px;
+    }
+
+    .leaderboard-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--primary);
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+
+    .leaderboard-link:hover {
+      gap: 10px;
+    }
+
+    /* ── Bottom CTA ─────────────────────────────────────── */
+    .bottom-cta {
+      text-align: center;
+      padding: 96px 0;
+    }
+
+    .bottom-cta h2 {
+      font-size: 44px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -1.2px;
+      margin-bottom: 32px;
+      line-height: 1.2;
+    }
+
+    .bottom-cta .btn-coral {
+      font-size: 18px;
+      padding: 18px 36px;
+      border-radius: 14px;
+    }
+
+    .bottom-cta .sub-text {
+      margin-top: 20px;
+      font-size: 14px;
+      color: var(--slate-400);
+    }
+
+    /* ── Footer ─────────────────────────────────────────── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 32px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--slate-400);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--white);
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--slate-600);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ──────────────────────────────────────────── -->
+  <nav>
+    <div class="container nav-inner">
+      <div class="nav-brand">
+        <span class="logo">Cuemath</span>
+        <span class="divider"></span>
+        <span class="rml">Real Math League</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="challenge.html">Explore Challenges</a></li>
+        <li><a href="leaderboard.html">Leaderboard</a></li>
+        <li><a href="#" class="btn-outline">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Hero ─────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-badge">🌍 47,000+ explorers from 28 countries have joined</div>
+      <h1>Join the world's coolest<br>math league</h1>
+      <p class="sub">Real challenges. Real-world math. A global community of curious minds.<br>No textbooks. No formulas to memorize. Just you vs. the real world.</p>
+
+      <div class="hero-cta-row">
+        <a href="challenge.html" class="btn-coral btn-hero">Join the League &rarr;</a>
+        <span class="hero-note">Free forever. No signup needed to start.</span>
+      </div>
+
+      <div class="hero-social-proof">
+        <div class="avatar-stack">
+          <div class="avatar" style="background:#F97316;">A</div>
+          <div class="avatar" style="background:#2563EB;">S</div>
+          <div class="avatar" style="background:#10B981;">R</div>
+          <div class="avatar" style="background:#8B5CF6;">M</div>
+          <div class="avatar" style="background:#EC4899;">K</div>
+          <div class="avatar-more">+47K</div>
+        </div>
+        <div class="proof-text">
+          <span class="proof-headline">342 schools across 28 countries</span>
+          <span class="proof-sub">Students from New York to Singapore are already exploring</span>
+        </div>
+      </div>
+
+      <div class="featured-card">
+        <span class="badge">🔥 Trending This Week</span>
+        <span class="emoji-icon">🐝</span>
+        <h3>Why Honeycombs are Hexagons</h3>
+        <p>Bees solved one of geometry's hardest optimization problems &mdash; millions of years before humans even knew it was a problem.</p>
+        <a href="challenge.html" class="btn-coral">Accept Challenge &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Theme Carousel ───────────────────────────────── -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title">Find your kind of math</h2>
+      <div class="themes-grid">
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#9917;</span>
+          <div class="t-info"><h4>Sports</h4><span>14 challenges</span></div>
+        </a>
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#x1F41D;</span>
+          <div class="t-info"><h4>Nature</h4><span>12 challenges</span></div>
+        </a>
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#x1F680;</span>
+          <div class="t-info"><h4>Space</h4><span>9 challenges</span></div>
+        </a>
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#x1F4BB;</span>
+          <div class="t-info"><h4>Tech</h4><span>16 challenges</span></div>
+        </a>
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#x1F4B0;</span>
+          <div class="t-info"><h4>Finance</h4><span>8 challenges</span></div>
+        </a>
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#x1F3DB;</span>
+          <div class="t-info"><h4>History</h4><span>11 challenges</span></div>
+        </a>
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#x1F3B5;</span>
+          <div class="t-info"><h4>Music</h4><span>7 challenges</span></div>
+        </a>
+        <a href="challenge.html" class="theme-card">
+          <span class="t-emoji">&#x1F355;</span>
+          <div class="t-info"><h4>Food</h4><span>10 challenges</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Trending Challenges ──────────────────────────── -->
+  <section class="section section-white">
+    <div class="container">
+      <h2 class="section-title">Trending Now &#x1F525;</h2>
+      <div class="challenges-grid">
+
+        <a href="challenge.html" class="challenge-card cc-1">
+          <div>
+            <span class="c-emoji">&#x1F41D;</span>
+            <h4>Why Honeycombs are Hexagons</h4>
+            <p class="c-hook">Bees solved geometry millions of years ago</p>
+          </div>
+          <div class="c-meta">
+            <span>Level 3</span>
+            <span>~15 min</span>
+            <span>3.1K solved</span>
+          </div>
+        </a>
+
+        <a href="challenge.html" class="challenge-card cc-2">
+          <div>
+            <span class="c-emoji">&#9917;</span>
+            <h4>The Math of Tiki-Taka</h4>
+            <p class="c-hook">What makes Barcelona's passing unstoppable?</p>
+          </div>
+          <div class="c-meta">
+            <span>Level 4</span>
+            <span>~20 min</span>
+            <span>2.3K solved</span>
+          </div>
+        </a>
+
+        <a href="challenge.html" class="challenge-card cc-3">
+          <div>
+            <span class="c-emoji">&#x1F4E1;</span>
+            <h4>How GPS Knows Where You Are</h4>
+            <p class="c-hook">Your phone uses geometry to find you</p>
+          </div>
+          <div class="c-meta">
+            <span>Level 5</span>
+            <span>~25 min</span>
+            <span>1.8K solved</span>
+          </div>
+        </a>
+
+        <a href="challenge.html" class="challenge-card cc-4">
+          <div>
+            <span class="c-emoji">&#x1F5F3;</span>
+            <h4>Why Fair Elections Are Impossible</h4>
+            <p class="c-hook">Arrow's theorem will blow your mind</p>
+          </div>
+          <div class="c-meta">
+            <span>Level 6</span>
+            <span>~20 min</span>
+            <span>1.2K solved</span>
+          </div>
+        </a>
+
+        <a href="challenge.html" class="challenge-card cc-5">
+          <div>
+            <span class="c-emoji">&#x1F3B5;</span>
+            <h4>The Secret Math of Music</h4>
+            <p class="c-hook">Why do some notes sound beautiful together?</p>
+          </div>
+          <div class="c-meta">
+            <span>Level 3</span>
+            <span>~15 min</span>
+            <span>2.7K solved</span>
+          </div>
+        </a>
+
+        <a href="challenge.html" class="challenge-card cc-6">
+          <div>
+            <span class="c-emoji">&#x1F997;</span>
+            <h4>The Prime Number Cicadas</h4>
+            <p class="c-hook">Why 13 and 17 years? Survival math.</p>
+          </div>
+          <div class="c-meta">
+            <span>Level 5</span>
+            <span>~20 min</span>
+            <span>1.5K solved</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── How It Works ─────────────────────────────────── -->
+  <section class="section section-light">
+    <div class="container">
+      <h2 class="section-title">How Real Math League works</h2>
+      <div class="steps-grid">
+        <div class="step">
+          <span class="step-number">1</span>
+          <span class="s-emoji">&#x1F3AF;</span>
+          <h4>Pick a challenge</h4>
+          <p>Browse challenges about sports, nature, space, and more. Find what excites you.</p>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <span class="s-emoji">&#x1F50D;</span>
+          <h4>Investigate</h4>
+          <p>Follow the clues, reason through steps, and uncover the math hiding in the real world.</p>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <span class="s-emoji">&#x1F3C6;</span>
+          <h4>Share your discovery</h4>
+          <p>Earn points, climb the leaderboard, and challenge your friends.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Leaderboard Preview ──────────────────────────── -->
+  <section class="section section-white">
+    <div class="container">
+      <h2 class="section-title">Top Schools This Week</h2>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>School</th>
+            <th>City</th>
+            <th>Challenges</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>Delhi Public School, R.K. Puram</td>
+            <td>New Delhi</td>
+            <td>247</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>Greenwood International</td>
+            <td>Bangalore</td>
+            <td>218</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td>The Bishop's School</td>
+            <td>Pune</td>
+            <td>196</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td>American School of Dubai</td>
+            <td>Dubai</td>
+            <td>184</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td>Singapore American School</td>
+            <td>Singapore</td>
+            <td>171</td>
+          </tr>
+        </tbody>
+      </table>
+      <a href="leaderboard.html" class="leaderboard-link">View Full Leaderboard &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ── Bottom CTA ───────────────────────────────────── -->
+  <section class="section-dark bottom-cta">
+    <div class="container">
+      <h2>47,000 explorers are already in.<br>You coming?</h2>
+      <a href="challenge.html" class="btn-coral">Join the League &rarr;</a>
+      <p class="sub-text">Free forever. No signup needed to start. Created by Cuemath.</p>
+    </div>
+  </section>
+
+  <!-- ── Footer ───────────────────────────────────────── -->
+  <footer>
+    <div class="container footer-inner">
+      <ul class="footer-links">
+        <li><a href="#">About Cuemath</a></li>
+        <li><a href="#">How It Works</a></li>
+        <li><a href="#">For Schools</a></li>
+        <li><a href="#">For Parents</a></li>
+      </ul>
+      <span class="footer-copy">&copy; 2026 Cuemath. Real Math League&trade;</span>
+    </div>
+  </footer>
+
+  <!-- ── Mockup Nav Strip ─────────────────────────────── -->
+  <div style="position:fixed;bottom:0;left:0;right:0;background:#1E293B;border-top:2px solid #F97316;padding:10px 0;z-index:9999;font-family:'Inter',sans-serif;">
+    <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+      <span style="color:#94A3B8;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-right:8px;">Mockup Pages:</span>
+      <a href="index.html" style="color:#F97316;font-size:13px;font-weight:600;text-decoration:none;padding:4px 12px;border-radius:6px;background:rgba(249,115,22,0.15);">Homepage</a>
+      <a href="challenge.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Challenges</a>
+      <a href="solve.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Solve Experience</a>
+      <a href="leaderboard.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Leaderboard</a>
+      <a href="share-card.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Share Card</a>
+    </div>
+  </div>
+
+</body>
+</html>

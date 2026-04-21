@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Shrinkflation Scam — Volume Con · RML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#FBF5E8; --bg-2:#F5EDD8; --card:#FFFFFF;
+  --border:#E8DFC8; --border-strong:#C9BE9F;
+  --shadow:0 6px 24px rgba(60,45,30,0.08);
+  --text:#2B2320; --text-2:#5E544D; --text-3:#99908A;
+  --mint:#2EB39E; --mint-2:#5FC9B5; --mint-bg:#DFF5EF; --mint-ink:#1A6A5C;
+  --coral:#E85D75; --coral-bg:#FDE7EB; --coral-ink:#B72F47;
+  --orange:#F99B4E; --orange-bg:#FDECDB;
+  --yellow:#F4C430; --yellow-bg:#FDF3CA;
+  --purple:#8E6FD8; --purple-bg:#EFE8FC;
+  --navy:#2B3861;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Nunito",system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-weight:600;line-height:1.4;}
+
+/* Topbar */
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:17px;}
+.logo{background:var(--orange);color:white;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.topbar-meta{font-size:13px;color:var(--text-3);font-weight:700;}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:260px 1fr;max-width:1200px;margin:0 auto;min-height:calc(100vh - 62px);}
+
+/* Sidebar */
+.sidebar{padding:24px 14px 40px;border-right:1px solid var(--border);background:var(--bg);}
+.sidebar-series-label{font-size:10px;letter-spacing:2px;color:var(--text-3);font-weight:900;text-transform:uppercase;padding:0 12px;margin-bottom:4px;}
+.sidebar-challenge-name{font-size:13px;font-weight:900;color:var(--text);padding:0 12px 16px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--text-2);transition:all .15s;margin-bottom:3px;border:2px solid transparent;}
+.nav-item:hover{background:var(--bg-2);}
+.nav-item.current{background:var(--orange-bg);color:var(--text);border-color:var(--orange);}
+.nav-item.done{color:var(--text);}
+.nav-num{width:26px;height:26px;border-radius:8px;background:var(--border);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0;}
+.nav-item.current .nav-num{background:var(--orange);color:white;}
+.nav-item.done .nav-num{background:var(--mint-bg);color:var(--mint-ink);}
+.nav-item.locked{opacity:0.45;cursor:default;pointer-events:none;}
+
+/* Main */
+.main{padding:32px 40px 80px;min-width:0;}
+.frame{background:var(--card);border-radius:20px;padding:28px 32px;box-shadow:var(--shadow);border:1px solid var(--border);max-width:760px;margin:0 auto;}
+
+/* Progress */
+.progress-wrap{display:flex;gap:5px;margin-bottom:24px;}
+.pdot{flex:1;height:6px;background:var(--border);border-radius:3px;transition:background .4s;}
+.pdot.done{background:var(--mint);}
+.pdot.current{background:var(--orange);}
+
+/* Labels */
+.step-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:6px;}
+.step-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:20px;line-height:1.25;letter-spacing:-0.3px;}
+
+/* Mascot */
+.mascot-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;}
+.mascot{flex-shrink:0;width:62px;height:62px;}
+.bubble{flex:1;background:var(--purple-bg);border:2px solid var(--purple);border-radius:16px;padding:13px 17px;font-size:14px;font-weight:700;line-height:1.55;position:relative;}
+.bubble::before{content:"";position:absolute;left:-10px;top:16px;border:10px solid transparent;border-right-color:var(--purple);border-left:0;}
+.bubble::after{content:"";position:absolute;left:-7px;top:18px;border:8px solid transparent;border-right-color:var(--purple-bg);border-left:0;}
+.bubble .name{font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--purple);margin-bottom:4px;}
+
+/* Product block */
+.product-block{background:var(--bg-2);border-radius:16px;padding:20px;margin-bottom:18px;border:1px solid var(--border);text-align:center;}
+.product-eyebrow{font-size:10px;letter-spacing:2px;color:var(--text-3);font-weight:900;text-transform:uppercase;margin-bottom:6px;}
+.product-headline{font-size:20px;font-weight:900;color:var(--text);margin-bottom:4px;}
+.product-sub{font-size:14px;color:var(--text-2);font-weight:600;margin-bottom:16px;}
+
+/* Question */
+.question{background:var(--yellow-bg);border:2px solid var(--border);border-radius:16px;padding:18px 20px;margin-bottom:14px;}
+.q-label{font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--orange);text-transform:uppercase;margin-bottom:8px;}
+.q-text{font-size:16px;font-weight:800;color:var(--text);line-height:1.4;margin-bottom:14px;}
+.q-hint{font-size:13px;color:var(--text-2);font-weight:700;font-style:italic;margin-bottom:12px;}
+
+/* Options */
+.options{display:flex;flex-direction:column;gap:9px;}
+.option{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:13px 16px;font-size:14px;font-weight:700;color:var(--text);text-align:left;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s;display:flex;align-items:center;gap:12px;width:100%;}
+.option-num{width:28px;height:28px;border-radius:8px;background:var(--bg-2);color:var(--text-2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
+.option:hover:not(:disabled){border-color:var(--mint-2);transform:translateY(-1px);box-shadow:var(--shadow);}
+.option.correct{border-color:var(--mint);background:var(--mint-bg);color:var(--mint-ink);}
+.option.correct .option-num{background:var(--mint);color:white;}
+.option.wrong{border-color:var(--coral);background:var(--coral-bg);color:var(--coral-ink);animation:shake .4s;}
+.option.wrong .option-num{background:var(--coral);color:white;}
+.option.missed{border-color:var(--yellow);background:var(--yellow-bg);}
+.option:disabled{cursor:default;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* Explore */
+.option.explore.seen{border-color:var(--purple);background:var(--purple-bg);}
+.option.explore.seen .option-num{background:var(--purple);color:white;}
+.option.explore.hit{border-color:var(--mint);background:var(--mint-bg);color:var(--mint-ink);}
+.option.explore.hit .option-num{background:var(--mint);color:white;}
+.explore-reveal{background:var(--card);border-left:3px solid var(--mint);border-radius:0 10px 10px 0;padding:10px 14px;font-size:13px;color:var(--text);margin-top:8px;font-weight:700;display:none;line-height:1.5;}
+.explore-reveal.show{display:block;}
+.explore-reveal.purple-reveal{border-left-color:var(--purple);}
+
+/* Predict */
+.predict-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px;}
+.predict-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:16px 10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;line-height:1.4;transition:all .15s;text-align:center;color:var(--text);}
+.predict-btn:hover{border-color:var(--mint-2);transform:translateY(-2px);box-shadow:var(--shadow);}
+.predict-btn.selected{border-color:var(--orange);background:var(--orange-bg);}
+.predict-btn .big{font-size:28px;display:block;margin-bottom:6px;}
+
+/* Sliders */
+.slider-block{background:var(--bg-2);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+.slider-block-label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:10px;}
+.slider-row{display:flex;align-items:center;gap:12px;}
+.slider-label{font-size:14px;font-weight:800;white-space:nowrap;min-width:100px;}
+input[type="range"]{flex:1;accent-color:var(--orange);cursor:pointer;}
+.slider-value{font-size:15px;color:var(--mint-ink);background:var(--mint-bg);padding:6px 12px;border-radius:8px;min-width:56px;text-align:center;font-weight:900;border:1px solid var(--mint);}
+
+/* Vis area */
+.vis-area{background:var(--bg-2);border-radius:16px;border:1px solid var(--border);padding:20px;margin-bottom:14px;text-align:center;overflow:hidden;}
+
+/* Volume display */
+.vol-display{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;}
+.vol-pill{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;}
+.vol-pill .vp-label{font-size:11px;color:var(--text-3);font-weight:900;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.vol-pill .vp-val{font-size:22px;font-weight:900;color:var(--text);}
+.vol-pill .vp-sub{font-size:11px;color:var(--text-2);margin-top:3px;font-weight:700;}
+.vol-pill.highlight{border-color:var(--navy);background:#EEF2FF;}
+.vol-pill.highlight .vp-val{color:var(--navy);}
+.vol-pill.loss{border-color:var(--coral);}
+.vol-pill.loss .vp-val{color:var(--coral-ink);}
+
+/* Callout */
+.callout{background:var(--navy);color:white;border-radius:14px;padding:18px 20px;margin:14px 0;font-size:15px;font-weight:700;line-height:1.6;}
+.callout strong{color:var(--yellow);}
+
+/* Feedback */
+.feedback{padding:14px 18px;border-radius:12px;background:var(--mint-bg);border-left:4px solid var(--mint);font-size:14px;line-height:1.6;font-weight:700;margin-top:14px;display:none;}
+.feedback.wrong-fb{background:var(--coral-bg);border-left-color:var(--coral);}
+.feedback.show{display:block;}
+
+/* Practice question */
+.practice-box{background:var(--bg-2);border:2px solid var(--border-strong);border-radius:16px;padding:20px;margin-top:18px;}
+.practice-label{font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--mint-ink);margin-bottom:8px;}
+
+/* Tool unlock */
+.tool-unlock{background:linear-gradient(135deg,#2B3861 0%,#3d4f7c 100%);border-radius:20px;padding:30px;text-align:center;color:white;margin-bottom:20px;}
+.tool-badge{display:inline-block;background:var(--yellow);color:#2B2320;font-size:11px;font-weight:900;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-bottom:14px;}
+.tool-icon{font-size:52px;display:block;margin-bottom:12px;}
+.tool-name{font-size:26px;font-weight:900;margin-bottom:10px;}
+.tool-desc{font-size:14px;opacity:.85;line-height:1.7;font-weight:600;max-width:480px;margin:0 auto;}
+
+/* Bridge */
+.bridge{background:var(--bg-2);border:2px dashed var(--border-strong);border-radius:14px;padding:18px 20px;margin-top:20px;font-size:14px;font-weight:700;color:var(--text-2);line-height:1.6;}
+.bridge strong{color:var(--text);}
+
+/* Nav */
+.nav-row{display:flex;justify-content:flex-end;margin-top:24px;}
+.btn{background:var(--orange);color:white;border:none;border-radius:12px;padding:13px 26px;font-size:15px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn:hover:not(:disabled){background:#e8893a;transform:translateY(-1px);}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none;}
+</style>
+</head>
+<body>
+
+<!-- Mascot SVG defs -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="pip">
+      <ellipse cx="50" cy="28" rx="26" ry="9" fill="#F99B4E"/>
+      <rect x="24" y="28" width="52" height="38" fill="#F99B4E"/>
+      <ellipse cx="50" cy="66" rx="26" ry="9" fill="#e8893a"/>
+      <circle cx="41" cy="46" r="6" fill="white"/>
+      <circle cx="59" cy="46" r="6" fill="white"/>
+      <circle cx="42" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="60" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="43" cy="46" r="1.2" fill="white"/>
+      <circle cx="61" cy="46" r="1.2" fill="white"/>
+      <path d="M 43 57 Q 50 63 57 57" stroke="#2B2320" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="28" y="10" width="44" height="20" rx="5" fill="#2B3861"/>
+      <rect x="18" y="26" width="64" height="6" rx="3" fill="#2B3861"/>
+      <circle cx="76" cy="70" r="10" fill="none" stroke="#2EB39E" stroke-width="3"/>
+      <line x1="83" y1="77" x2="90" y2="84" stroke="#2EB39E" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo">🔍</div>
+    <span>Volume Con</span>
+    <span style="color:var(--border-strong);margin:0 6px">·</span>
+    <span style="color:var(--text-3);font-size:14px;font-weight:700">RML Challenge</span>
+  </div>
+  <div class="topbar-meta" id="step-indicator">Section 1 of 8</div>
+</div>
+
+<!-- Layout -->
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-series-label">The Volume Con</div>
+    <div class="sidebar-challenge-name">Challenge Series · 3 parts</div>
+    <nav id="sidebar-nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="frame" id="frame-content"></div>
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// STATE
+// ═══════════════════════════════════
+const SECTIONS = [
+  {title:"The Assignment"},
+  {title:"First Look"},
+  {title:"SnackCo's Bet"},
+  {title:"Your Prediction"},
+  {title:"What Controls Volume?"},
+  {title:"The Real Numbers"},
+  {title:"Why Radius Hits Harder"},
+  {title:"Name the Trick"},
+];
+
+let current = 0;
+let completed = new Set();
+let predictChoice = null;
+
+// ═══════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════
+function pip(text) {
+  return `<div class="mascot-row">
+    <div class="mascot"><svg viewBox="0 0 100 100"><use href="#pip"/></svg></div>
+    <div class="bubble"><div class="name">Pip · Volume Detective</div>${text}</div>
+  </div>`;
+}
+
+function progressDots() {
+  return `<div class="progress-wrap">${SECTIONS.map((_,i) => {
+    const c = completed.has(i) ? 'done' : i===current ? 'current' : '';
+    return `<div class="pdot ${c}"></div>`;
+  }).join('')}</div>`;
+}
+
+function mcqOpt(id, letter, text, correct) {
+  return `<button class="option" id="opt-${id}-${letter}"
+    onclick="handleMCQ('${id}','${letter}',${correct})">
+    <div class="option-num">${letter}</div><div>${text}</div>
+  </button>`;
+}
+
+function handleMCQ(id, letter, correct) {
+  document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => o.disabled = true);
+  const el = document.getElementById(`opt-${id}-${letter}`);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById(`fb-${id}`)?.classList.add('show');
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => {
+      if (o.dataset.correct === 'true') o.classList.add('missed');
+    });
+    document.getElementById(`fb-${id}-wrong`)?.classList.add('show');
+  }
+  const btn = document.getElementById(`btn-${id}`);
+  if (btn) btn.disabled = false;
+}
+
+// Mark correct options with data attribute after render
+function tagCorrect(id, correctLetter) {
+  const el = document.getElementById(`opt-${id}-${correctLetter}`);
+  if (el) el.dataset.correct = 'true';
+}
+
+// ═══════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════
+function renderSidebar() {
+  const SERIES = [
+    {num:1, title:'The Base Squeeze', file:'base-squeeze.html'},
+    {num:2, title:'The Shrinkflation Scam', current:true},
+    {num:3, title:'The Hollow Illusion', file:'hollow-illusion.html'},
+  ];
+  document.getElementById('sidebar-nav').innerHTML = SERIES.map(c => {
+    const cls = c.current ? 'current' : c.locked ? 'locked' : '';
+    const click = c.current ? '' : c.locked ? '' : `onclick="window.location.href='${c.file}'"`;
+    return `<div class="nav-item ${cls}" ${click}>
+      <div class="nav-num">${c.num}</div><div>${c.title}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('step-indicator').textContent = `Section ${current+1} of ${SECTIONS.length}`;
+}
+
+function goto(idx) {
+  if (idx <= current || completed.has(idx)) { current = idx; render(); }
+}
+
+function next() {
+  completed.add(current);
+  current = Math.min(current+1, SECTIONS.length-1);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ═══════════════════════════════════
+// CYLINDER DRAWING UTILITY
+// ═══════════════════════════════════
+// Draws a flat-top cylinder in SVG space
+// cx,topY = centre x and top y; rx = x-radius; h = height
+// Returns SVG string (no <svg> wrapper — insert into existing SVG)
+function cyl(cx, topY, rx, h, fill, stroke, label, labelColor) {
+  const ry = Math.max(4, Math.round(rx * 0.28));
+  const by = topY + h;
+  let g = `<g>`;
+  g += `<rect x="${cx-rx}" y="${topY+ry}" width="${rx*2}" height="${h-ry}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+  g += `<ellipse cx="${cx}" cy="${by}" rx="${rx}" ry="${ry}" fill="${stroke}"/>`;
+  g += `<ellipse cx="${cx}" cy="${topY+ry}" rx="${rx}" ry="${ry}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+  if (label) {
+    const mid = topY + ry + (h - ry)*0.48;
+    g += `<text x="${cx}" y="${mid+5}" text-anchor="middle" font-family="Nunito" font-size="${Math.max(10,Math.round(rx*0.23))}" font-weight="900" fill="${labelColor||'#2B2320'}">${label}</text>`;
+  }
+  g += `</g>`;
+  return g;
+}
+
+// Ghost outline only (dashed)
+function cylGhost(cx, topY, rx, h) {
+  const ry = Math.max(4, Math.round(rx * 0.28));
+  const by = topY + h;
+  return `<g opacity="0.45">
+    <rect x="${cx-rx}" y="${topY+ry}" width="${rx*2}" height="${h-ry}" fill="none" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <ellipse cx="${cx}" cy="${topY+ry}" rx="${rx}" ry="${ry}" fill="none" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <ellipse cx="${cx}" cy="${by}" rx="${rx}" ry="${ry}" fill="none" stroke="#C9BE9F" stroke-width="1" stroke-dasharray="5,4"/>
+  </g>`;
+}
+
+// Dimension annotation helpers
+function dimArrowV(x, y1, y2, label, color) {
+  color = color || '#5E544D';
+  const mid = (y1+y2)/2;
+  return `<g>
+    <line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}" stroke="${color}" stroke-width="1.5"/>
+    <polygon points="${x},${y1} ${x-4},${y1+8} ${x+4},${y1+8}" fill="${color}"/>
+    <polygon points="${x},${y2} ${x-4},${y2-8} ${x+4},${y2-8}" fill="${color}"/>
+    <text x="${x+7}" y="${mid+5}" font-family="Nunito" font-size="12" font-weight="800" fill="${color}">${label}</text>
+  </g>`;
+}
+
+function dimArrowH(x1, x2, y, label, color) {
+  color = color || '#5E544D';
+  const mid = (x1+x2)/2;
+  return `<g>
+    <line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}" stroke="${color}" stroke-width="1.5"/>
+    <polygon points="${x1},${y} ${x1+8},${y-4} ${x1+8},${y+4}" fill="${color}"/>
+    <polygon points="${x2},${y} ${x2-8},${y-4} ${x2-8},${y+4}" fill="${color}"/>
+    <text x="${mid}" y="${y-7}" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="${color}">${label}</text>
+  </g>`;
+}
+
+// ═══════════════════════════════════
+// SECTION 0 — THE ASSIGNMENT
+// ═══════════════════════════════════
+function s0() {
+  // Two cans, no percentage labels, just "Original" and "New Look!"
+  const origRx=66, origH=180, topY=20, leftCx=140, rightCx=370;
+  const newRx=61; // 8% narrower visually
+
+  return `${progressDots()}
+  <div class="step-label">The Assignment</div>
+  <div class="step-title">A tip just landed on your desk.</div>
+  ${pip(`A customer wrote in: <em>"I've been buying SnackCo crisps for years. The new can looks the same — but something feels off."</em><br>Your job: find out if they're right.`)}
+  <div class="product-block">
+    <div class="product-eyebrow">SnackCo · Press Release</div>
+    <div class="product-headline">✨ New Look. Same Great Taste.</div>
+    <div class="product-sub">Same height. Same price. Just a fresher design for 2025.</div>
+    <svg viewBox="0 0 500 240" style="width:100%;max-width:480px;height:auto;display:block;margin:0 auto">
+      ${cyl(leftCx, topY, origRx, origH, '#F5EDD8','#C9BE9F','')}
+      ${cyl(rightCx, topY, newRx, origH, '#DFF5EF','#2EB39E','')}
+      <text x="${leftCx}" y="222" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#5E544D">Original Can</text>
+      <text x="${rightCx}" y="222" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#1A6A5C">New Look! ✨</text>
+    </svg>
+  </div>
+  <div class="nav-row"><button class="btn" onclick="next()">Start investigating →</button></div>`;
+}
+
+// ═══════════════════════════════════
+// SECTION 1 — OBSERVE (with h and r values)
+// ═══════════════════════════════════
+function s1() {
+  // Show cans with actual dimension values labeled
+  const origRx=66, origH=180, topY=24, leftCx=130, rightCx=360;
+  const newRx=61;
+  const ry=18;
+
+  return `${progressDots()}
+  <div class="step-label">Observe · First Look</div>
+  <div class="step-title">Before any math — just look. What do you notice?</div>
+  ${pip(`Tap each observation to investigate it. Find the clue that matters.`)}
+
+  <div class="product-block">
+    <svg viewBox="0 0 500 265" style="width:100%;max-width:480px;height:auto;display:block;margin:0 auto">
+      ${cyl(leftCx, topY, origRx, origH, '#F5EDD8','#C9BE9F','')}
+      ${cyl(rightCx, topY, newRx, origH, '#DFF5EF','#2EB39E','')}
+
+      <!-- LEFT: height annotation -->
+      ${dimArrowV(leftCx+origRx+14, topY+ry, topY+origH, 'h = 20 cm', '#5E544D')}
+      <!-- LEFT: radius annotation -->
+      ${dimArrowH(leftCx, leftCx+origRx, topY+ry-18, 'r = 5 cm', '#5E544D')}
+
+      <!-- RIGHT: height annotation (same) -->
+      ${dimArrowV(rightCx+newRx+14, topY+ry, topY+origH, 'h = 20 cm', '#1A6A5C')}
+      <!-- RIGHT: radius annotation (smaller) -->
+      ${dimArrowH(rightCx, rightCx+newRx, topY+ry-18, 'r = 4.6 cm', '#E85D75')}
+
+      <text x="${leftCx}" y="252" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#5E544D">Original Can</text>
+      <text x="${rightCx}" y="252" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="900" fill="#1A6A5C">New Can</text>
+    </svg>
+  </div>
+
+  <div class="question">
+    <div class="q-label">👁 Explore the clues</div>
+    <div class="q-hint">Some go deeper than others. Find the one that matters.</div>
+    <div class="options" style="margin-top:8px">
+      <button class="option explore" id="obs-A" onclick="obsClick('A')">
+        <div class="option-num">A</div><div>Both cans are exactly the same height</div>
+      </button>
+      <div class="explore-reveal purple-reveal" id="rev-A">True — h = 20 cm on both. SnackCo kept it identical. That's intentional.</div>
+
+      <button class="option explore" id="obs-B" onclick="obsClick('B')">
+        <div class="option-num">B</div><div>The new can has a smaller radius</div>
+      </button>
+      <div class="explore-reveal" id="rev-B">🎯 Yes — r dropped from 5 cm to 4.6 cm. That's an 8% reduction. Height stayed the same. Radius quietly changed.</div>
+
+      <button class="option explore" id="obs-C" onclick="obsClick('C')">
+        <div class="option-num">C</div><div>The label design looks different</div>
+      </button>
+      <div class="explore-reveal purple-reveal" id="rev-C">New design — but that tells us nothing about what's inside.</div>
+
+      <button class="option explore" id="obs-D" onclick="obsClick('D')">
+        <div class="option-num">D</div><div>The price hasn't changed</div>
+      </button>
+      <div class="explore-reveal purple-reveal" id="rev-D">Same price, possibly less product. That's the case you're building.</div>
+    </div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="btn-obs" onclick="next()" disabled>Next →</button>
+  </div>`;
+}
+
+function obsClick(l) {
+  const btn = document.getElementById(`obs-${l}`);
+  const rev = document.getElementById(`rev-${l}`);
+  btn.disabled = true;
+  if (l === 'B') {
+    btn.classList.add('hit');
+    rev.classList.add('show');
+    document.getElementById('btn-obs').disabled = false;
+  } else {
+    btn.classList.add('seen');
+    rev.classList.add('show');
+  }
+}
+
+// ═══════════════════════════════════
+// SECTION 2 — COMPREHEND
+// ═══════════════════════════════════
+function s2() {
+  return `${progressDots()}
+  <div class="step-label">Step 1 · Comprehend</div>
+  <div class="step-title">What is SnackCo hoping you'll think?</div>
+  ${pip(`Companies rely on one assumption to pull this off. Which one?`)}
+  <div class="question">
+    <div class="q-label">🧠 Pick the best answer</div>
+    <div class="q-text">When a customer sees two cans at the same price and height, what do they assume?</div>
+    <div class="options">
+      ${mcqOpt('c2','A','Same height = same amount of product', true)}
+      ${mcqOpt('c2','B','A new design always means better quality', false)}
+      ${mcqOpt('c2','C','A narrower can is easier to hold', false)}
+      ${mcqOpt('c2','D','Same price always means the same deal', false)}
+    </div>
+  </div>
+  <div class="feedback" id="fb-c2">
+    ✓ Exactly. <strong>Height is the dimension your eye measures on a shelf.</strong> We scan cans from the side — we see height. We almost never check width. SnackCo kept height identical and bet you wouldn't look further.
+  </div>
+  <div class="feedback wrong-fb" id="fb-c2-wrong">
+    Customers compare cans by looking at them from the side — height is what you see. Width is what you miss.
+  </div>
+  <div class="nav-row"><button class="btn" id="btn-c2" onclick="next()" disabled>Next →</button></div>`;
+}
+
+// ═══════════════════════════════════
+// SECTION 3 — PREDICT (with figure)
+// ═══════════════════════════════════
+function s3() {
+  const origRx=60, origH=160, topY=20, leftCx=130, rightCx=355;
+  const newRx=55; // 8% smaller
+  const ry=17;
+
+  return `${progressDots()}
+  <div class="step-label">Step 2 · Predict</div>
+  <div class="step-title">The new can is 8% narrower. How much less are you getting?</div>
+  ${pip(`Look at the two cans. The radius dropped from 5 cm to 4.6 cm. Before calculating anything — commit to a guess.`)}
+
+  <div class="product-block">
+    <svg viewBox="0 0 480 210" style="width:100%;max-width:460px;height:auto;display:block;margin:0 auto">
+      ${cyl(leftCx, topY, origRx, origH, '#F5EDD8','#C9BE9F','')}
+      ${cyl(rightCx, topY, newRx, origH, '#FDE7EB','#E85D75','')}
+
+      <!-- radius comparison arrows -->
+      ${dimArrowH(leftCx, leftCx+origRx, topY+ry-16, 'r = 5 cm', '#5E544D')}
+      ${dimArrowH(rightCx, rightCx+newRx, topY+ry-16, 'r = 4.6 cm', '#E85D75')}
+
+      <!-- height same annotation -->
+      <text x="245" y="${topY + origH/2 + 8}" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#99908A">same height</text>
+      <line x1="175" y1="${topY+origH/2}" x2="215" y2="${topY+origH/2}" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <line x1="275" y1="${topY+origH/2}" x2="295" y2="${topY+origH/2}" stroke="#C9BE9F" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+      <text x="${leftCx}" y="200" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#5E544D">Original</text>
+      <text x="${rightCx}" y="200" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="900" fill="#B72F47">New Can (−8% radius)</text>
+    </svg>
+  </div>
+
+  <div class="question">
+    <div class="q-label">🔮 Your prediction</div>
+    <div class="q-text">Radius reduced by 8%. How much less product do you think you're getting?</div>
+    <div class="predict-row">
+      <button class="predict-btn" id="pred-A" onclick="pickPred('A')"><span class="big">📉</span>Less than 8% less</button>
+      <button class="predict-btn" id="pred-B" onclick="pickPred('B')"><span class="big">🎯</span>About 8% less</button>
+      <button class="predict-btn" id="pred-C" onclick="pickPred('C')"><span class="big">📈</span>More than 8% less</button>
+    </div>
+  </div>
+  <div class="feedback" id="fb-pred" style="background:var(--orange-bg);border-left-color:var(--orange);">
+    Prediction locked in. We'll see exactly how close you were in Section 6.
+  </div>
+  <div class="nav-row"><button class="btn" id="btn-pred" onclick="next()" disabled>Next →</button></div>`;
+}
+
+function pickPred(l) {
+  predictChoice = l;
+  ['A','B','C'].forEach(x => document.getElementById(`pred-${x}`)?.classList.remove('selected'));
+  document.getElementById(`pred-${l}`).classList.add('selected');
+  document.getElementById('fb-pred').classList.add('show');
+  document.getElementById('btn-pred').disabled = false;
+}
+
+// ═══════════════════════════════════
+// SECTION 4 — INVESTIGATE
+// ═══════════════════════════════════
+function s4() {
+  return `${progressDots()}
+  <div class="step-label">Step 3 · Investigate</div>
+  <div class="step-title">What does volume actually depend on for a cylinder?</div>
+  ${pip(`A cylinder is the same circular slice all the way up. So what controls how much it holds — and are all dimensions equal?`)}
+  <div class="question">
+    <div class="q-label">🧮 Pick the right answer</div>
+    <div class="q-text">Volume of a cylinder = π × r² × h. What does this tell you about how r and h affect volume?</div>
+    <div class="options">
+      ${mcqOpt('c4','A','Only height matters — taller always means more', false)}
+      ${mcqOpt('c4','B','Only radius matters — wider always means more', false)}
+      ${mcqOpt('c4','C','Both matter — but radius is squared, so it punches harder', true)}
+      ${mcqOpt('c4','D','Height and radius affect volume equally', false)}
+    </div>
+  </div>
+  <div class="feedback" id="fb-c4">
+    ✓ Yes. V = π × r² × h. <strong>Radius is squared</strong> — it controls the width and depth of every circular slice simultaneously. Height only controls one direction. Same % change, very different impact.
+  </div>
+  <div class="feedback wrong-fb" id="fb-c4-wrong">
+    Look at the formula: V = π × r² × h. The r is squared. That means a change in r hits volume from two directions at once — width AND depth of every slice.
+  </div>
+  <div class="nav-row"><button class="btn" id="btn-c4" onclick="next()" disabled>Next →</button></div>`;
+}
+
+// ═══════════════════════════════════
+// SECTION 5 — TWO SLIDERS
+// ═══════════════════════════════════
+function s5() {
+  return `${progressDots()}
+  <div class="step-label">Step 4 · Explore</div>
+  <div class="step-title">Move the sliders. See what happens to volume.</div>
+  ${pip(`Try decreasing radius and height by the same amount. Which one changes the volume more — and by how much?`)}
+
+  <div class="slider-block">
+    <div class="slider-block-label">Decrease radius by</div>
+    <div class="slider-row">
+      <span class="slider-label" id="r-label">0%</span>
+      <input type="range" min="0" max="40" value="0" id="r-slider" oninput="updateCyl()">
+      <div class="slider-value" id="r-val">r = 5 cm</div>
+    </div>
+  </div>
+
+  <div class="slider-block">
+    <div class="slider-block-label">Decrease height by</div>
+    <div class="slider-row">
+      <span class="slider-label" id="h-label">0%</span>
+      <input type="range" min="0" max="40" value="0" id="h-slider" oninput="updateCyl()">
+      <div class="slider-value" id="h-val">h = 20 cm</div>
+    </div>
+  </div>
+
+  <div class="vis-area">
+    <svg id="cyl-svg" viewBox="0 0 300 230" style="width:100%;max-width:300px;height:auto;display:block;margin:0 auto"></svg>
+  </div>
+
+  <div class="vol-display">
+    <div class="vol-pill">
+      <div class="vp-label">Radius</div>
+      <div class="vp-val" id="vp-r">5.0 cm</div>
+      <div class="vp-sub" id="vp-r-sub">unchanged</div>
+    </div>
+    <div class="vol-pill">
+      <div class="vp-label">Height</div>
+      <div class="vp-val" id="vp-h">20.0 cm</div>
+      <div class="vp-sub" id="vp-h-sub">unchanged</div>
+    </div>
+    <div class="vol-pill highlight">
+      <div class="vp-label">Volume remaining</div>
+      <div class="vp-val" id="vp-vol">100%</div>
+      <div class="vp-sub" id="vp-lost">nothing lost yet</div>
+    </div>
+  </div>
+
+  <div class="callout" id="cyl-callout" style="margin-top:14px">
+    Move a slider to see the effect on volume.
+  </div>
+
+  <div class="nav-row"><button class="btn" onclick="next()">Next →</button></div>`;
+}
+
+function updateCyl() {
+  const rPct = parseInt(document.getElementById('r-slider').value);
+  const hPct = parseInt(document.getElementById('h-slider').value);
+
+  const rFactor = 1 - rPct/100;
+  const hFactor = 1 - hPct/100;
+  const volFactor = rFactor * rFactor * hFactor;
+
+  const rCm  = (5 * rFactor).toFixed(1);
+  const hCm  = (20 * hFactor).toFixed(1);
+  const volPct = (volFactor * 100).toFixed(1);
+  const lostPct = (100 - volFactor*100).toFixed(1);
+
+  // Labels
+  document.getElementById('r-label').textContent  = rPct + '%';
+  document.getElementById('h-label').textContent  = hPct + '%';
+  document.getElementById('r-val').textContent    = `r = ${rCm} cm`;
+  document.getElementById('h-val').textContent    = `h = ${hCm} cm`;
+  document.getElementById('vp-r').textContent     = rCm + ' cm';
+  document.getElementById('vp-r-sub').textContent = rPct > 0 ? `−${rPct}% from 5 cm` : 'unchanged';
+  document.getElementById('vp-h').textContent     = hCm + ' cm';
+  document.getElementById('vp-h-sub').textContent = hPct > 0 ? `−${hPct}% from 20 cm` : 'unchanged';
+  document.getElementById('vp-vol').textContent   = volPct + '%';
+  document.getElementById('vp-lost').textContent  = lostPct > 0 ? `lost ${lostPct}%` : 'nothing lost yet';
+
+  // Callout insight
+  let msg = 'Move a slider to see the effect on volume.';
+  if (rPct > 0 && hPct === 0) {
+    msg = `Radius cut <strong>${rPct}%</strong> → volume dropped by <strong>${lostPct}%</strong>. Notice it dropped more than ${rPct}%.`;
+  } else if (hPct > 0 && rPct === 0) {
+    msg = `Height cut <strong>${hPct}%</strong> → volume dropped by <strong>${lostPct}%</strong>. Exactly ${hPct}% — honest and linear.`;
+  } else if (rPct > 0 && hPct > 0) {
+    const rOnlyLoss = (100 - Math.pow(rFactor,2)*100).toFixed(1);
+    const hOnlyLoss = (100 - hFactor*100).toFixed(1);
+    msg = `Both changed: radius −${rPct}% would lose ${rOnlyLoss}% alone; height −${hPct}% would lose ${hOnlyLoss}% alone. Combined: <strong>${lostPct}% lost</strong>.`;
+  }
+  document.getElementById('cyl-callout').innerHTML = msg;
+
+  // Draw SVG — ghost + current cylinder
+  const origRx=90, origH=180, topY=16, cx=150;
+  const newRx = Math.max(8, Math.round(origRx * rFactor));
+  const newH  = Math.max(8, Math.round(origH  * hFactor));
+  const newTopY = topY + (origH - newH); // anchor to bottom
+
+  const fillColor = lostPct > 0 ? '#DFF5EF' : '#F5EDD8';
+  const strokeColor = lostPct > 0 ? '#2EB39E' : '#C9BE9F';
+
+  document.getElementById('cyl-svg').innerHTML =
+    cylGhost(cx, topY, origRx, origH) +
+    cyl(cx, newTopY, newRx, newH, fillColor, strokeColor, '');
+}
+
+// ═══════════════════════════════════
+// SECTION 6 — REASON
+// ═══════════════════════════════════
+function s6() {
+  return `${progressDots()}
+  <div class="step-label">Step 5 · Reason</div>
+  <div class="step-title">Why does radius hit harder than height?</div>
+  ${pip(`The sliders showed you the numbers. Now explain the <em>why</em>.`)}
+  <div class="question">
+    <div class="q-label">💡 Pick the best explanation</div>
+    <div class="q-text">An 8% radius cut loses more volume than an 8% height cut. Why?</div>
+    <div class="options">
+      ${mcqOpt('c6','A','Because radius is always a bigger number than height', false)}
+      ${mcqOpt('c6','B','Because radius controls both width and depth of every slice — two directions at once', true)}
+      ${mcqOpt('c6','C','Because the formula uses π which amplifies radius changes', false)}
+      ${mcqOpt('c6','D','Because height changes are visible, radius changes are not', false)}
+    </div>
+  </div>
+  <div class="feedback" id="fb-c6">
+    ✓ Exactly. When you shrink the radius, the circle shrinks in <strong>two directions at once</strong> — width and depth. It's like cutting both the length and width of a rectangle simultaneously. Height cuts one direction only. That's why radius always punches harder.
+  </div>
+  <div class="feedback wrong-fb" id="fb-c6-wrong">
+    Think of the circular base. Radius controls how wide it is left-to-right AND how deep it is front-to-back. Shrink it and you lose volume in both directions.
+  </div>
+
+  <div class="practice-box" id="practice-box" style="display:none">
+    <div class="practice-label">🏋️ Practice Question</div>
+    <div class="q-text" style="margin-bottom:12px">SnackCo's juice bottle team wants to cut volume by about 15%. Option A: make it <strong>15% shorter</strong>. Option B: make it <strong>8% narrower</strong>. Which option cuts more volume?</div>
+    <div class="options">
+      ${mcqOpt('prac','A','Option A — 15% shorter cuts more volume', false)}
+      ${mcqOpt('prac','B','Option B — 8% narrower cuts more volume', false)}
+      ${mcqOpt('prac','C','They cut almost the same amount', true)}
+    </div>
+    <div class="feedback" id="fb-prac">
+      ✓ Almost identical! <br>
+      15% shorter → volume = 85% of original → <strong>15% lost</strong>.<br>
+      8% narrower → volume = (0.92)² = 84.6% of original → <strong>15.4% lost</strong>.<br>
+      Same-looking result — very different dimensions changed. A tiny radius cut matched a big height cut.
+    </div>
+    <div class="feedback wrong-fb" id="fb-prac-wrong">
+      Check the maths: 15% height cut → 85% volume. 8% radius cut → (0.92)² = 84.6% volume. They're almost the same — because radius is squared, a small radius change packs as much punch as a large height change.
+    </div>
+  </div>
+
+  <div class="nav-row"><button class="btn" id="btn-c6" onclick="next()" disabled>Next →</button></div>`;
+}
+
+// Show practice after correct MCQ in s6
+function handleMCQs6(letter, correct) {
+  document.querySelectorAll(`[id^="opt-c6-"]`).forEach(o => o.disabled = true);
+  const el = document.getElementById(`opt-c6-${letter}`);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById('fb-c6').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('practice-box').style.display = 'block';
+      document.getElementById('practice-box').scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 500);
+  } else {
+    el.classList.add('wrong');
+    document.getElementById('fb-c6-wrong').classList.add('show');
+    document.getElementById('btn-c6').disabled = false;
+  }
+}
+
+// enable next after practice attempt
+function handlePrac(letter, correct) {
+  document.querySelectorAll(`[id^="opt-prac-"]`).forEach(o => o.disabled = true);
+  const el = document.getElementById(`opt-prac-${letter}`);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById('fb-prac').classList.add('show');
+  } else {
+    el.classList.add('wrong');
+    document.getElementById('fb-prac-wrong').classList.add('show');
+  }
+  document.getElementById('btn-c6').disabled = false;
+}
+
+// ═══════════════════════════════════
+// SECTION 7 — NAME THE TRICK
+// ═══════════════════════════════════
+function s7() {
+  return `${progressDots()}
+  <div class="step-label">Step 6 · Name It</div>
+  <div class="step-title">You caught them. What move did SnackCo make?</div>
+  ${pip(`Every trick has a name. What do we call this one?`)}
+  <div class="question">
+    <div class="q-label">🏷 Name the trick</div>
+    <div class="q-text">SnackCo reduced volume without anyone noticing. Which best describes what they did?</div>
+    <div class="options">
+      ${mcqOpt('c7','A','The Height Trick — made the can shorter where customers look', false)}
+      ${mcqOpt('c7','B','The Hidden Lever — shrunk the dimension nobody measures on a shelf', true)}
+      ${mcqOpt('c7','C','The Label Trick — distracted customers with a fresh design', false)}
+      ${mcqOpt('c7','D','The Price Trick — kept the price the same while cutting the product', false)}
+    </div>
+  </div>
+  <div class="feedback" id="fb-c7">
+    ✓ <strong>The Hidden Lever.</strong> Height is visible — it's what you scan on a shelf. Radius is invisible — it's what your volume bleeds from. A small twist nobody measures, worth millions in saved product across every store in the country.
+  </div>
+  <div class="feedback wrong-fb" id="fb-c7-wrong">
+    The key is which dimension is truly hidden. Customers look at height. Radius is the lever they never check.
+  </div>
+
+  <div id="tool-reveal" style="display:none">
+    <div class="tool-unlock">
+      <div class="tool-badge">🛠 Tool Unlocked</div>
+      <span class="tool-icon">🎚</span>
+      <div class="tool-name">The Hidden Lever</div>
+      <div class="tool-desc">
+        For a cylinder, V = π × r² × h. Radius is squared — a small radius cut bleeds far more volume than the same cut in height. Height is what customers see. Radius is what companies quietly twist.
+      </div>
+    </div>
+    <div class="bridge">
+      <strong>SnackCo used an honest shape and changed a hidden dimension.</strong><br>
+      But what if a company doesn't touch the dimensions at all — and uses the <em>shape itself</em> to deceive you? That's Challenge 3: The Hollow Illusion.
+    </div>
+    <div class="nav-row" style="margin-top:20px">
+      <button class="btn" onclick="window.location.href='hollow-illusion.html'">Challenge 3: The Hollow Illusion →</button>
+    </div>
+  </div>
+
+  <div class="nav-row" id="row-c7">
+    <button class="btn" id="btn-c7" onclick="next()" disabled>Next →</button>
+  </div>`;
+}
+
+function handleMCQc7(letter, correct) {
+  document.querySelectorAll(`[id^="opt-c7-"]`).forEach(o => o.disabled = true);
+  const el = document.getElementById(`opt-c7-${letter}`);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById('fb-c7').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('tool-reveal').style.display = 'block';
+      document.getElementById('row-c7').style.display = 'none';
+      document.getElementById('tool-reveal').scrollIntoView({behavior:'smooth', block:'start'});
+    }, 600);
+  } else {
+    el.classList.add('wrong');
+    document.getElementById('fb-c7-wrong').classList.add('show');
+    document.getElementById('btn-c7').disabled = false;
+  }
+}
+
+// ═══════════════════════════════════
+// MAIN RENDER
+// ═══════════════════════════════════
+const RENDERERS = [s0,s1,s2,s3,s4,s5,s6,s7];
+
+function render() {
+  renderSidebar();
+  document.getElementById('frame-content').innerHTML = RENDERERS[current]();
+
+  // Post-render patches
+  if (current === 5) {
+    updateCyl();
+  }
+  if (current === 6) {
+    // Wire up s6 MCQ and practice
+    ['A','B','C','D'].forEach(l => {
+      const o = document.getElementById(`opt-c6-${l}`);
+      if (o) o.onclick = () => handleMCQs6(l, l==='B');
+    });
+    ['A','B','C'].forEach(l => {
+      const o = document.getElementById(`opt-prac-${l}`);
+      if (o) o.onclick = () => handlePrac(l, l==='C');
+    });
+  }
+  if (current === 7) {
+    ['A','B','C','D'].forEach(l => {
+      const o = document.getElementById(`opt-c7-${l}`);
+      if (o) o.onclick = () => handleMCQc7(l, l==='B');
+    });
+  }
+}
+
+render();
+</script>
+</body>
+</html>

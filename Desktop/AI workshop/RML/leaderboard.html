@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard — Real Math League by Cuemath</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F8FAFC;
+    color: #0F172A;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4 { font-family: 'DM Sans', sans-serif; }
+
+  /* NAV */
+  nav {
+    background: #0F172A;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .nav-brand-cuemath {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #F97316;
+  }
+  .nav-brand-sep {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.2);
+  }
+  .nav-brand-rml {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #fff;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-links a.active { color: #fff; border-bottom: 2px solid #2563EB; padding-bottom: 2px; }
+  .nav-signin {
+    background: #2563EB;
+    color: #fff !important;
+    padding: 0.45rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .nav-signin:hover { background: #1d4ed8; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0F172A 0%, #1e293b 100%);
+    padding: 3.5rem 2rem 2rem;
+    text-align: center;
+  }
+  .hero h1 {
+    color: #fff;
+    font-size: 2.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .hero p {
+    color: rgba(255,255,255,0.6);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .tab-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.55rem 1.5rem;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { border-color: rgba(255,255,255,0.35); color: #fff; }
+  .tab-btn.active {
+    background: #2563EB;
+    border-color: #2563EB;
+    color: #fff;
+  }
+
+  /* TIME PILLS */
+  .time-pills {
+    display: flex;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+  .time-pill {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.35rem 1rem;
+    border-radius: 20px;
+    border: none;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .time-pill:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .time-pill.active { background: rgba(255,255,255,0.15); color: #fff; }
+
+  /* MAIN CONTENT */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* SEARCH */
+  .search-bar {
+    grid-column: 1 / -1;
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%;
+    padding: 0.9rem 1rem 0.9rem 3rem;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .search-bar input:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    opacity: 0.45;
+  }
+
+  /* TABLE */
+  .leaderboard-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    overflow: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  thead th:first-child { text-align: center; width: 70px; }
+  tbody tr {
+    transition: background 0.15s;
+  }
+  tbody tr:hover { background: #f1f5f9; }
+  tbody td {
+    padding: 0.9rem 1.25rem;
+    font-size: 0.92rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  tbody td:first-child { text-align: center; }
+  tbody tr:nth-child(even) { background: #fafbfc; }
+  tbody tr:nth-child(even):hover { background: #f1f5f9; }
+
+  /* RANK BADGES */
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .rank-gold { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+  .rank-silver { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #475569; }
+  .rank-bronze { background: linear-gradient(135deg, #ffedd5, #fed7aa); color: #9a3412; }
+  .rank-normal { color: #64748b; font-weight: 600; }
+
+  /* TOP 3 ROW ACCENTS */
+  .row-gold { border-left: 4px solid #F59E0B; background: #fffbeb !important; }
+  .row-gold:hover { background: #fef3c7 !important; }
+  .row-silver { border-left: 4px solid #94A3B8; background: #f8fafc !important; }
+  .row-silver:hover { background: #f1f5f9 !important; }
+  .row-bronze { border-left: 4px solid #D97706; background: #fffbeb !important; }
+  .row-bronze:hover { background: #fef9ee !important; }
+
+  .school-name { font-weight: 600; color: #0F172A; }
+  .city-name { color: #64748b; }
+  .stat-num { font-weight: 600; color: #0F172A; }
+  .stat-sub { font-size: 0.8rem; color: #94a3b8; }
+
+  /* CTA CARD */
+  .cta-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  .cta-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+  .cta-card p { font-size: 0.9rem; color: #64748b; margin-bottom: 1.25rem; }
+  .btn-coral {
+    display: inline-block;
+    background: #F97316;
+    color: #fff;
+    padding: 0.7rem 1.75rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-coral:hover { background: #ea580c; transform: translateY(-1px); }
+
+  /* SIDEBAR — YOUR STATS */
+  .sidebar { grid-row: 2 / 4; }
+  .stats-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    padding: 1.75rem;
+  }
+  .stats-card h3 {
+    font-size: 1rem;
+    margin-bottom: 1.25rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.8rem;
+  }
+  .stats-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB, #7c3aed);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+  }
+  .stats-name { font-weight: 600; font-size: 1.05rem; }
+  .stats-level { font-size: 0.8rem; color: #64748b; }
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { font-size: 0.88rem; color: #64748b; }
+  .stat-value { font-weight: 600; font-size: 0.95rem; }
+  .stat-value.xp { color: #2563EB; }
+  .stat-value.streak { color: #F97316; }
+  .stat-value.theme { color: #10B981; font-size: 0.85rem; }
+
+  /* FOOTER */
+  footer {
+    background: #0F172A;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+  }
+  footer p {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.85rem;
+  }
+  footer a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a:hover { color: #fff; }
+  .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 0.75rem; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <span class="nav-brand-cuemath">Cuemath</span>
+    <span class="nav-brand-sep"></span>
+    <span class="nav-brand-rml">Real Math League</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Explore Challenges</a></li>
+    <li><a href="leaderboard.html" class="active">Leaderboard</a></li>
+    <li><a href="#" class="nav-signin">Sign In</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>🏆 Leaderboard</h1>
+  <p>See how schools, cities, and explorers stack up</p>
+
+  <div class="tabs">
+    <button class="tab-btn active">Schools</button>
+    <button class="tab-btn">Cities</button>
+    <button class="tab-btn">Explorers</button>
+  </div>
+
+  <div class="time-pills">
+    <button class="time-pill active">This Week</button>
+    <button class="time-pill">This Month</button>
+    <button class="time-pill">All Time</button>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <span class="search-icon">🔍</span>
+    <input type="text" placeholder="Search for your school...">
+  </div>
+
+  <!-- TABLE -->
+  <div class="leaderboard-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>School</th>
+          <th>City</th>
+          <th>Challenges Completed</th>
+          <th>Active Explorers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="row-gold">
+          <td><span class="rank-badge rank-gold">1</span></td>
+          <td class="school-name">🥇 Thomas Jefferson School for Science</td>
+          <td class="city-name">Fairfax, VA</td>
+          <td><span class="stat-num">847</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">62</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr class="row-silver">
+          <td><span class="rank-badge rank-silver">2</span></td>
+          <td class="school-name">🥈 Basis Independent Silicon Valley</td>
+          <td class="city-name">San Jose, CA</td>
+          <td><span class="stat-num">723</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">54</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr class="row-bronze">
+          <td><span class="rank-badge rank-bronze">3</span></td>
+          <td class="school-name">🥉 Harker School</td>
+          <td class="city-name">San Jose, CA</td>
+          <td><span class="stat-num">698</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">48</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-normal">4</span></td>
+          <td class="school-name">Delhi Public School R.K. Puram</td>
+          <td class="city-name">New Delhi, India</td>
+          <td><span class="stat-num">641</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">71</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-normal">5</span></td>
+          <td class="school-name">Singapore American School</td>
+          <td class="city-name">Singapore</td>
+          <td><span class="stat-num">589</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">43</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-normal">6</span></td>
+          <td class="school-name">Lynbrook High School</td>
+          <td class="city-name">San Jose, CA</td>
+          <td><span class="stat-num">534</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">39</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-normal">7</span></td>
+          <td class="school-name">Mission San Jose High</td>
+          <td class="city-name">Fremont, CA</td>
+          <td><span class="stat-num">512</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">35</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-normal">8</span></td>
+          <td class="school-name">PSBB Senior Secondary</td>
+          <td class="city-name">Chennai, India</td>
+          <td><span class="stat-num">487</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">52</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-normal">9</span></td>
+          <td class="school-name">Stuyvesant High School</td>
+          <td class="city-name">New York, NY</td>
+          <td><span class="stat-num">456</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">33</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge rank-normal">10</span></td>
+          <td class="school-name">North London Collegiate</td>
+          <td class="city-name">Dubai, UAE</td>
+          <td><span class="stat-num">423</span> <span class="stat-sub">challenges</span></td>
+          <td><span class="stat-num">28</span> <span class="stat-sub">explorers</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="stats-card">
+      <h3>Your Stats</h3>
+      <div class="stats-profile">
+        <div class="avatar">AM</div>
+        <div>
+          <div class="stats-name">Arjun M.</div>
+          <div class="stats-level">Level 4 Explorer</div>
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Challenges Completed</span>
+        <span class="stat-value">23</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Total XP</span>
+        <span class="stat-value xp">2,450 XP</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Level</span>
+        <span class="stat-value">4</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Current Streak</span>
+        <span class="stat-value streak">🔥 7</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Top Theme</span>
+        <span class="stat-value theme">🚀 Space (8)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-card">
+    <h3>Your school not listed?</h3>
+    <p>Register your school for free and start competing on the leaderboard.</p>
+    <a href="#" class="btn-coral">Register School →</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="#">Real Math League by Cuemath</a>
+    <a href="challenge.html">Explore Challenges</a>
+    <a href="leaderboard.html">Leaderboard</a>
+  </div>
+  <p>&copy; 2026 Cuemath. All rights reserved.</p>
+</footer>
+
+  <!-- ── Mockup Nav Strip ─────────────────────────────── -->
+  <div style="position:fixed;bottom:0;left:0;right:0;background:#1E293B;border-top:2px solid #F97316;padding:10px 0;z-index:9999;font-family:'Inter',sans-serif;">
+    <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+      <span style="color:#94A3B8;font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-right:8px;">Mockup Pages:</span>
+      <a href="index.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Homepage</a>
+      <a href="challenge.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Challenges</a>
+      <a href="solve.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Solve Experience</a>
+      <a href="leaderboard.html" style="color:#F97316;font-size:13px;font-weight:600;text-decoration:none;padding:4px 12px;border-radius:6px;background:rgba(249,115,22,0.15);">Leaderboard</a>
+      <a href="share-card.html" style="color:#CBD5E1;font-size:13px;font-weight:500;text-decoration:none;padding:4px 12px;border-radius:6px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='none'">Share Card</a>
+    </div>
+  </div>
+
+</body>
+</html>
