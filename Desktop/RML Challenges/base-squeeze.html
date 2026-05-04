@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>The Base Squeeze — Volume Con · RML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1A1A1A; --bg:#fff;
+  --yellow:#F5C842; --mint:#2EB39E; --mint-bg:#E6F7F4;
+  --peach:#FF6B6B; --peach-bg:#FFF0F0;
+  --sky:#4DAAFF; --orange:#F99B4E;
+  --text:#1A1A1A; --text-2:#555; --text-3:#999;
+  --shadow:3px 3px 0 var(--ink); --shadow-sm:2px 2px 0 var(--ink);
+  --fd:'Sora',sans-serif; --fb:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--fb);background:#fff;color:var(--text);min-height:100dvh;
+  background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);
+  background-size:32px 32px;}
+
+/* HEADER */
+#hdr{position:sticky;top:0;z-index:100;background:#fff;border-bottom:2px solid var(--ink);
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;background-image:none;}
+.hdr-brand{font-family:var(--fd);font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;}
+.hdr-pill{background:var(--ink);color:#fff;font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;}
+#step-ind{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-3);letter-spacing:1px;}
+
+/* LAYOUT */
+.main{max-width:600px;margin:0 auto;padding:28px 20px 80px;}
+.step-label{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.step-title{font-family:var(--fd);font-size:clamp(22px,5.5vw,28px);font-weight:800;color:var(--text);margin-bottom:20px;line-height:1.2;}
+.q-prompt{font-family:var(--fd);font-size:clamp(17px,4.5vw,20px);font-weight:700;margin-bottom:16px;line-height:1.3;padding-left:14px;border-left:4px solid var(--yellow);}
+
+/* CHIPS */
+.chip{padding:14px 18px;font-family:var(--fd);font-size:15px;font-weight:700;
+  border:2px solid var(--ink);background:#fff;box-shadow:var(--shadow-sm);cursor:pointer;
+  text-align:left;user-select:none;-webkit-tap-highlight-color:transparent;width:100%;
+  display:block;margin-bottom:10px;transition:transform .08s,box-shadow .08s;}
+.chip:last-child{margin-bottom:0;}
+.chip:active{transform:translate(2px,2px);box-shadow:none;}
+.chip.selected{background:var(--yellow);}
+.chip.correct{background:var(--mint);color:#fff;border-color:var(--mint);}
+.chip.wrong{background:var(--peach-bg);border-color:var(--peach);animation:shake .35s;}
+.chips{display:flex;flex-direction:column;gap:0;margin:16px 0;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* FEEDBACK */
+.feedback{font-family:var(--fd);font-size:14px;font-weight:700;padding:12px 16px;margin-top:12px;
+  border:2px solid var(--mint);background:var(--mint-bg);color:var(--mint);display:none;line-height:1.5;}
+.feedback.wrong-fb{border-color:var(--peach);background:var(--peach-bg);color:var(--peach);}
+.feedback.show{display:block;}
+
+/* BUTTON */
+.btn{display:block;width:100%;padding:16px;font-family:var(--fd);font-size:16px;font-weight:800;
+  background:var(--yellow);border:2px solid var(--ink);box-shadow:var(--shadow);cursor:pointer;
+  margin-top:20px;-webkit-tap-highlight-color:transparent;transition:transform .08s,box-shadow .08s;
+  text-align:center;}
+.btn:active{transform:translate(3px,3px);box-shadow:none;}
+.btn:disabled{background:#E8E8E8;color:var(--text-3);cursor:not-allowed;box-shadow:var(--shadow-sm);}
+
+/* VIS AREA */
+.vis-area{border:2px solid var(--ink);box-shadow:var(--shadow);background:#F8F8F6;
+  margin-bottom:14px;overflow:hidden;padding:20px;text-align:center;}
+
+/* CALLOUT */
+.callout{border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:16px 18px;margin:14px 0;
+  background:#fff;font-family:var(--fd);font-size:15px;font-weight:700;line-height:1.6;}
+.callout strong{font-weight:800;}
+
+/* SLIDER */
+.slider-block{border:2px solid var(--ink);padding:16px 18px;margin-bottom:12px;background:#fff;box-shadow:var(--shadow-sm);}
+.slider-block-label{font-family:var(--fd);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:10px;}
+.slider-row{display:flex;align-items:center;gap:12px;}
+.slider-label{font-family:var(--fd);font-size:14px;font-weight:800;white-space:nowrap;min-width:40px;}
+input[type="range"]{flex:1;accent-color:var(--yellow);cursor:pointer;}
+
+/* VOL PILLS */
+.vol-display{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px;}
+.vol-pill{background:#fff;border:2px solid var(--ink);padding:14px;text-align:center;box-shadow:var(--shadow-sm);}
+.vol-pill .vp-label{font-family:var(--fd);font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.vol-pill .vp-val{font-family:var(--fd);font-size:22px;font-weight:800;color:var(--text);}
+.vol-pill .vp-sub{font-size:11px;color:var(--text-2);margin-top:3px;font-weight:600;}
+.vol-pill.highlight{background:#F5F5F5;}
+.vol-pill.loss .vp-val{color:var(--peach);}
+@keyframes flash-red{0%,100%{background:#fff}50%{background:var(--peach-bg)}}
+
+/* MEASURE */
+.zone-row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
+.zone-btn{flex:1;min-width:80px;padding:12px 8px;border:2px solid var(--ink);background:#fff;
+  font-family:var(--fd);font-size:13px;font-weight:700;cursor:pointer;text-align:center;
+  box-shadow:var(--shadow-sm);-webkit-tap-highlight-color:transparent;
+  transition:transform .08s,box-shadow .08s;}
+.zone-btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none;}
+.zone-btn.tapped{background:var(--mint);color:#fff;border-color:var(--mint);cursor:default;box-shadow:none;}
+.measure-card{border:2px solid var(--ink);padding:12px 14px;margin-top:10px;display:none;background:#fff;box-shadow:var(--shadow-sm);}
+.measure-card.show{display:block;animation:slideDown .25s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.measure-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;}
+.measure-row+.measure-row{border-top:1px solid #eee;}
+.measure-lbl{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;}
+.measure-val{font-family:var(--fd);font-size:15px;font-weight:800;}
+
+/* NAV */
+.nav-row{margin-top:20px;}
+
+/* PRESS CARD */
+.press-card{background:#fff;border:2px solid var(--ink);box-shadow:var(--shadow);padding:24px 28px;margin-bottom:20px;position:relative;}
+.press-card::before{content:"PRESS RELEASE";position:absolute;top:14px;right:18px;font-family:var(--fd);font-size:9px;letter-spacing:2px;color:var(--text-3);font-weight:700;}
+.press-logo{font-family:var(--fd);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+.press-divider{height:2px;background:var(--ink);margin:10px 0 14px;}
+.press-headline{font-family:var(--fd);font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.3;}
+.press-sub{font-family:var(--fb);font-size:13px;font-weight:500;color:var(--text-2);line-height:1.6;}
+
+/* SIMULATION */
+.sim-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.sim-col{border:2px solid var(--ink);padding:14px;text-align:center;box-shadow:var(--shadow-sm);}
+.sim-col-title{font-family:var(--fd);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-3);margin-bottom:8px;}
+.sim-loss{font-family:var(--fd);font-size:22px;font-weight:800;margin-top:6px;}
+
+/* SCENARIOS */
+.scenario-card{border:2px solid var(--ink);padding:20px;margin-bottom:14px;box-shadow:var(--shadow-sm);}
+.sc-label{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:6px;}
+.sc-q{font-family:var(--fd);font-size:16px;font-weight:800;color:var(--text);margin-bottom:14px;line-height:1.35;}
+.sc-score{text-align:right;font-family:var(--fd);font-size:13px;font-weight:700;color:var(--text-3);margin-bottom:12px;}
+
+/* EST PILL */
+.est-pill{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--ink);padding:8px 16px;margin-bottom:16px;font-family:var(--fd);font-size:14px;font-weight:700;background:var(--yellow);box-shadow:var(--shadow-sm);}
+.est-pill .lbl{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+
+/* MASCOT */
+.mascot-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;}
+.mascot{flex-shrink:0;width:62px;height:62px;}
+.bubble{flex:1;border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:13px 17px;font-family:var(--fb);font-size:14px;font-weight:500;line-height:1.55;position:relative;background:#fff;}
+.bubble::before{content:"";position:absolute;left:-10px;top:16px;border:10px solid transparent;border-right-color:var(--ink);border-left:0;}
+.bubble::after{content:"";position:absolute;left:-7px;top:18px;border:8px solid transparent;border-right-color:#fff;border-left:0;}
+.bubble .name{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:4px;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="pip">
+      <ellipse cx="50" cy="28" rx="26" ry="9" fill="#F99B4E"/>
+      <rect x="24" y="28" width="52" height="38" fill="#F99B4E"/>
+      <ellipse cx="50" cy="66" rx="26" ry="9" fill="#e8893a"/>
+      <circle cx="41" cy="46" r="6" fill="white"/>
+      <circle cx="59" cy="46" r="6" fill="white"/>
+      <circle cx="42" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="60" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="43" cy="46" r="1.2" fill="white"/>
+      <circle cx="61" cy="46" r="1.2" fill="white"/>
+      <path d="M 43 57 Q 50 63 57 57" stroke="#2B2320" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="28" y="10" width="44" height="20" rx="5" fill="#2B3861"/>
+      <rect x="18" y="26" width="64" height="6" rx="3" fill="#2B3861"/>
+      <circle cx="76" cy="70" r="10" fill="none" stroke="#2EB39E" stroke-width="3"/>
+      <line x1="83" y1="77" x2="90" y2="84" stroke="#2EB39E" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+</svg>
+
+<header id="hdr">
+  <div class="hdr-brand"><span>🍫</span><span>Volume Con</span><div class="hdr-pill">RML</div></div>
+  <div id="step-ind">1 / 10</div>
+</header>
+
+<main class="main">
+  <div id="frame-content"></div>
+</main>
+
+<script>
+const SECTIONS = [
+  {title:"The Hook"},
+  {title:"The Two Bars"},
+  {title:"Measure It"},
+  {title:"What Changed?"},
+  {title:"Your Theory"},
+  {title:"Your Estimate"},
+  {title:"See It Live"},
+  {title:"Why Two Cuts?"},
+  {title:"The Simulation"},
+  {title:"Lock It In"},
+  {title:"Close"},
+];
+
+let current = 0;
+let completed = new Set();
+let estimate = null;
+let measuresTapped = new Set();
+let lPct = 0, wPct = 0;
+let ahaShown = false;
+let simReveal = false;
+let scenarioIdx = 0;
+let scenarioScore = 0;
+
+// ── helpers ──────────────────────────────────────────
+function pip(text) {
+  return `<div class="mascot-row">
+    <div class="mascot"><svg viewBox="0 0 100 100"><use href="#pip"/></svg></div>
+    <div class="bubble"><div class="name">Pip · Volume Detective</div>${text}</div>
+  </div>`;
+}
+
+function mcqOpt(id, letter, text, correct) {
+  return `<button class="chip" id="opt-${id}-${letter}" data-correct="${correct}"
+    onclick="handleMCQ('${id}','${letter}',${correct})">${text}</button>`;
+}
+
+function handleMCQ(id, letter, correct) {
+  document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => o.disabled = true);
+  const el = document.getElementById(`opt-${id}-${letter}`);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById(`fb-${id}`)?.classList.add('show');
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll(`[id^="opt-${id}-"]`).forEach(o => {
+      if (o.dataset.correct === 'true') o.classList.add('correct');
+    });
+    document.getElementById(`fb-${id}-wrong`)?.classList.add('show');
+  }
+  const btn = document.getElementById(`btn-${id}`);
+  if (btn) btn.disabled = false;
+}
+
+// ── bar drawing ──────────────────────────────────────
+function barGhost(x, y, w, d) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${d}" fill="none" stroke="#999" stroke-width="1.5" stroke-dasharray="6,4" rx="2" opacity="0.6"/>`;
+}
+
+function barGrid(x, y, w, d, spacing) {
+  const lines = [];
+  for(let gx=x+spacing; gx<x+w; gx+=spacing)
+    lines.push(`<line x1="${gx}" y1="${y}" x2="${gx}" y2="${y+d}" stroke="#999" stroke-width="0.5" opacity="0.3"/>`);
+  for(let gy=y+spacing; gy<y+d; gy+=spacing)
+    lines.push(`<line x1="${x}" y1="${gy}" x2="${x+w}" y2="${gy}" stroke="#999" stroke-width="0.5" opacity="0.3"/>`);
+  return lines.join('');
+}
+
+function next() {
+  completed.add(current);
+  current = Math.min(current+1, SECTIONS.length-1);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const RENDERS = [s0,s1,s2,sWC,s3,s4,s5,s6,s7,s8,s9];
+function render() {
+  document.getElementById('frame-content').innerHTML = RENDERS[current]();
+  document.getElementById('step-ind').textContent = `${current+1} / ${SECTIONS.length}`;
+  if (current===6) { ahaShown=false; lPct=0; wPct=0; drawBarLive(0,0); }
+  if (current===8) { simReveal=false; drawSim(0); }
+}
+
+// ══════════════════════════════════════════════════════
+// S0 — THE HOOK
+// ══════════════════════════════════════════════════════
+function s0() {
+  const barSvg = `<svg viewBox="0 0 130 68" width="116" height="61" style="flex-shrink:0">
+    <rect x="4" y="8" width="122" height="56" fill="#F5F0E8" stroke="#999" stroke-width="1.5" rx="2"/>
+    ${barGrid(4,8,122,56,18)}
+    <rect x="4" y="8" width="122" height="56" fill="none" stroke="#999" stroke-width="1.5" rx="2"/>
+    <rect x="18" y="19" width="94" height="36" rx="2" fill="rgba(255,255,255,0.3)"/>
+    <text x="65" y="35" text-anchor="middle" font-family="Sora" font-size="11" font-weight="700" fill="#1A1A1A">ChocoBar</text>
+    <text x="65" y="48" text-anchor="middle" font-family="Sora" font-size="8" font-weight="600" fill="rgba(26,26,26,0.6)">NEW LOOK</text>
+  </svg>`;
+  return `<div class="step-label">The Base Squeeze · Challenge 2</div>
+  <div class="step-title">Different product. Same idea.</div>
+  <div class="callout" style="margin-bottom:16px;font-size:13px"><strong>Challenge 1:</strong> A can shrank 10% radius — lost 19% of drink. Same price.</div>
+  <div class="press-card">
+    <div style="display:flex;gap:20px;align-items:flex-start">
+      <div style="flex:1">
+        <div class="press-logo">ChocoBar</div>
+        <div class="press-divider"></div>
+        <div class="press-headline">New Look. Same Price.</div>
+        <div class="press-sub">ChocoBar refreshed their bar. Price didn't change. Did anything else?</div>
+      </div>
+      ${barSvg}
+    </div>
+  </div>
+  <div class="nav-row"><button class="btn" onclick="next()">Find out →</button></div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// S1 — THE TWO BARS
+// ══════════════════════════════════════════════════════
+function s1() {
+  const ox=20,oy=30,ow=180,od=90;
+  const nx=260,ny=34,nw=166,nd=83;
+  return `<div class="step-label">The Evidence</div>
+  <div class="step-title">Here are the old and new ChocoBar.</div>
+  ${pip("Two bars. Same price. Same wrapper. Take a look — anything different?")}
+  <div class="vis-area">
+    <svg viewBox="0 0 450 152" style="width:100%;max-width:440px;height:auto;display:block;margin:0 auto">
+      <rect x="${ox}" y="${oy}" width="${ow}" height="${od}" fill="#F5F0E8" stroke="#999" stroke-width="1.5" rx="2"/>
+      ${barGrid(ox,oy,ow,od,18)}
+      <rect x="${ox}" y="${oy}" width="${ow}" height="${od}" fill="none" stroke="#999" stroke-width="1.5" rx="2"/>
+      <rect x="${nx}" y="${ny}" width="${nw}" height="${nd}" fill="#F5F0E8" stroke="#999" stroke-width="1.5" rx="2"/>
+      ${barGrid(nx,ny,nw,nd,18)}
+      <rect x="${nx}" y="${ny}" width="${nw}" height="${nd}" fill="none" stroke="#999" stroke-width="1.5" rx="2"/>
+      <text x="${ox+ow/2}" y="146" text-anchor="middle" font-family="Sora" font-size="13" font-weight="700" fill="#555">Old Bar</text>
+      <text x="${nx+nw/2}" y="146" text-anchor="middle" font-family="Sora" font-size="13" font-weight="700" fill="#1A1A1A">New Bar</text>
+    </svg>
+  </div>
+  <div class="nav-row"><button class="btn" onclick="next()">Measure the bars →</button></div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// S2 — MEASURE IT
+// ══════════════════════════════════════════════════════
+function s2() {
+  const ox=25,oy=18,ow=156,od=78;
+  const nx=238,ny=22,nw=143,nd=72;
+  return `<div class="step-label">Investigate</div>
+  <div class="step-title">Tap each part to measure.</div>
+  <div class="vis-area" style="margin-bottom:8px">
+    <svg viewBox="0 0 410 112" style="width:100%;max-width:395px;height:auto;display:block;margin:0 auto">
+      <rect x="${ox}" y="${oy}" width="${ow}" height="${od}" fill="#F5F0E8" stroke="#bbb" stroke-width="1.5" rx="2"/>
+      ${barGrid(ox,oy,ow,od,16)}
+      <rect x="${ox}" y="${oy}" width="${ow}" height="${od}" fill="none" stroke="#bbb" stroke-width="1.5" rx="2"/>
+      <rect x="${nx}" y="${ny}" width="${nw}" height="${nd}" fill="#F5F0E8" stroke="#bbb" stroke-width="1.5" rx="2"/>
+      ${barGrid(nx,ny,nw,nd,16)}
+      <rect x="${nx}" y="${ny}" width="${nw}" height="${nd}" fill="none" stroke="#bbb" stroke-width="1.5" rx="2"/>
+      <text x="${ox+ow/2}" y="108" text-anchor="middle" font-family="Sora" font-size="12" font-weight="700" fill="#555">Old</text>
+      <text x="${nx+nw/2}" y="108" text-anchor="middle" font-family="Sora" font-size="12" font-weight="700" fill="#1A1A1A">New</text>
+    </svg>
+  </div>
+  <div class="zone-row">
+    <button class="zone-btn" id="zone-l" onclick="tapZone('l')">↔ Length</button>
+    <button class="zone-btn" id="zone-w" onclick="tapZone('w')">↕ Width</button>
+    <button class="zone-btn" id="zone-h" onclick="tapZone('h')">📏 Height</button>
+    <button class="zone-btn" id="zone-q" onclick="tapZone('q')">💰 Price</button>
+  </div>
+  <div class="measure-card" id="mc-l">
+    <div class="measure-row"><span class="measure-lbl">Old length</span><span class="measure-val">8.0 in</span></div>
+    <div class="measure-row"><span class="measure-lbl">New length</span><span class="measure-val">7.4 in</span></div>
+  </div>
+  <div class="measure-card" id="mc-w">
+    <div class="measure-row"><span class="measure-lbl">Old width</span><span class="measure-val">4.0 in</span></div>
+    <div class="measure-row"><span class="measure-lbl">New width</span><span class="measure-val">3.7 in</span></div>
+  </div>
+  <div class="measure-card" id="mc-h">
+    <div class="measure-row"><span class="measure-lbl">Old height</span><span class="measure-val">0.75 in</span></div>
+    <div class="measure-row"><span class="measure-lbl">New height</span><span class="measure-val">0.75 in</span></div>
+  </div>
+  <div class="measure-card" id="mc-q">
+    <div class="measure-row"><span class="measure-lbl">Old price</span><span class="measure-val">$2.99</span></div>
+    <div class="measure-row"><span class="measure-lbl">New price</span><span class="measure-val">$2.99</span></div>
+  </div>
+  <div class="nav-row"><button class="btn" id="btn-measure" onclick="next()" disabled>Next →</button></div>`;
+}
+
+function tapZone(z) {
+  measuresTapped.add(z);
+  const btn = document.getElementById(`zone-${z}`);
+  btn.classList.add('tapped');
+  btn.disabled = true;
+  document.getElementById(`mc-${z}`).classList.add('show');
+  if (measuresTapped.size >= 4) document.getElementById('btn-measure').disabled = false;
+}
+
+// ══════════════════════════════════════════════════════
+// SWC — WHAT CHANGED?
+// ══════════════════════════════════════════════════════
+function sWC() {
+  return `<div class="step-label">Observe</div>
+  <div class="q-prompt">Which dimensions changed?</div>
+  <div class="chips">
+    ${mcqOpt('ch','A','Length only',false)}
+    ${mcqOpt('ch','B','Length and width',true)}
+    ${mcqOpt('ch','C','Height only',false)}
+    ${mcqOpt('ch','D','All three',false)}
+  </div>
+  <div class="feedback" id="fb-ch">Right. Both base dimensions shrank — height and price stayed the same.</div>
+  <div class="feedback wrong-fb" id="fb-ch-wrong">Check each row. Which values are different between old and new?</div>
+  <div class="nav-row"><button class="btn" id="btn-ch" onclick="next()" disabled>Next →</button></div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// S3 — YOUR THEORY
+// ══════════════════════════════════════════════════════
+function s3() {
+  return `<div class="step-label">Your Theory</div>
+  <div class="q-prompt">What did ChocoBar actually do?</div>
+  <div class="chips">
+    ${mcqOpt('t','A','Raised the price and kept the bar the same',false)}
+    ${mcqOpt('t','B','Made the bar thinner — same footprint, less height',false)}
+    ${mcqOpt('t','C','Shrank the base — shorter and narrower — same price',true)}
+    ${mcqOpt('t','D','Changed the recipe to use less cocoa',false)}
+  </div>
+  <div class="feedback" id="fb-t">Same price. Smaller base. Now let's find out how much chocolate you're actually losing.</div>
+  <div class="feedback wrong-fb" id="fb-t-wrong">Look at the length and width numbers again. Price didn't change — but the base did.</div>
+  <div class="nav-row"><button class="btn" id="btn-t" onclick="next()" disabled>Next →</button></div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// S4 — YOUR ESTIMATE
+// ══════════════════════════════════════════════════════
+function s4() {
+  return `<div class="step-label">Your Estimate</div>
+  <div class="q-prompt">Both sides shrank 8%. How much chocolate is gone?</div>
+  ${pip("Length and width both shrank 8%. Both at the same time. Take a guess.")}
+  <div class="chips">
+    <button class="chip" id="est-A" onclick="pickEst('A','About 8%')">About 8% — same as one cut</button>
+    <button class="chip" id="est-B" onclick="pickEst('B','About 12%')">About 12% — splits the difference</button>
+    <button class="chip" id="est-C" onclick="pickEst('C','About 15%')">About 15% — cuts compound</button>
+    <button class="chip" id="est-D" onclick="pickEst('D','About 20%')">About 20% — double the damage</button>
+  </div>
+  <div class="feedback" id="fb-est">Locked in. Let's check.</div>
+  <div class="nav-row"><button class="btn" id="btn-est" onclick="next()" disabled>See what happens →</button></div>`;
+}
+
+function pickEst(l, text) {
+  estimate = text;
+  ['A','B','C','D'].forEach(x => {
+    const el = document.getElementById(`est-${x}`);
+    if (el) el.classList.remove('selected');
+  });
+  const el = document.getElementById(`est-${l}`);
+  if (el) el.classList.add('selected');
+  document.getElementById('fb-est').classList.add('show');
+  document.getElementById('btn-est').disabled = false;
+}
+
+// ══════════════════════════════════════════════════════
+// S5 — SEE IT LIVE
+// ══════════════════════════════════════════════════════
+function s5() {
+  const estText = estimate || '?';
+  return `<div class="step-label">See It Live</div>
+  <div class="step-title">Drag both sliders. Watch the bar shrink.</div>
+  <div class="est-pill"><span class="lbl">Your guess</span><span>${estText} volume loss</span></div>
+  <div class="vis-area">
+    <svg id="bar-svg" viewBox="0 0 270 138" style="width:100%;max-width:300px;height:auto;display:block;margin:0 auto"></svg>
+  </div>
+  <div class="slider-block">
+    <div class="slider-block-label">Shrink Length by</div>
+    <div class="slider-row">
+      <span class="slider-label" id="l-pct-lbl">0%</span>
+      <input type="range" min="0" max="25" value="0" id="l-slider" oninput="onLSlider()">
+    </div>
+  </div>
+  <div class="slider-block">
+    <div class="slider-block-label">Shrink Width by</div>
+    <div class="slider-row">
+      <span class="slider-label" id="w-pct-lbl">0%</span>
+      <input type="range" min="0" max="25" value="0" id="w-slider" oninput="onWSlider()">
+    </div>
+  </div>
+  <div class="vol-display">
+    <div class="vol-pill">
+      <div class="vp-label">Length</div>
+      <div class="vp-val" id="vp-l">original</div>
+      <div class="vp-sub" id="vp-lsub">8.0 in</div>
+    </div>
+    <div class="vol-pill highlight">
+      <div class="vp-label">Volume left</div>
+      <div class="vp-val" id="vp-vol">100%</div>
+      <div class="vp-sub">of original</div>
+    </div>
+    <div class="vol-pill loss" id="pill-lost">
+      <div class="vp-label">Volume lost</div>
+      <div class="vp-val" id="vp-lost">0%</div>
+      <div class="vp-sub" id="vp-lostsub">&nbsp;</div>
+    </div>
+  </div>
+  <div id="aha-box" class="callout" style="display:none">
+    You guessed <strong>${estText}</strong>. At 8% each — actual volume lost: <strong style="color:var(--peach)">~15.4%</strong>.<br>
+    Not 8% — you cut two dimensions. Not 16% — the cuts multiply, not add.
+  </div>
+  <div class="nav-row"><button class="btn" id="btn-s5" onclick="next()" disabled>Why does this happen? →</button></div>`;
+}
+
+function drawBarLive(lP, wP) {
+  const svg = document.getElementById('bar-svg');
+  if (!svg) return;
+  const ox=25, oy=16, ow=220, od=110;
+  const nw = Math.round(ow*(1-lP/100));
+  const nd = Math.round(od*(1-wP/100));
+
+  const grid = [];
+  for(let gx=ox+9; gx<ox+ow; gx+=9)
+    grid.push(`<line x1="${gx}" y1="${oy}" x2="${gx}" y2="${oy+od}" stroke="#999" stroke-width="0.5" opacity="0.25"/>`);
+  for(let gy=oy+9; gy<oy+od; gy+=9)
+    grid.push(`<line x1="${ox}" y1="${gy}" x2="${ox+ow}" y2="${gy}" stroke="#999" stroke-width="0.5" opacity="0.25"/>`);
+
+  svg.innerHTML =
+    `<rect x="${ox}" y="${oy}" width="${ow}" height="${od}" fill="#F5F0E8" rx="2"/>` +
+    grid.join('') +
+    barGhost(ox, oy, ow, od) +
+    (lP>0 ? `<rect x="${ox+nw}" y="${oy}" width="${ow-nw}" height="${nd}" fill="#FF6B6B" opacity="0.35"/>` : '') +
+    (lP>0 ? `<rect x="${ox+nw}" y="${oy+nd}" width="${ow-nw}" height="${od-nd}" fill="#FF6B6B" opacity="0.5"/>` : '') +
+    (wP>0 ? `<rect x="${ox}" y="${oy+nd}" width="${nw}" height="${od-nd}" fill="#FF6B6B" opacity="0.35"/>` : '') +
+    `<rect x="${ox}" y="${oy}" width="${nw}" height="${nd}" fill="none" stroke="#1A1A1A" stroke-width="2.5" rx="2"/>`;
+}
+
+function updateVolPills() {
+  const lF = 1 - lPct/100;
+  const wF = 1 - wPct/100;
+  const vF = lF * wF;
+  const volPct = (vF*100).toFixed(0);
+  const lostPct = ((1-vF)*100).toFixed(1);
+  const newL = (8*lF).toFixed(1);
+
+  document.getElementById('l-pct-lbl').textContent = `${lPct}%`;
+  document.getElementById('w-pct-lbl').textContent = `${wPct}%`;
+  const lEl = document.getElementById('vp-l');
+  lEl.textContent = lPct>0 ? `−${lPct}% smaller` : 'original';
+  lEl.style.color = lPct>0 ? 'var(--peach)' : 'var(--text)';
+  document.getElementById('vp-lsub').textContent = `${newL} in`;
+  document.getElementById('vp-vol').textContent = `${volPct}%`;
+  document.getElementById('vp-lost').textContent = `${lostPct}%`;
+
+  if (lPct>=8 && wPct>=8) {
+    document.getElementById('vp-lostsub').textContent = 'more than either cut!';
+    const pill = document.getElementById('pill-lost');
+    pill.style.animation = 'none';
+    pill.offsetHeight;
+    pill.style.animation = 'flash-red .6s';
+    if (!ahaShown) {
+      ahaShown = true;
+      document.getElementById('aha-box').style.display = 'block';
+      document.getElementById('btn-s5').disabled = false;
+    }
+  } else {
+    document.getElementById('vp-lostsub').textContent = '\u00a0';
+  }
+}
+
+function onLSlider() {
+  lPct = parseInt(document.getElementById('l-slider').value);
+  updateVolPills();
+  drawBarLive(lPct, wPct);
+}
+function onWSlider() {
+  wPct = parseInt(document.getElementById('w-slider').value);
+  updateVolPills();
+  drawBarLive(lPct, wPct);
+}
+
+// ══════════════════════════════════════════════════════
+// S6 — WHY TWO CUTS?
+// ══════════════════════════════════════════════════════
+function s6() {
+  const compVis = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+    <div style="border:2px solid var(--peach);padding:12px 8px;text-align:center;box-shadow:var(--shadow-sm);background:var(--peach-bg)">
+      <div style="font-family:var(--fd);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--peach);font-weight:700;margin-bottom:8px">One cut: −16% length</div>
+      <svg viewBox="0 0 120 52" style="width:100%;max-width:120px;height:44px;display:block;margin:0 auto">
+        <rect x="4" y="4" width="112" height="44" fill="none" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,3" rx="2"/>
+        <rect x="4" y="4" width="94" height="44" fill="#FFF0F0" stroke="#FF6B6B" stroke-width="2" rx="2"/>
+      </svg>
+      <div style="font-family:var(--fd);font-size:12px;font-weight:800;color:var(--peach);margin-top:6px">Noticeably shorter</div>
+    </div>
+    <div style="border:2px solid var(--mint);padding:12px 8px;text-align:center;box-shadow:var(--shadow-sm);background:var(--mint-bg)">
+      <div style="font-family:var(--fd);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--mint);font-weight:700;margin-bottom:8px">Two cuts: −8% each</div>
+      <svg viewBox="0 0 120 52" style="width:100%;max-width:120px;height:44px;display:block;margin:0 auto">
+        <rect x="4" y="4" width="112" height="44" fill="none" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,3" rx="2"/>
+        <rect x="4" y="4" width="103" height="40" fill="#E6F7F4" stroke="#2EB39E" stroke-width="2" rx="2"/>
+      </svg>
+      <div style="font-family:var(--fd);font-size:12px;font-weight:800;color:var(--mint);margin-top:6px">Hard to spot</div>
+    </div>
+  </div>`;
+  return `<div class="step-label">Think About It</div>
+  ${compVis}
+  <div class="q-prompt">Why two small cuts instead of one big one?</div>
+  <div class="chips">
+    ${mcqOpt('why','A','One big cut is easy to spot — two small ones each look fine',true)}
+    ${mcqOpt('why','B','Two cuts spread the cost across production changes',false)}
+    ${mcqOpt('why','C','One big cut makes the bar too thin to snap',false)}
+    ${mcqOpt('why','D','Food rules limit any single cut to under 10%',false)}
+  </div>
+  <div class="feedback" id="fb-why">A 16% shorter bar looks stubby on a shelf. 8% on each side? Easy to miss.</div>
+  <div class="feedback wrong-fb" id="fb-why-wrong">Look at the two bars above. Which one is easier to notice?</div>
+  <div class="nav-row"><button class="btn" id="btn-why" onclick="next()" disabled>See the maths →</button></div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// S7 — THE SIMULATION
+// ══════════════════════════════════════════════════════
+function s7() {
+  return `<div class="step-label">Prove It</div>
+  <div class="step-title">Same cut. One dimension vs two. See who loses more.</div>
+  <div class="sim-row">
+    <div class="sim-col">
+      <div class="sim-col-title">Cut Length Only</div>
+      <svg id="sim-one" viewBox="0 0 130 82" style="width:110px;height:70px;display:block;margin:0 auto"></svg>
+      <div style="font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-3);margin:4px 0 2px">−<span id="sim-opct">0</span>% length</div>
+      <div class="sim-loss" id="sim-oloss" style="color:var(--sky)">−0% volume</div>
+    </div>
+    <div class="sim-col">
+      <div class="sim-col-title">Cut Length + Width</div>
+      <svg id="sim-two" viewBox="0 0 130 82" style="width:110px;height:70px;display:block;margin:0 auto"></svg>
+      <div style="font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-3);margin:4px 0 2px">−<span id="sim-tpct">0</span>% each</div>
+      <div class="sim-loss" id="sim-tloss" style="color:var(--peach)">−0% volume</div>
+    </div>
+  </div>
+  <div class="slider-block">
+    <div class="slider-block-label">Drag both together</div>
+    <div class="slider-row">
+      <span class="slider-label" id="sim-pct-lbl">0%</span>
+      <input type="range" min="0" max="25" value="0" id="sim-slider" oninput="onSim()">
+    </div>
+  </div>
+  <div id="sim-callout" class="callout" style="display:none">
+    <strong>Same cut. Different damage.</strong> One dimension = that % volume loss.<br>
+    Two dimensions = cuts multiply — you lose more than double the single cut.
+  </div>
+  <div class="nav-row"><button class="btn" id="btn-sim" onclick="next()" disabled>Next →</button></div>`;
+}
+
+function drawSim(pct) {
+  const ox=15, oy=12, ow=100, od=50;
+  const nw = Math.round(ow*(1-pct/100));
+  const nd = Math.round(od*(1-pct/100));
+  const svgOne = document.getElementById('sim-one');
+  const svgTwo = document.getElementById('sim-two');
+  if (svgOne) svgOne.innerHTML =
+    barGhost(ox, oy, ow, od) +
+    `<rect x="${ox}" y="${oy}" width="${nw}" height="${od}" fill="#EEF6FF" stroke="#4DAAFF" stroke-width="1.5" rx="2"/>`;
+  if (svgTwo) svgTwo.innerHTML =
+    barGhost(ox, oy, ow, od) +
+    `<rect x="${ox}" y="${oy}" width="${nw}" height="${nd}" fill="#FFF0F0" stroke="#FF6B6B" stroke-width="1.5" rx="2"/>`;
+}
+
+function onSim() {
+  const pct = parseInt(document.getElementById('sim-slider').value);
+  document.getElementById('sim-pct-lbl').textContent = `${pct}%`;
+  document.getElementById('sim-opct').textContent = pct;
+  document.getElementById('sim-tpct').textContent = pct;
+  document.getElementById('sim-oloss').textContent = `\u2212${pct}% volume`;
+  const twoLoss = (100*(1-(1-pct/100)*(1-pct/100))).toFixed(0);
+  document.getElementById('sim-tloss').textContent = `\u2212${twoLoss}% volume`;
+  drawSim(pct);
+  if (pct>=8 && !simReveal) {
+    simReveal = true;
+    document.getElementById('sim-callout').style.display = 'block';
+    document.getElementById('btn-sim').disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// S8 — LOCK IT IN
+// ══════════════════════════════════════════════════════
+const SCENARIOS = [
+  {
+    lbl:'Scenario 1',
+    q:'ChocoBar cuts the height by 5%. Width and length unchanged. Volume lost?',
+    opts:['2.5%','5%','10%','9.75%'],
+    correct:1,
+    note:'Height is linear — 5% less height = exactly 5% less volume. One cut, one honest loss.'
+  },
+  {
+    lbl:'Scenario 2',
+    q:'A new bar cuts length by 12%. Width and height unchanged. Volume lost?',
+    opts:['6%','12%','23%','24%'],
+    correct:1,
+    note:'One base dimension is linear too — 12% length cut = 12% volume lost. Same rule.'
+  },
+  {
+    lbl:'Scenario 3',
+    q:'CrunchCo cuts length AND width by 10%. How much volume is gone?',
+    opts:['10%','14%','19%','20%'],
+    correct:2,
+    note:'Two cuts multiply: 0.9 × 0.9 = 0.81, so 19% volume is gone. Not 10%. Not 20%.'
+  },
+];
+
+function s8() {
+  scenarioIdx = 0;
+  scenarioScore = 0;
+  return sceneFrame();
+}
+
+function sceneFrame() {
+  const sc = SCENARIOS[scenarioIdx];
+  const isLast = scenarioIdx === SCENARIOS.length - 1;
+  return `<div class="step-label">Lock It In</div>
+  <div class="step-title">Your turn. How much volume is lost?</div>
+  <div class="sc-score">${scenarioIdx} / ${SCENARIOS.length} done</div>
+  <div class="scenario-card">
+    <div class="sc-label">${sc.lbl}</div>
+    <div class="sc-q">${sc.q}</div>
+    <div class="chips" id="sc-opts">
+      ${sc.opts.map((o,i)=>`<button class="chip" id="sc-opt-${i}" onclick="pickScene(${i},${i===sc.correct})">${o}</button>`).join('')}
+    </div>
+    <div class="feedback" id="sc-fb">${sc.note}</div>
+    <div class="feedback wrong-fb" id="sc-fb-wrong">Not quite. ${sc.note}</div>
+  </div>
+  <div class="nav-row">
+    <button class="btn" id="btn-sc" onclick="advScene()" disabled>${isLast?'Finish →':'Next scenario →'}</button>
+  </div>`;
+}
+
+function pickScene(i, correct) {
+  document.querySelectorAll('[id^="sc-opt-"]').forEach(b => b.disabled=true);
+  const el = document.getElementById(`sc-opt-${i}`);
+  if (correct) {
+    el.classList.add('correct');
+    scenarioScore++;
+    document.getElementById('sc-fb').classList.add('show');
+  } else {
+    el.classList.add('wrong');
+    document.getElementById('sc-fb-wrong').classList.add('show');
+    document.getElementById(`sc-opt-${SCENARIOS[scenarioIdx].correct}`).classList.add('correct');
+  }
+  document.getElementById('btn-sc').disabled = false;
+}
+
+function advScene() {
+  scenarioIdx++;
+  if (scenarioIdx >= SCENARIOS.length) { next(); return; }
+  document.getElementById('frame-content').innerHTML = sceneFrame();
+}
+
+// ══════════════════════════════════════════════════════
+// S9 — CLOSE
+// ══════════════════════════════════════════════════════
+function s9() {
+  const estText = estimate || 'some amount';
+  const ox=22,oy=28,ow=166,od=83;
+  const nx=240,ny=34,nw=152,nd=76;
+  return `<div class="step-label">Case Closed</div>
+  <div class="step-title">Same price. 0.5 oz less chocolate.</div>
+  ${pip(`You guessed ${estText}. Actual: ~15%.<br>Always check the oz — not just the wrapper.<br><br>Next: a cone glass. The trick is the shape itself.`)}
+  <div class="vis-area">
+    <svg viewBox="0 0 425 148" style="width:100%;max-width:415px;height:auto;display:block;margin:0 auto">
+      <rect x="${ox}" y="${oy}" width="${ow}" height="${od}" fill="#F5F0E8" stroke="#999" stroke-width="1.5" rx="2"/>
+      ${barGrid(ox,oy,ow,od,14)}
+      <rect x="${ox}" y="${oy}" width="${ow}" height="${od}" fill="none" stroke="#999" stroke-width="1.5" rx="2"/>
+      <rect x="${nx}" y="${ny}" width="${nw}" height="${nd}" fill="#F5F0E8" stroke="#999" stroke-width="1.5" rx="2"/>
+      ${barGrid(nx,ny,nw,nd,14)}
+      <rect x="${nx}" y="${ny}" width="${nw}" height="${nd}" fill="none" stroke="#999" stroke-width="1.5" rx="2"/>
+      <rect x="${ox+14}" y="${oy+18}" width="72" height="26" rx="2" fill="white" opacity="0.9"/>
+      <text x="${ox+50}" y="${oy+35}" text-anchor="middle" font-family="Sora" font-size="15" font-weight="800" fill="#FF6B6B">3.5 oz</text>
+      <rect x="${nx+12}" y="${ny+16}" width="72" height="26" rx="2" fill="white" opacity="0.9"/>
+      <text x="${nx+48}" y="${ny+33}" text-anchor="middle" font-family="Sora" font-size="15" font-weight="800" fill="#FF6B6B">3.0 oz</text>
+      <text x="${ox+ow/2}" y="142" text-anchor="middle" font-family="Sora" font-size="12" font-weight="700" fill="#555">Old Bar</text>
+      <text x="${nx+nw/2}" y="142" text-anchor="middle" font-family="Sora" font-size="12" font-weight="700" fill="#1A1A1A">New Bar</text>
+    </svg>
+  </div>
+  <div class="nav-row"><button class="btn" onclick="window.location.href='hollow-illusion.html'">Next Challenge →</button></div>`;
+}
+
+// ── init ──────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

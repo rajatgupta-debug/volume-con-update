@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>The Verdict — Volume Con · RML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1A1A1A; --bg:#fff;
+  --yellow:#F5C842; --mint:#2EB39E; --mint-bg:#E6F7F4;
+  --peach:#FF6B6B; --peach-bg:#FFF0F0;
+  --sky:#4DAAFF; --sky-bg:#EEF6FF;
+  --orange:#F99B4E;
+  --text:#1A1A1A; --text-2:#555; --text-3:#999;
+  --shadow:3px 3px 0 var(--ink); --shadow-sm:2px 2px 0 var(--ink);
+  --fd:'Sora',sans-serif; --fb:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--fb);background:#fff;color:var(--text);min-height:100dvh;
+  background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);
+  background-size:32px 32px;}
+
+/* HEADER */
+#hdr{position:sticky;top:0;z-index:100;background:#fff;border-bottom:2px solid var(--ink);
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;background-image:none;}
+.hdr-brand{font-family:var(--fd);font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;}
+.hdr-pill{background:var(--ink);color:#fff;font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;}
+.hdr-tag{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-3);letter-spacing:1px;text-transform:uppercase;}
+
+/* LAYOUT */
+.main{max-width:600px;margin:0 auto;padding:28px 20px 80px;}
+.step-label{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.step-title{font-family:var(--fd);font-size:clamp(22px,5.5vw,28px);font-weight:800;color:var(--text);margin-bottom:20px;line-height:1.2;}
+
+/* VERDICT CARD */
+.verdict-card{background:var(--ink);color:#fff;border:2px solid var(--ink);box-shadow:var(--shadow);padding:24px;margin-bottom:20px;}
+.vc-label{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.6;margin-bottom:10px;}
+.vc-title{font-family:var(--fd);font-size:clamp(18px,4.5vw,22px);font-weight:800;margin-bottom:20px;line-height:1.2;}
+.vc-tools{display:flex;flex-direction:column;gap:10px;}
+.vc-tool{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:14px 16px;display:flex;align-items:flex-start;gap:14px;}
+.vc-tool-num{font-family:var(--fd);font-size:20px;font-weight:800;opacity:.5;flex-shrink:0;line-height:1;}
+.vc-tool-name{font-family:var(--fd);font-size:14px;font-weight:800;margin-bottom:4px;}
+.vc-tool-desc{font-family:var(--fb);font-size:13px;opacity:.75;line-height:1.5;font-weight:500;}
+
+/* FINDING ROWS */
+.finding-row{border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:14px 16px;margin-bottom:10px;background:#fff;display:flex;align-items:flex-start;gap:14px;}
+.finding-row:last-child{margin-bottom:0;}
+.fr-badge{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:var(--yellow);color:var(--ink);padding:3px 8px;flex-shrink:0;margin-top:2px;}
+.fr-text{font-family:var(--fb);font-size:14px;font-weight:500;color:var(--text);line-height:1.5;}
+.fr-text strong{font-family:var(--fd);font-weight:800;}
+
+/* MASCOT */
+.mascot-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;}
+.mascot{flex-shrink:0;width:62px;height:62px;}
+.bubble{flex:1;border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:13px 17px;font-family:var(--fb);font-size:14px;font-weight:500;line-height:1.55;position:relative;background:#fff;}
+.bubble::before{content:"";position:absolute;left:-10px;top:16px;border:10px solid transparent;border-right-color:var(--ink);border-left:0;}
+.bubble::after{content:"";position:absolute;left:-7px;top:18px;border:8px solid transparent;border-right-color:#fff;border-left:0;}
+.bubble .name{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:4px;}
+
+/* DIVIDER */
+.divider{border:none;border-top:2px solid var(--ink);margin:20px 0;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="pip">
+      <ellipse cx="50" cy="28" rx="26" ry="9" fill="#F99B4E"/>
+      <rect x="24" y="28" width="52" height="38" fill="#F99B4E"/>
+      <ellipse cx="50" cy="66" rx="26" ry="9" fill="#e8893a"/>
+      <circle cx="41" cy="46" r="6" fill="white"/>
+      <circle cx="59" cy="46" r="6" fill="white"/>
+      <circle cx="42" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="60" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="43" cy="46" r="1.2" fill="white"/>
+      <circle cx="61" cy="46" r="1.2" fill="white"/>
+      <path d="M 43 57 Q 50 63 57 57" stroke="#2B2320" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="28" y="10" width="44" height="20" rx="5" fill="#2B3861"/>
+      <rect x="18" y="26" width="64" height="6" rx="3" fill="#2B3861"/>
+      <circle cx="76" cy="70" r="10" fill="none" stroke="#2EB39E" stroke-width="3"/>
+      <line x1="83" y1="77" x2="90" y2="84" stroke="#2EB39E" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+</svg>
+
+<header id="hdr">
+  <div class="hdr-brand"><span>📦</span><span>Volume Con</span><div class="hdr-pill">RML</div></div>
+  <div class="hdr-tag">Complete</div>
+</header>
+
+<main class="main">
+
+  <div class="step-label">Series Complete</div>
+  <div class="step-title">Three shapes. Three cons.</div>
+
+  <div class="verdict-card">
+    <div class="vc-label">Volume Con · What You Found</div>
+    <div class="vc-title">Same price. Less product. Every time.</div>
+    <div class="vc-tools">
+      <div class="vc-tool">
+        <div class="vc-tool-num">1</div>
+        <div>
+          <div class="vc-tool-name">The Shrinkflation Scam</div>
+          <div class="vc-tool-desc">Radius is squared. A 10% radius cut removes 19% of volume — not 10%.</div>
+        </div>
+      </div>
+      <div class="vc-tool">
+        <div class="vc-tool-num">2</div>
+        <div>
+          <div class="vc-tool-name">The Base Squeeze</div>
+          <div class="vc-tool-desc">Two cuts multiply. 8% off each side of the base removes 15% total.</div>
+        </div>
+      </div>
+      <div class="vc-tool">
+        <div class="vc-tool-num">3</div>
+        <div>
+          <div class="vc-tool-name">The Hollow Illusion</div>
+          <div class="vc-tool-desc">A cone at 80% height holds only 51% of its volume. The bottom is almost empty.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="step-label" style="margin-top:24px">The Pattern</div>
+  <div class="finding-row">
+    <div class="fr-badge">Why</div>
+    <div class="fr-text">Volume formulas are <strong>non-linear</strong>. Small dimension cuts cause <strong>bigger volume losses</strong> than they appear.</div>
+  </div>
+  <div class="finding-row">
+    <div class="fr-badge">How</div>
+    <div class="fr-text">Always check the <strong>fl oz or oz</strong> on the label — not the shape, the price, or how full it looks.</div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="mascot-row">
+    <svg class="mascot" viewBox="0 0 100 100"><use href="#pip"/></svg>
+    <div class="bubble">
+      <div class="name">Pip · Volume Detective</div>
+      The radius, the base, the fill line. Three hiding spots. All easy to miss if you don't know the formula.<br><br>Now you do.
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

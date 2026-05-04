@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>The Hollow Illusion — Volume Con · RML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:#1A1A1A; --bg:#fff;
+  --yellow:#F5C842; --mint:#2EB39E; --mint-bg:#E6F7F4;
+  --peach:#FF6B6B; --peach-bg:#FFF0F0;
+  --sky:#4DAAFF; --sky-bg:#EEF6FF;
+  --orange:#F99B4E;
+  --text:#1A1A1A; --text-2:#555; --text-3:#999;
+  --shadow:3px 3px 0 var(--ink); --shadow-sm:2px 2px 0 var(--ink);
+  --fd:'Sora',sans-serif; --fb:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--fb);background:#fff;color:var(--text);min-height:100dvh;
+  background-image:linear-gradient(rgba(0,0,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.03) 1px,transparent 1px);
+  background-size:32px 32px;}
+
+/* HEADER */
+#hdr{position:sticky;top:0;z-index:100;background:#fff;border-bottom:2px solid var(--ink);
+  padding:12px 20px;display:flex;align-items:center;justify-content:space-between;background-image:none;}
+.hdr-brand{font-family:var(--fd);font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;}
+.hdr-pill{background:var(--ink);color:#fff;font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;}
+#step-ind{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-3);letter-spacing:1px;}
+
+/* LAYOUT */
+.main{max-width:600px;margin:0 auto;padding:28px 20px 80px;}
+.step-label{font-family:var(--fd);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-3);margin-bottom:8px;}
+.step-title{font-family:var(--fd);font-size:clamp(22px,5.5vw,28px);font-weight:800;color:var(--text);margin-bottom:20px;line-height:1.2;}
+.q-prompt{font-family:var(--fd);font-size:clamp(17px,4.5vw,20px);font-weight:700;margin-bottom:16px;line-height:1.3;padding-left:14px;border-left:4px solid var(--yellow);}
+
+/* CHIPS */
+.chip{padding:14px 18px;font-family:var(--fd);font-size:15px;font-weight:700;
+  border:2px solid var(--ink);background:#fff;box-shadow:var(--shadow-sm);cursor:pointer;
+  text-align:left;user-select:none;-webkit-tap-highlight-color:transparent;width:100%;
+  display:block;margin-bottom:10px;transition:transform .08s,box-shadow .08s;}
+.chip:last-child{margin-bottom:0;}
+.chip:active{transform:translate(2px,2px);box-shadow:none;}
+.chip.selected{background:var(--yellow);}
+.chip.correct{background:var(--mint);color:#fff;border-color:var(--mint);}
+.chip.wrong{background:var(--peach-bg);border-color:var(--peach);animation:shake .35s;}
+.chips{display:flex;flex-direction:column;gap:0;margin:16px 0;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* FEEDBACK */
+.feedback{font-family:var(--fd);font-size:14px;font-weight:700;padding:12px 16px;margin-top:12px;
+  border:2px solid var(--mint);background:var(--mint-bg);color:var(--mint);display:none;line-height:1.5;}
+.feedback.wrong-fb{border-color:var(--peach);background:var(--peach-bg);color:var(--peach);}
+.feedback.show{display:block;}
+
+/* BUTTON */
+.btn{display:block;width:100%;padding:16px;font-family:var(--fd);font-size:16px;font-weight:800;
+  background:var(--yellow);border:2px solid var(--ink);box-shadow:var(--shadow);cursor:pointer;
+  margin-top:20px;-webkit-tap-highlight-color:transparent;transition:transform .08s,box-shadow .08s;
+  text-align:center;}
+.btn:active{transform:translate(3px,3px);box-shadow:none;}
+.btn:disabled{background:#E8E8E8;color:var(--text-3);cursor:not-allowed;box-shadow:var(--shadow-sm);}
+
+/* VIS AREA */
+.vis-area{border:2px solid var(--ink);box-shadow:var(--shadow);background:#F8F8F6;
+  margin-bottom:14px;overflow:hidden;padding:20px;text-align:center;}
+
+/* CALLOUT */
+.callout{border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:16px 18px;margin:14px 0;
+  background:#fff;font-family:var(--fd);font-size:15px;font-weight:700;line-height:1.6;}
+.callout strong{font-weight:800;}
+
+/* SLIDER */
+.slider-block{border:2px solid var(--ink);padding:16px 18px;margin-bottom:12px;background:#fff;box-shadow:var(--shadow-sm);}
+.slider-row{display:flex;align-items:center;gap:12px;}
+.slider-label{font-family:var(--fd);font-size:14px;font-weight:800;white-space:nowrap;min-width:52px;}
+input[type="range"]{flex:1;accent-color:var(--yellow);cursor:pointer;}
+
+/* VOL PILLS */
+.vol-display{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.vol-pill{background:#fff;border:2px solid var(--ink);padding:14px;text-align:center;box-shadow:var(--shadow-sm);}
+.vol-pill .vp-label{font-family:var(--fd);font-size:11px;color:var(--text-3);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.vol-pill .vp-val{font-family:var(--fd);font-size:20px;font-weight:800;color:var(--text);}
+.vol-pill .vp-sub{font-size:11px;font-weight:600;color:var(--text-3);margin-top:3px;}
+.vol-pill.sky{background:var(--sky-bg);}
+.vol-pill.sky .vp-val{color:var(--sky);}
+.vol-pill.red .vp-val{color:var(--peach);}
+
+/* MEASURE */
+.zone-btn{padding:12px 16px;border:2px solid var(--ink);background:#fff;
+  font-family:var(--fd);font-size:13px;font-weight:700;cursor:pointer;text-align:center;
+  box-shadow:var(--shadow-sm);-webkit-tap-highlight-color:transparent;
+  transition:transform .08s,box-shadow .08s;width:100%;display:block;margin-bottom:10px;}
+.zone-btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:none;}
+.zone-btn.tapped{background:var(--mint);color:#fff;border-color:var(--mint);cursor:default;box-shadow:none;}
+.measure-card{border:2px solid var(--ink);padding:12px 14px;margin-top:10px;display:none;background:#fff;box-shadow:var(--shadow-sm);}
+.measure-card.show{display:block;animation:slideDown .25s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.measure-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;}
+.measure-row+.measure-row{border-top:1px solid #eee;}
+.measure-lbl{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;}
+.measure-val{font-family:var(--fd);font-size:15px;font-weight:800;}
+
+/* NAV */
+.nav-row{margin-top:20px;}
+
+/* EST PILL */
+.est-pill{display:inline-flex;align-items:center;gap:8px;border:2px solid var(--ink);padding:8px 16px;margin-bottom:16px;font-family:var(--fd);font-size:14px;font-weight:700;background:var(--yellow);box-shadow:var(--shadow-sm);}
+.est-pill .lbl{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;}
+
+/* FORMULA */
+.formula-box{border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:18px 20px;text-align:center;margin-bottom:16px;background:#fff;}
+.formula-text{font-family:var(--fd);font-size:22px;font-weight:800;color:var(--text);}
+
+/* GLASS CARDS */
+.glass-choice{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.glass-card{border:2px solid var(--ink);padding:16px 12px;text-align:center;cursor:pointer;
+  box-shadow:var(--shadow-sm);background:#fff;-webkit-tap-highlight-color:transparent;
+  transition:transform .08s,box-shadow .08s;}
+.glass-card:active:not(.done){transform:translate(2px,2px);box-shadow:none;}
+.glass-card.correct{border-color:var(--mint);background:var(--mint-bg);}
+.glass-card.wrong{border-color:var(--peach);background:var(--peach-bg);animation:shake .4s;}
+.glass-card.done{cursor:default;}
+.glass-lbl{font-family:var(--fd);font-size:12px;font-weight:700;color:var(--text-2);margin-top:8px;}
+.three-glasses{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.spot-card{border:2px solid var(--ink);padding:12px 8px;text-align:center;cursor:pointer;
+  box-shadow:var(--shadow-sm);background:#fff;-webkit-tap-highlight-color:transparent;
+  transition:transform .08s,box-shadow .08s;}
+.spot-card:active:not(.done){transform:translate(2px,2px);box-shadow:none;}
+.spot-card.correct{border-color:var(--mint);background:var(--mint-bg);}
+.spot-card.wrong{border-color:var(--peach);background:var(--peach-bg);animation:shake .4s;}
+.spot-card.done{cursor:default;}
+
+/* NAME CARDS */
+.name-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.name-card{border:2px solid var(--ink);padding:20px 14px;font-family:var(--fd);font-size:14px;font-weight:700;
+  cursor:pointer;text-align:center;box-shadow:var(--shadow-sm);background:#fff;
+  -webkit-tap-highlight-color:transparent;transition:transform .08s,box-shadow .08s;}
+.name-card:active:not(:disabled){transform:translate(2px,2px);box-shadow:none;}
+.name-card.correct{background:var(--mint);color:#fff;border-color:var(--mint);animation:bounce .4s;}
+.name-card.wrong{background:var(--peach-bg);border-color:var(--peach);animation:shake .4s;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+/* MASCOT */
+.mascot-row{display:flex;gap:14px;align-items:flex-start;margin-bottom:20px;}
+.mascot{flex-shrink:0;width:62px;height:62px;}
+.bubble{flex:1;border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:13px 17px;font-family:var(--fb);font-size:14px;font-weight:500;line-height:1.55;position:relative;background:#fff;}
+.bubble::before{content:"";position:absolute;left:-10px;top:16px;border:10px solid transparent;border-right-color:var(--ink);border-left:0;}
+.bubble::after{content:"";position:absolute;left:-7px;top:18px;border:8px solid transparent;border-right-color:#fff;border-left:0;}
+.bubble .name{font-family:var(--fd);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-3);margin-bottom:4px;}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="pip">
+      <ellipse cx="50" cy="28" rx="26" ry="9" fill="#F99B4E"/>
+      <rect x="24" y="28" width="52" height="38" fill="#F99B4E"/>
+      <ellipse cx="50" cy="66" rx="26" ry="9" fill="#e8893a"/>
+      <circle cx="41" cy="46" r="6" fill="white"/>
+      <circle cx="59" cy="46" r="6" fill="white"/>
+      <circle cx="42" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="60" cy="47" r="3.5" fill="#2B2320"/>
+      <circle cx="43" cy="46" r="1.2" fill="white"/>
+      <circle cx="61" cy="46" r="1.2" fill="white"/>
+      <path d="M 43 57 Q 50 63 57 57" stroke="#2B2320" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <rect x="28" y="10" width="44" height="20" rx="5" fill="#2B3861"/>
+      <rect x="18" y="26" width="64" height="6" rx="3" fill="#2B3861"/>
+      <circle cx="76" cy="70" r="10" fill="none" stroke="#2EB39E" stroke-width="3"/>
+      <line x1="83" y1="77" x2="90" y2="84" stroke="#2EB39E" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </defs>
+</svg>
+
+<header id="hdr">
+  <div class="hdr-brand"><span>🔍</span><span>Volume Con</span><div class="hdr-pill">RML</div></div>
+  <div id="step-ind">1 / 11</div>
+</header>
+
+<main class="main">
+  <div id="frame-content"></div>
+</main>
+
+<script>
+const SECTIONS = [
+  {title:"The Hook"},
+  {title:"Measure It"},
+  {title:"Your Estimate"},
+  {title:"What Changes?"},
+  {title:"Radius\u2013Height Sim"},
+  {title:"The Formula"},
+  {title:"Calculate It"},
+  {title:"Simulation"},
+  {title:"90% Height?"},
+  {title:"Real World Choice"},
+  {title:"Close"},
+];
+
+let current = 0;
+let completed = new Set();
+let estimate = null;
+let simDragged = false;
+let calcDone = false;
+let fillDone = false;
+let pourLevel = 20;
+
+// ── helpers ──────────────────────────────────────────
+function pip(text) {
+  return '<div class="mascot-row">'
+    +'<div class="mascot"><svg viewBox="0 0 100 100"><use href="#pip"/></svg></div>'
+    +'<div class="bubble"><div class="name">Pip \u00b7 Volume Detective</div>'+text+'</div>'
+    +'</div>';
+}
+
+function mcqOpt(id, letter, text, correct) {
+  return '<button class="chip" id="opt-'+id+'-'+letter+'" data-correct="'+correct+'"'
+    +' onclick="handleMCQ(\''+id+'\',\''+letter+'\','+correct+')">'
+    +text
+    +'</button>';
+}
+
+function handleMCQ(id, letter, correct) {
+  document.querySelectorAll('[id^="opt-'+id+'-"]').forEach(function(o){o.disabled=true;});
+  const el = document.getElementById('opt-'+id+'-'+letter);
+  if (correct) {
+    el.classList.add('correct');
+    const fb = document.getElementById('fb-'+id);
+    if (fb) fb.classList.add('show');
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('[id^="opt-'+id+'-"]').forEach(function(o){
+      if(o.dataset.correct==='true') o.classList.add('correct');
+    });
+    const fbw = document.getElementById('fb-'+id+'-wrong');
+    if (fbw) fbw.classList.add('show');
+  }
+  const btn = document.getElementById('btn-'+id);
+  if (btn) btn.disabled = false;
+}
+
+// ── SVG drawing ──────────────────────────────────────
+function drawConeGlass(cx, topY, rimRx, h, fillPct, liqFill, liqStroke, glassClr) {
+  const rimRy = Math.max(3, Math.round(rimRx*0.26));
+  const botY = topY+h;
+  const fH = h*fillPct/100;
+  const fY = botY-fH;
+  const fRx = rimRx*fillPct/100;
+  const fRy = Math.max(1.5, Math.round(fRx*0.26));
+  let g = '<g>';
+  if (fillPct>1) {
+    g += '<polygon points="'+cx+','+botY+' '+(cx-fRx)+','+fY+' '+(cx+fRx)+','+fY+'" fill="'+liqFill+'"/>';
+    g += '<ellipse cx="'+cx+'" cy="'+fY+'" rx="'+fRx+'" ry="'+fRy+'" fill="'+liqStroke+'"/>';
+  }
+  g += '<line x1="'+cx+'" y1="'+botY+'" x2="'+(cx-rimRx)+'" y2="'+topY+'" stroke="'+glassClr+'" stroke-width="2.5" stroke-linecap="round"/>';
+  g += '<line x1="'+cx+'" y1="'+botY+'" x2="'+(cx+rimRx)+'" y2="'+topY+'" stroke="'+glassClr+'" stroke-width="2.5" stroke-linecap="round"/>';
+  g += '<ellipse cx="'+cx+'" cy="'+topY+'" rx="'+rimRx+'" ry="'+rimRy+'" fill="none" stroke="'+glassClr+'" stroke-width="2"/>';
+  g += '<circle cx="'+cx+'" cy="'+botY+'" r="3" fill="'+glassClr+'"/>';
+  return g+'</g>';
+}
+
+function drawCylGlass(cx, topY, rx, h, fillPct, liqFill, liqStroke, glassClr) {
+  const ry = Math.max(3, Math.round(rx*0.26));
+  const botY = topY+h;
+  const fH = h*fillPct/100;
+  const fY = botY-fH;
+  let g = '<g>';
+  if (fillPct>1) {
+    g += '<rect x="'+(cx-rx)+'" y="'+fY+'" width="'+(rx*2)+'" height="'+fH+'" fill="'+liqFill+'"/>';
+    g += '<ellipse cx="'+cx+'" cy="'+fY+'" rx="'+rx+'" ry="'+ry+'" fill="'+liqStroke+'"/>';
+  }
+  g += '<rect x="'+(cx-rx)+'" y="'+(topY+ry)+'" width="'+(rx*2)+'" height="'+(h-ry)+'" fill="none" stroke="'+glassClr+'" stroke-width="2.5"/>';
+  g += '<ellipse cx="'+cx+'" cy="'+topY+'" rx="'+rx+'" ry="'+ry+'" fill="none" stroke="'+glassClr+'" stroke-width="2.5"/>';
+  g += '<ellipse cx="'+cx+'" cy="'+botY+'" rx="'+rx+'" ry="'+ry+'" fill="'+glassClr+'"/>';
+  return g+'</g>';
+}
+
+function drawFrustum(cx, topY, rimRx, botRx, h, fillPct, liqFill, liqStroke, glassClr) {
+  const rimRy = Math.max(3, Math.round(rimRx*0.26));
+  const botRy = Math.max(2, Math.round(botRx*0.26));
+  const botY = topY+h;
+  const fH = h*fillPct/100;
+  const fY = botY-fH;
+  const t = fH/h;
+  const fRx = botRx+(rimRx-botRx)*t;
+  const fRy = Math.max(1.5, Math.round(fRx*0.26));
+  let g = '<g>';
+  if (fillPct>1) {
+    g += '<polygon points="'+(cx-botRx)+','+botY+' '+(cx-fRx)+','+fY+' '+(cx+fRx)+','+fY+' '+(cx+botRx)+','+botY+'" fill="'+liqFill+'"/>';
+    g += '<ellipse cx="'+cx+'" cy="'+fY+'" rx="'+fRx+'" ry="'+fRy+'" fill="'+liqStroke+'"/>';
+  }
+  g += '<line x1="'+(cx-rimRx)+'" y1="'+topY+'" x2="'+(cx-botRx)+'" y2="'+botY+'" stroke="'+glassClr+'" stroke-width="2.5" stroke-linecap="round"/>';
+  g += '<line x1="'+(cx+rimRx)+'" y1="'+topY+'" x2="'+(cx+botRx)+'" y2="'+botY+'" stroke="'+glassClr+'" stroke-width="2.5" stroke-linecap="round"/>';
+  g += '<ellipse cx="'+cx+'" cy="'+topY+'" rx="'+rimRx+'" ry="'+rimRy+'" fill="none" stroke="'+glassClr+'" stroke-width="2"/>';
+  g += '<ellipse cx="'+cx+'" cy="'+botY+'" rx="'+botRx+'" ry="'+botRy+'" fill="'+glassClr+'"/>';
+  return g+'</g>';
+}
+
+function next() {
+  completed.add(current);
+  current = Math.min(current+1, SECTIONS.length-1);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── render ────────────────────────────────────────────
+const RENDERS = [s0,s1,s2,s3,s4,s5,s5b,s6,sNinety,s9,s11];
+function render() {
+  document.getElementById('frame-content').innerHTML = RENDERS[current]();
+  document.getElementById('step-ind').textContent = (current+1)+' / '+SECTIONS.length;
+  if (current===3) { pourLevel=20; drawPourCone(pourLevel); }
+  if (current===4) { simDragged=false; drawSimCone(0); }
+  if (current===7) { fillDone=false; drawFillCone(0); }
+}
+
+// ══════════════════════════════════════════════════════
+// S0 — THE HOOK
+// ══════════════════════════════════════════════════════
+function s0() {
+  const cx=140, topY=28, rimRx=82, h=172;
+  const svg = '<svg viewBox="0 0 280 230" style="width:100%;max-width:280px;height:auto;display:block;margin:0 auto">'
+    +drawConeGlass(cx,topY,rimRx,h,80,'#BFE9FF','#7DD3FC','#1A1A1A')
+    +'<text x="'+cx+'" y="'+(topY+28)+'" text-anchor="middle" font-family="Sora" font-size="13" font-weight="700" fill="#1A1A1A">FizzCo</text>'
+    +'</svg>';
+  return '<div class="step-label">The Hollow Illusion \u00b7 Challenge 3</div>'
+    +'<div class="step-title">Nothing shrank. So why less?</div>'
+    +'<div class="callout" style="margin-bottom:16px;font-size:13px"><strong>Challenge 2:</strong> A bar shrank 8% each side — lost 15% of chocolate. Same price.</div>'
+    +'<div class="vis-area">'+svg+'</div>'
+    +pip('Your drink just arrived. Filled up high. Looks fine to me.')
+    +'<div class="nav-row"><button class="btn" onclick="next()">Look closer \u2192</button></div>';
+}
+
+// ══════════════════════════════════════════════════════
+// S1 — MEASURE IT
+// ══════════════════════════════════════════════════════
+function s1() {
+  const cx=140, topY=28, rimRx=82, h=172, botY=200;
+  const svg = '<svg id="s1-svg" viewBox="0 0 300 230" style="width:100%;max-width:280px;height:auto;display:block;margin:0 auto">'
+    +drawConeGlass(cx,topY,rimRx,h,80,'#BFE9FF','#7DD3FC','#1A1A1A')
+    +'<line x1="232" y1="'+topY+'" x2="232" y2="'+botY+'" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3"/>'
+    +'<line x1="227" y1="'+topY+'" x2="237" y2="'+topY+'" stroke="#555" stroke-width="1.5"/>'
+    +'<line x1="227" y1="'+botY+'" x2="237" y2="'+botY+'" stroke="#555" stroke-width="1.5"/>'
+    +'<text x="242" y="'+(topY+(botY-topY)/2+5)+'" font-family="Sora" font-size="11" font-weight="700" fill="#555">10 cm</text>'
+    +'</svg>';
+  return '<div class="step-label">Investigate</div>'
+    +'<div class="step-title">How full is it \u2014 really?</div>'
+    +'<div class="vis-area">'+svg+'</div>'
+    +'<button class="zone-btn" id="btn-mh" onclick="measureHeight()">\ud83d\udccf Measure Height</button>'
+    +'<div class="measure-card" id="mc-height">'
+    +'<div class="measure-row"><span class="measure-lbl">Liquid height</span><span class="measure-val" style="color:var(--sky)">3.2 in</span></div>'
+    +'<div class="measure-row"><span class="measure-lbl">Total height</span><span class="measure-val">4 in</span></div>'
+    +'<div style="font-size:13px;color:var(--sky);margin-top:6px;font-weight:700">= 80% of the height is filled.</div>'
+    +'</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-s1" onclick="next()" disabled>Next \u2192</button></div>';
+}
+
+function measureHeight() {
+  const btn = document.getElementById('btn-mh');
+  btn.classList.add('tapped'); btn.disabled=true;
+  const cx=140,topY=28,rimRx=82,h=172,botY=200,fY=62;
+  const svgEl = document.getElementById('s1-svg');
+  if (svgEl) {
+    svgEl.innerHTML = drawConeGlass(cx,topY,rimRx,h,80,'#BFE9FF','#7DD3FC','#1A1A1A')
+      +'<line x1="232" y1="'+topY+'" x2="232" y2="'+botY+'" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3"/>'
+      +'<line x1="227" y1="'+topY+'" x2="237" y2="'+topY+'" stroke="#555" stroke-width="1.5"/>'
+      +'<line x1="227" y1="'+botY+'" x2="237" y2="'+botY+'" stroke="#555" stroke-width="1.5"/>'
+      +'<text x="242" y="'+(topY+(botY-topY)/2+5)+'" font-family="Sora" font-size="11" font-weight="700" fill="#555">10 cm</text>'
+      +'<line x1="214" y1="'+fY+'" x2="214" y2="'+botY+'" stroke="#4DAAFF" stroke-width="2"/>'
+      +'<line x1="209" y1="'+fY+'" x2="219" y2="'+fY+'" stroke="#4DAAFF" stroke-width="2"/>'
+      +'<line x1="209" y1="'+botY+'" x2="219" y2="'+botY+'" stroke="#4DAAFF" stroke-width="2"/>'
+      +'<text x="205" y="'+(fY+Math.round((botY-fY)/2)+5)+'" text-anchor="end" font-family="Sora" font-size="12" font-weight="700" fill="#4DAAFF">8 cm</text>';
+  }
+  document.getElementById('mc-height').classList.add('show');
+  setTimeout(function(){ document.getElementById('btn-s1').disabled=false; }, 400);
+}
+
+// ══════════════════════════════════════════════════════
+// S2 — YOUR ESTIMATE
+// ══════════════════════════════════════════════════════
+function s2() {
+  const cx=140, topY=28, rimRx=82, h=172;
+  const svg = '<svg viewBox="0 0 280 230" style="width:100%;max-width:240px;height:auto;display:block;margin:0 auto">'
+    +drawConeGlass(cx,topY,rimRx,h,80,'#BFE9FF','#7DD3FC','#1A1A1A')
+    +'<text x="'+cx+'" y="'+(topY+28)+'" text-anchor="middle" font-family="Sora" font-size="11" font-weight="700" fill="#1A1A1A">80% height</text>'
+    +'</svg>';
+  return '<div class="step-label">Your Estimate</div>'
+    +'<div class="q-prompt">What % of the total volume is filled?</div>'
+    +'<div class="vis-area">'+svg+'</div>'
+    +'<div class="chips">'
+    +'<button class="chip" id="est-A" onclick="pickEst(\'A\',\'~80%\')">~80% — looks about that full</button>'
+    +'<button class="chip" id="est-B" onclick="pickEst(\'B\',\'~65%\')">~65% — cone narrows at the bottom</button>'
+    +'<button class="chip" id="est-C" onclick="pickEst(\'C\',\'~51%\')">~51% — way less than it looks</button>'
+    +'<button class="chip" id="est-D" onclick="pickEst(\'D\',\'~35%\')">~35% — mostly empty at the bottom</button>'
+    +'</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-s2" onclick="next()" disabled>Investigate \u2192</button></div>';
+}
+
+function pickEst(l, text) {
+  estimate = text;
+  ['A','B','C','D'].forEach(function(x){
+    const el = document.getElementById('est-'+x);
+    if (el) el.classList.remove('selected');
+  });
+  const el = document.getElementById('est-'+l);
+  if (el) el.classList.add('selected');
+  document.getElementById('btn-s2').disabled=false;
+}
+
+// ══════════════════════════════════════════════════════
+// S3 — WHAT CHANGES?
+// ══════════════════════════════════════════════════════
+function s3() {
+  return '<div class="step-label">Observe</div>'
+    +'<div class="q-prompt">As you pour more, what changes?</div>'
+    +'<div class="vis-area"><svg id="pour-svg" viewBox="0 0 270 230" style="width:100%;max-width:270px;height:auto;display:block;margin:0 auto"></svg></div>'
+    +'<div style="margin-bottom:14px">'
+    +'<button class="zone-btn" id="btn-pour" onclick="doPour()">\ud83d\udca7 Pour more</button>'
+    +'</div>'
+    +'<div class="chips">'
+    +mcqOpt('wc','A','Only height increases',false)
+    +mcqOpt('wc','B','Only radius increases',false)
+    +mcqOpt('wc','C','Both height and radius increase',true)
+    +mcqOpt('wc','D','Neither \u2014 the shape stays fixed',false)
+    +'</div>'
+    +'<div class="feedback" id="fb-wc">Right. Both grow every time you pour more.</div>'
+    +'<div class="feedback wrong-fb" id="fb-wc-wrong">Look at the width as the cone fills \u2014 does it stay the same?</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-wc" onclick="next()" disabled>Next \u2192</button></div>';
+}
+
+function drawPourCone(pct) {
+  const svg = document.getElementById('pour-svg');
+  if (!svg) return;
+  const cx=135, topY=28, rimRx=82, h=172, botY=200;
+  const fH=h*pct/100, fY=botY-fH, fRx=rimRx*pct/100;
+  let inner = drawConeGlass(cx,topY,rimRx,h,pct,'#BFE9FF','#7DD3FC','#1A1A1A');
+  if (pct>=20) {
+    const hx=cx+rimRx+12;
+    inner += '<line x1="'+hx+'" y1="'+fY+'" x2="'+hx+'" y2="'+botY+'" stroke="#4DAAFF" stroke-width="2" stroke-dasharray="4,2"/>'
+      +'<text x="'+(hx+7)+'" y="'+((fY+botY)/2+5)+'" font-family="Sora" font-size="13" font-weight="700" fill="#4DAAFF">h</text>';
+    inner += '<line x1="'+cx+'" y1="'+(fY-10)+'" x2="'+(cx+fRx)+'" y2="'+(fY-10)+'" stroke="#FF6B6B" stroke-width="2" stroke-dasharray="4,2"/>'
+      +'<text x="'+(cx+fRx/2)+'" y="'+(fY-16)+'" text-anchor="middle" font-family="Sora" font-size="13" font-weight="700" fill="#FF6B6B">r</text>';
+  }
+  svg.innerHTML = inner;
+}
+
+function doPour() {
+  pourLevel = Math.min(pourLevel+20, 80);
+  drawPourCone(pourLevel);
+  if (pourLevel>=80) {
+    const btn = document.getElementById('btn-pour');
+    if (btn) { btn.disabled=true; btn.textContent='Glass full!'; btn.classList.add('tapped'); }
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// S4 — RADIUS–HEIGHT SIMULATION
+// ══════════════════════════════════════════════════════
+function s4() {
+  return '<div class="step-label">Explore</div>'
+    +'<div class="step-title">Drag to fill. Watch height and radius.</div>'
+    +'<div class="vis-area"><svg id="sim-svg" viewBox="0 0 270 230" style="width:100%;max-width:270px;height:auto;display:block;margin:0 auto"></svg></div>'
+    +'<div class="slider-block"><div class="slider-row">'
+    +'<span class="slider-label" id="sim-lbl">0%</span>'
+    +'<input type="range" min="0" max="100" value="0" id="sim-slider" oninput="onSimSlider(this.value)">'
+    +'</div></div>'
+    +'<div class="vol-display">'
+    +'<div class="vol-pill sky">'
+    +'<div class="vp-label">Height filled</div>'
+    +'<div class="vp-val" id="sim-h-val">0%</div>'
+    +'<div class="vp-sub" id="sim-h-pct">0.0 in of 4 in</div>'
+    +'</div>'
+    +'<div class="vol-pill red">'
+    +'<div class="vp-label">Radius at fill</div>'
+    +'<div class="vp-val" id="sim-r-val">0%</div>'
+    +'<div class="vp-sub" id="sim-r-pct">0.0 in of 1.2 in</div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="feedback" id="fb-sim">At any fill level, the % of height = % of radius. The ratio is always the same.</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-sim" onclick="next()" disabled>Got it \u2192</button></div>';
+}
+
+function drawSimCone(pct) {
+  const svg = document.getElementById('sim-svg');
+  if (!svg) return;
+  const cx=135, topY=28, rimRx=82, h=172, botY=200;
+  const fH=h*pct/100, fY=botY-fH, fRx=rimRx*pct/100;
+  let inner = drawConeGlass(cx,topY,rimRx,h,pct,'#BFE9FF','#7DD3FC','#1A1A1A');
+  if (pct>2) {
+    inner += '<text x="'+(cx+rimRx+8)+'" y="'+((fY+botY)/2+5)+'" font-family="Sora" font-size="11" font-weight="700" fill="#4DAAFF">h='+Math.round(pct*4/100*10)/10+'"</text>';
+    inner += '<text x="'+(cx+fRx/2)+'" y="'+(fY-8)+'" text-anchor="middle" font-family="Sora" font-size="11" font-weight="700" fill="#FF6B6B">r='+Math.round(pct*1.2/100*10)/10+'"</text>';
+  }
+  svg.innerHTML = inner;
+}
+
+function onSimSlider(val) {
+  const pct = parseInt(val);
+  const hIn = (pct*4/100).toFixed(1);
+  const rIn = (pct*1.2/100).toFixed(1);
+  document.getElementById('sim-lbl').textContent = pct+'%';
+  document.getElementById('sim-h-val').textContent = pct+'%';
+  document.getElementById('sim-h-pct').textContent = hIn+' in of 4 in';
+  document.getElementById('sim-r-val').textContent = pct+'%';
+  document.getElementById('sim-r-pct').textContent = rIn+' in of 1.2 in';
+  drawSimCone(pct);
+  if (pct>=50 && !simDragged) {
+    simDragged=true;
+    document.getElementById('fb-sim').classList.add('show');
+    document.getElementById('btn-sim').disabled=false;
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// S5 — THE FORMULA
+// ══════════════════════════════════════════════════════
+function s5() {
+  return '<div class="step-label">The Formula</div>'
+    +'<div class="step-title">You know height is 80%. What about radius?</div>'
+    +'<div style="border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:14px 16px;margin-bottom:16px;background:#fff;font-family:var(--fd);font-size:14px;font-weight:700;">'
+    +'At 80% fill \u2014 height is 80% of total.<br>What is the <span style="color:var(--peach)">radius</span> as % of total?'
+    +'</div>'
+    +'<div class="chips">'
+    +'<button class="chip" id="opt-rad-A" data-correct="false" onclick="handleRadMCQ(\'A\',false)">40% of total radius</button>'
+    +'<button class="chip" id="opt-rad-B" data-correct="false" onclick="handleRadMCQ(\'B\',false)">60% of total radius</button>'
+    +'<button class="chip" id="opt-rad-C" data-correct="true" onclick="handleRadMCQ(\'C\',true)">80% of total radius</button>'
+    +'<button class="chip" id="opt-rad-D" data-correct="false" onclick="handleRadMCQ(\'D\',false)">100% of total radius</button>'
+    +'</div>'
+    +'<div class="feedback" id="fb-rad">Yes! Same ratio \u2014 r is 80% of total, just like h.</div>'
+    +'<div class="feedback wrong-fb" id="fb-rad-wrong">Think back to the sim \u2014 h% always = r%. The ratio is constant.</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-rad" onclick="next()" disabled>Next \u2192</button></div>';
+}
+
+function s5b() {
+  return '<div class="step-label">Calculate It</div>'
+    +'<div class="step-title">Now work out the volume.</div>'
+    +'<div class="formula-box">'
+    +'<div class="formula-text">V = \u2153 \u00d7 \u03c0 \u00d7 r\u00b2 \u00d7 h</div>'
+    +'<div style="font-family:var(--fb);font-size:13px;color:var(--text-3);font-weight:500;margin-top:6px">At 80% fill: r = 0.8 and h = 0.8 of the full glass</div>'
+    +'</div>'
+    +'<div class="chips">'
+    +mcqOpt('calc','A','~70% of total volume',false)
+    +mcqOpt('calc','B','~51% of total volume',true)
+    +mcqOpt('calc','C','~64% of total volume',false)
+    +mcqOpt('calc','D','~80% of total volume',false)
+    +'</div>'
+    +'<div class="feedback" id="fb-calc">0.8 \u00d7 0.8 \u00d7 0.8 = 0.512 \u2014 just 51%!</div>'
+    +'<div class="feedback wrong-fb" id="fb-calc-wrong">Try: 0.8 \u00d7 0.8 = 0.64, then \u00d7 0.8 = ?</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-calc" onclick="next()" disabled>Confirm it \u2192</button></div>';
+}
+
+function handleRadMCQ(letter, correct) {
+  ['A','B','C','D'].forEach(function(x){
+    const el = document.getElementById('opt-rad-'+x);
+    if (el) el.disabled=true;
+  });
+  const el = document.getElementById('opt-rad-'+letter);
+  if (correct) {
+    el.classList.add('correct');
+    document.getElementById('fb-rad').classList.add('show');
+  } else {
+    el.classList.add('wrong');
+    ['A','B','C','D'].forEach(function(x){
+      const o = document.getElementById('opt-rad-'+x);
+      if (o && o.dataset.correct==='true') o.classList.add('correct');
+    });
+    document.getElementById('fb-rad-wrong').classList.add('show');
+  }
+  const btn = document.getElementById('btn-rad');
+  if (btn) btn.disabled=false;
+}
+
+// ══════════════════════════════════════════════════════
+// S6 — SIMULATION
+// ══════════════════════════════════════════════════════
+function s6() {
+  const estText = estimate||'?';
+  return '<div class="step-label">Confirm It</div>'
+    +'<div class="step-title">Drag to 80%. Watch the volume.</div>'
+    +'<div class="est-pill"><span class="lbl">Your guess</span><span>'+estText+'</span></div>'
+    +'<div class="slider-block"><div class="slider-row">'
+    +'<span class="slider-label" id="fill-lbl">0%</span>'
+    +'<input type="range" min="0" max="100" value="0" id="fill-slider" oninput="onFillSlider(this.value)">'
+    +'</div></div>'
+    +'<div class="vis-area"><svg id="fill-svg" viewBox="0 0 270 230" style="width:100%;max-width:270px;height:auto;display:block;margin:0 auto"></svg></div>'
+    +'<div class="vol-display">'
+    +'<div class="vol-pill"><div class="vp-label">Height fill</div><div class="vp-val" id="fill-h-pct">0%</div></div>'
+    +'<div class="vol-pill sky"><div class="vp-label">Volume filled</div><div class="vp-val" id="fill-vol-pct">0%</div><div class="vp-sub">of total</div></div>'
+    +'</div>'
+    +'<div class="callout" id="confirm-callout" style="display:none">'
+    +'You guessed <strong>'+estText+'</strong>. Actual: <strong style="color:var(--peach)">51%</strong>.'
+    +'</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-s6" onclick="next()" disabled>Next \u2192</button></div>';
+}
+
+function drawFillCone(pct) {
+  const svg = document.getElementById('fill-svg');
+  if (!svg) return;
+  svg.innerHTML = drawConeGlass(135,28,82,172,pct,'#BFE9FF','#7DD3FC','#1A1A1A');
+}
+
+function onFillSlider(val) {
+  const pct = parseInt(val);
+  const volPct = Math.round(Math.pow(pct/100,3)*100);
+  document.getElementById('fill-lbl').textContent = pct+'%';
+  document.getElementById('fill-h-pct').textContent = pct+'%';
+  document.getElementById('fill-vol-pct').textContent = volPct+'%';
+  drawFillCone(pct);
+  if (pct>=76 && !fillDone) {
+    fillDone=true;
+    document.getElementById('confirm-callout').style.display='block';
+    document.getElementById('btn-s6').disabled=false;
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// SNINETY — 90% HEIGHT QUESTION
+// ══════════════════════════════════════════════════════
+function sNinety() {
+  return '<div class="step-label">Push It</div>'
+    +'<div class="q-prompt">What if we fill to 90% height?</div>'
+    +pip('You found: 80% height = 51% volume. What about 90% height?')
+    +'<div class="chips">'
+    +mcqOpt('fu','A','~60% of total volume',false)
+    +mcqOpt('fu','B','~73% of total volume',true)
+    +mcqOpt('fu','C','~85% of total volume',false)
+    +'</div>'
+    +'<div class="feedback" id="fb-fu">0.9 \u00d7 0.9 \u00d7 0.9 = 73%. Just 10% more height \u2014 but 22% more volume!</div>'
+    +'<div class="feedback wrong-fb" id="fb-fu-wrong">Try: 0.9 \u00d7 0.9 \u00d7 0.9 = ?</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-fu" onclick="next()" disabled>Next \u2192</button></div>';
+}
+
+// ══════════════════════════════════════════════════════
+// S9 — APPLY IT
+// ══════════════════════════════════════════════════════
+function s9() {
+  const svg = '<svg viewBox="0 0 270 230" style="width:100%;max-width:220px;height:auto;display:block;margin:0 auto">'
+    +drawConeGlass(135,28,82,172,50,'#BFE9FF','#7DD3FC','#1A1A1A')
+    +'<text x="228" y="118" font-family="Sora" font-size="11" font-weight="700" fill="#4DAAFF">\u2190 50%</text>'
+    +'</svg>';
+  return '<div class="step-label">Apply It</div>'
+    +'<div class="q-prompt">Filled to 50% height. What % of total volume?</div>'
+    +'<div class="vis-area">'+svg+'</div>'
+    +'<div class="chips">'
+    +mcqOpt('ap','A','~50% of total volume',false)
+    +mcqOpt('ap','B','~25% of total volume',false)
+    +mcqOpt('ap','C','~12.5% of total volume',true)
+    +mcqOpt('ap','D','~8% of total volume',false)
+    +'</div>'
+    +'<div class="feedback" id="fb-ap">0.5 \u00d7 0.5 \u00d7 0.5 = 0.125 \u2014 just 12.5%! The lower the fill, the worse the illusion.</div>'
+    +'<div class="feedback wrong-fb" id="fb-ap-wrong">Use the formula: 0.5 \u00d7 0.5 \u00d7 0.5 = ?</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-ap" onclick="next()" disabled>Next \u2192</button></div>';
+}
+
+// ══════════════════════════════════════════════════════
+// S10 — REAL WORLD CHOICE (was s9)
+// ══════════════════════════════════════════════════════
+function s10() {
+  const lf='#BFE9FF', ls='#7DD3FC', gc='#1A1A1A';
+  const coneSvg = '<svg viewBox="0 0 200 210" style="width:100%;max-width:130px;height:auto;display:block;margin:0 auto">'
+    +drawConeGlass(100,20,72,165,80,lf,ls,gc)+'</svg>';
+  const cylSvg = '<svg viewBox="0 0 200 210" style="width:100%;max-width:130px;height:auto;display:block;margin:0 auto">'
+    +drawCylGlass(100,20,52,165,80,lf,ls,gc)+'</svg>';
+  return '<div class="step-label">Real World</div>'
+    +'<div class="step-title">Same price. Same height. Which gives more?</div>'
+    +'<div class="glass-choice">'
+    +'<div class="glass-card" id="gc-cone" onclick="pickGlass(\'cone\',false)">'+coneSvg+'<div class="glass-lbl">Cone glass</div></div>'
+    +'<div class="glass-card" id="gc-cyl" onclick="pickGlass(\'cyl\',true)">'+cylSvg+'<div class="glass-lbl">Cylinder glass</div></div>'
+    +'</div>'
+    +'<div class="feedback" id="fb-glass">Same height \u2014 but the cylinder is wide all the way down. Far more volume.</div>'
+    +'<div class="feedback wrong-fb" id="fb-glass-wrong">Think about the bottom \u2014 the cone is almost empty there.</div>'
+    +'<div class="nav-row"><button class="btn" id="btn-glass" onclick="next()" disabled>Next \u2192</button></div>';
+}
+
+function pickGlass(id, correct) {
+  document.querySelectorAll('.glass-card').forEach(function(c){c.classList.add('done');});
+  document.getElementById('gc-'+id).classList.add(correct?'correct':'wrong');
+  if (!correct) document.getElementById('gc-cyl').classList.add('correct');
+  document.getElementById(correct?'fb-glass':'fb-glass-wrong').classList.add('show');
+  document.getElementById('btn-glass').disabled=false;
+}
+
+// ══════════════════════════════════════════════════════
+// S11 — CLOSE
+// ══════════════════════════════════════════════════════
+function s11() {
+  const estText = estimate || 'a lot';
+  return '<div class="step-label">The Hollow Illusion</div>'
+    +'<div class="step-title">It looked 80% full. It held 51%.</div>'
+    +pip('You guessed '+estText+'. Actual: 51%.<br>Check the fl oz — not your eyes.')
+    +'<div class="callout">A cone glass at <strong>80% height</strong> holds only <strong style="color:var(--peach)">51% of its volume</strong>.<br>Next time you see a cone glass — check the fl oz.</div>'
+    +'<div class="nav-row"><button class="btn" onclick="window.location.href=\'closure.html\'">See the Verdict \u2192</button></div>';
+}
+
+// ── init ──────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
